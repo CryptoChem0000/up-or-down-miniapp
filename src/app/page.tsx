@@ -38,28 +38,34 @@ export default function Page() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
       {/* Mini App Container - 424x695 */}
       <div 
-        className="w-[424px] h-[695px] bg-background border border-border/20 rounded-2xl overflow-hidden"
+        className="w-[424px] h-[695px] bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-xl border border-slate-700/50 rounded-3xl overflow-hidden relative"
         style={{ 
-          boxShadow: "0 20px 60px -12px rgba(0, 0, 0, 0.8)",
+          boxShadow: "0 25px 80px -12px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05)",
         }}
       >
-        <div className="h-full flex flex-col p-6 space-y-6">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]" />
+        
+        <div className="relative h-full flex flex-col p-6 space-y-6">
           {/* Header */}
-          <div className="text-center space-y-2">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">ETH</span>
+          <div className="text-center space-y-3">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
+                <span className="text-white font-bold text-sm">ETH</span>
               </div>
-              <h1 className="text-xl font-bold">Daily ETH Poll</h1>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                Daily ETH Poll
+              </h1>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-slate-400 text-sm leading-relaxed">
               Will ETH price go up or down today?
             </p>
             {!hasVoted && (
-              <Badge variant="outline" className="border-primary text-primary">
+              <Badge variant="outline" className="border-blue-500/50 text-blue-400 bg-blue-500/10 backdrop-blur-sm">
                 Vote closes at midnight UTC
               </Badge>
             )}
@@ -73,11 +79,11 @@ export default function Page() {
           />
 
           {/* Voting Section */}
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div className="text-center">
-              <h2 className="text-lg font-semibold mb-2">Make Your Prediction</h2>
+              <h2 className="text-lg font-semibold mb-3 text-white">Make Your Prediction</h2>
               {hasVoted && (
-                <Badge variant="outline" className="border-success text-success bg-success/10">
+                <Badge variant="outline" className="border-emerald-500/50 text-emerald-400 bg-emerald-500/10 backdrop-blur-sm">
                   Voted {selectedVote?.toUpperCase()} ✓
                 </Badge>
               )}
@@ -108,13 +114,17 @@ export default function Page() {
 
           {/* Footer Info */}
           <div className="mt-auto">
-            <Card className="p-3 bg-muted/20 border-border/30">
-              <div className="text-xs text-muted-foreground text-center space-y-1">
-                <div>Build your streak • Compete with others</div>
-                <div className="text-primary">Results revealed daily at 12:01 AM UTC</div>
-                <div className="flex gap-2 justify-center mt-2">
-                  <a href="/api/frames" className="text-primary hover:underline">Frame →</a>
-                  <a href="/test" className="text-primary hover:underline">Test Panel →</a>
+            <Card className="p-4 bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
+              <div className="text-xs text-slate-400 text-center space-y-2">
+                <div className="text-slate-300">Build your streak • Compete with others</div>
+                <div className="text-blue-400 font-medium">Results revealed daily at 12:01 AM UTC</div>
+                <div className="flex gap-3 justify-center mt-3">
+                  <a href="/api/frames" className="text-blue-400 hover:text-blue-300 transition-colors duration-200 hover:underline">
+                    Frame →
+                  </a>
+                  <a href="/test" className="text-blue-400 hover:text-blue-300 transition-colors duration-200 hover:underline">
+                    Test Panel →
+                  </a>
                 </div>
               </div>
             </Card>
