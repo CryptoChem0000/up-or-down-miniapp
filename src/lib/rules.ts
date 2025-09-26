@@ -1,0 +1,2 @@
+export const OPEN_SNAPSHOT_DELAY_MS = 15_000;   // 00:00:15 UTC
+export const CLOSE_SNAPSHOT_DELAY_MS = 45_000;  // 23:59:45 UTC
