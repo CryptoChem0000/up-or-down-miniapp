@@ -296,7 +296,7 @@ export default function DailyOneTapPoll() {
     if (hasVoted) return;
     
     if (!votingOpen) {
-      toast({ title: "Vote is Closed", description: "Vote is closed. Voting resets at 12:01 AM UTC. Check back in tomorrow to log your vote!" });
+      toast({ title: "Vote is Closed", description: "Vote resets at 12:01 AM UTC. Check back in tomorrow to log your vote!" });
       return;
     }
     
