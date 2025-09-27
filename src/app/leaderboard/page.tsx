@@ -1,57 +1,151 @@
-"use client";
-import React from "react";
-import { Trophy, Flame } from "lucide-react";
+import Link from "next/link";
+import { Trophy, Crown, Medal, Award, ArrowLeft } from "lucide-react";
 
-type LBRow = { fid: string; score: number };
-type LBResp = { topPoints: LBRow[]; topStreak: LBRow[] };
+// Temporary mock data; swap for API fetch later
+const mockLeaderboardData = [
+  { id: 1, name: "alice.eth", address: "0x742d35Cc82C0...f4C8BD45c4", currentStreak: 25, accuracy: 94, totalPoints: 2850, rank: 1 },
+  { id: 2, name: "0x8ba1f109...7e3c2a9f", address: "0x8ba1f109551bD432803012b06f3C8...7e3c2a9f", currentStreak: 18, accuracy: 91, totalPoints: 2340, rank: 2 },
+  { id: 3, name: "bob.crypto", address: "0x1f2f377d...891b5c2f", currentStreak: 22, accuracy: 88, totalPoints: 2180, rank: 3 },
+  { id: 4, name: "0x9d4a1c2b...f8e7d6a9", address: "0x9d4a1c2b3e5f4a7b8c9d0e1f2a3b4c...f8e7d6a9", currentStreak: 15, accuracy: 86, totalPoints: 1950, rank: 4 },
+  { id: 5, name: "trader.defi", address: "0x3c8b7a9e...2d1f4e8b", currentStreak: 12, accuracy: 83, totalPoints: 1720, rank: 5 },
+  { id: 6, name: "0xa7b8c9d0...5e4f3a2b", address: "0xa7b8c9d0e1f2a3b4c5d6e7f8a9b0c1...5e4f3a2b", currentStreak: 8, accuracy: 79, totalPoints: 1480, rank: 6 },
+];
+
+// Button component (inline since we don't have separate UI components)
+const Button = ({ children, variant = "default", asChild = false, className = "", ...props }: any) => {
+  const baseClasses = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
+  const variantClasses = {
+    default: "bg-primary text-primary-foreground hover:bg-primary/90",
+    ghost: "hover:bg-accent hover:text-accent-foreground",
+    outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+  };
+  
+  const classes = `${baseClasses} ${variantClasses[variant] || variantClasses.default} ${className}`;
+  
+  if (asChild) {
+    return <Link className={classes} {...props}>{children}</Link>;
+  }
+  
+  return <button className={classes} {...props}>{children}</button>;
+};
+
+// Card components (inline)
+const Card = ({ children, className = "", ...props }: any) => (
+  <div className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`} {...props}>
+    {children}
+  </div>
+);
+
+const CardHeader = ({ children, className = "", ...props }: any) => (
+  <div className={`flex flex-col space-y-1.5 p-6 ${className}`} {...props}>
+    {children}
+  </div>
+);
+
+const CardTitle = ({ children, className = "", ...props }: any) => (
+  <h3 className={`text-2xl font-semibold leading-none tracking-tight ${className}`} {...props}>
+    {children}
+  </h3>
+);
+
+const CardContent = ({ children, className = "", ...props }: any) => (
+  <div className={`p-6 pt-0 ${className}`} {...props}>
+    {children}
+  </div>
+);
+
+// Badge component (inline)
+const Badge = ({ children, variant = "default", className = "", ...props }: any) => {
+  const baseClasses = "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2";
+  const variantClasses = {
+    default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+    secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+    outline: "text-foreground",
+  };
+  
+  const classes = `${baseClasses} ${variantClasses[variant] || variantClasses.default} ${className}`;
+  
+  return <div className={classes} {...props}>{children}</div>;
+};
+
+function RankIcon({ rank }: { rank: number }) {
+  switch (rank) {
+    case 1: return <Crown className="w-5 h-5 text-yellow-500" />;
+    case 2: return <Medal className="w-5 h-5 text-gray-400" />;
+    case 3: return <Award className="w-5 h-5 text-amber-600" />;
+    default: return <Trophy className="w-4 h-4 text-muted-foreground" />;
+  }
+}
 
 export default function LeaderboardPage() {
-  const [data, setData] = React.useState<LBResp | null>(null);
-  React.useEffect(() => {
-    fetch("/api/leaderboard", { cache: "no-store" }).then(r => r.json()).then(setData);
-  }, []);
-
   return (
-    <main className="min-h-screen bg-gray-900 text-white p-4 flex items-center justify-center">
-      <div className="w-[424px] min-h-[695px] border border-gray-700 rounded-2xl p-6 space-y-6 bg-gray-900">
-        <h1 className="text-xl font-bold text-center">Leaderboard</h1>
-
-        <section>
-          <div className="flex items-center gap-2 mb-3">
-            <Trophy className="w-5 h-5 text-yellow-400" />
-            <h2 className="font-semibold">Top Points</h2>
-          </div>
-          <div className="space-y-2">
-            {(data?.topPoints ?? []).map((row, i) => (
-              <div key={row.fid} className="flex justify-between px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-sm">
-                <span className="opacity-70">#{i + 1} • FID {row.fid}</span>
-                <span className="font-bold">{row.score.toLocaleString()} pts</span>
-              </div>
-            ))}
-            {!data && <div className="text-sm opacity-60">Loading…</div>}
-          </div>
-        </section>
-
-        <section>
-          <div className="flex items-center gap-2 mb-3">
-            <Flame className="w-5 h-5 text-orange-400" />
-            <h2 className="font-semibold">Top Streaks</h2>
-          </div>
-          <div className="space-y-2">
-            {(data?.topStreak ?? []).map((row, i) => (
-              <div key={row.fid} className="flex justify-between px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-sm">
-                <span className="opacity-70">#{i + 1} • FID {row.fid}</span>
-                <span className="font-bold">{row.score} days</span>
-              </div>
-            ))}
-            {!data && <div className="text-sm opacity-60">Loading…</div>}
-          </div>
-        </section>
-
-        <div className="text-center text-xs opacity-70">
-          Scores update after each daily settlement.
+    <div className="min-h-screen bg-gray-900 p-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center gap-4 mb-6">
+          <Button variant="ghost" asChild className="flex items-center gap-2">
+            <Link href="/">
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Link>
+          </Button>
+          <h1 className="text-3xl font-bold text-white">Leaderboard</h1>
         </div>
+
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-white">
+              <Trophy className="w-6 h-6 text-primary" />
+              Top Performers
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <div className="grid grid-cols-5 gap-4 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 font-semibold text-sm text-gray-300">
+                <div>Rank</div>
+                <div>Name</div>
+                <div className="text-center">Current Streak</div>
+                <div className="text-center">Accuracy</div>
+                <div className="text-center">Total Points</div>
+              </div>
+
+              <div className="space-y-2">
+                {mockLeaderboardData.map((u) => (
+                  <div
+                    key={u.id}
+                    className={`grid grid-cols-5 gap-4 py-4 px-4 rounded-lg border transition-colors hover:bg-gray-700/30 ${
+                      u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <RankIcon rank={u.rank} />
+                      <span className="font-bold text-white">#{u.rank}</span>
+                    </div>
+
+                    <div className="flex flex-col">
+                      <span className="font-medium text-white">{u.name}</span>
+                      <span className="text-xs text-gray-400 font-mono">{u.address}</span>
+                    </div>
+
+                    <div className="text-center">
+                      <Badge variant="secondary" className="font-bold bg-orange-500/20 text-orange-400 border-orange-500/30">{u.currentStreak}</Badge>
+                    </div>
+
+                    <div className="text-center">
+                      <Badge variant={u.accuracy >= 90 ? "default" : "outline"} className="font-bold border-green-500/30 text-green-400 bg-green-500/10">
+                        {u.accuracy}%
+                      </Badge>
+                    </div>
+
+                    <div className="text-center">
+                      <span className="text-lg font-bold text-primary">{u.totalPoints.toLocaleString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-    </main>
+    </div>
   );
 }

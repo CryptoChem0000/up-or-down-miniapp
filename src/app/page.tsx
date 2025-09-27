@@ -5,7 +5,8 @@ import clsx, { type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { TrendingUp, TrendingDown, Flame, Users, Trophy, X } from "lucide-react";
+import { TrendingUp, TrendingDown, Flame, Users, Trophy, X, Crown } from "lucide-react";
+import Link from "next/link";
 import * as ToastPrimitives from "@radix-ui/react-toast";
 
 /** utils */
@@ -200,6 +201,17 @@ const StatsCard = ({ streak, totalVotes, accuracy, points }: StatsCardProps) => 
         <div className="text-xs text-gray-400">{points ? 'Points' : 'Accuracy'}</div>
       </div>
     </div>
+
+    <Button
+      asChild
+      variant="outline"
+      className="w-full mt-4 border-primary/20 hover:bg-primary/5 transition-colors text-gray-200 hover:text-white"
+    >
+      <Link href="/leaderboard">
+        <Crown className="w-4 h-4 text-primary mr-2" />
+        <span className="text-sm font-medium">View Leaderboard</span>
+      </Link>
+    </Button>
   </Card>
 );
 
