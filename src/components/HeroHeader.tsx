@@ -33,6 +33,7 @@ export default function HeroHeader({
       </div>
 
       <div className="mt-3 space-y-2">
+        {/* ETHEREUM title display */}
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl text-white">{title}</h1>
 
         <p className="mx-auto max-w-[30ch] sm:max-w-[36ch] text-sm text-gray-400 leading-relaxed">
