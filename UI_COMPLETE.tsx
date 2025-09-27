@@ -136,7 +136,7 @@ const VoteButton = ({ direction, onClick, isSelected, className }: VoteButtonPro
     <Button
       onClick={onClick}
       className={cn(
-        "h-20 text-lg font-bold transition-all duration-300 relative overflow-hidden group",
+        "h-14 text-base font-bold transition-all duration-300 relative overflow-hidden group",
         "border-2 hover:scale-105 active:scale-95",
         isUp ? "bg-green-500 border-green-500 text-white hover:shadow-lg hover:shadow-green-500/25"
              : "bg-red-500 border-red-500 text-white hover:shadow-lg hover:shadow-red-500/25",
@@ -145,8 +145,8 @@ const VoteButton = ({ direction, onClick, isSelected, className }: VoteButtonPro
       )}
       size="lg"
     >
-      <div className="flex items-center gap-3 relative z-10">
-        {isUp ? <TrendingUp className="w-6 h-6" /> : <TrendingDown className="w-6 h-6" />}
+      <div className="flex items-center gap-2 relative z-10">
+        {isUp ? <TrendingUp className="w-10 h-10" /> : <TrendingDown className="w-10 h-10" />}
         <span>{isUp ? "UP" : "DOWN"}</span>
       </div>
       <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300", isUp ? "bg-green-500" : "bg-red-500")} />
