@@ -13,3 +13,30 @@ export async function fetchProfilesFromNeynar(fids: string[]) {
   const j = (await r.json()) as { users: NeynarUser[] };
   return j.users;
 }
+
+export async function validateNeynar(messageBytes: string, apiKey: string): Promise<{ valid: boolean; fid?: string }> {
+  try {
+    const url = "https://api.neynar.com/v2/farcaster/frame/validate";
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "api_key": apiKey,
+      },
+      body: JSON.stringify({ message_bytes_in_hex: messageBytes }),
+    });
+
+    if (!response.ok) {
+      return { valid: false };
+    }
+
+    const data = await response.json();
+    return {
+      valid: data.valid || false,
+      fid: data.action?.interactor?.fid ? String(data.action.interactor.fid) : undefined,
+    };
+  } catch (error) {
+    console.error("Neynar validation error:", error);
+    return { valid: false };
+  }
+}
