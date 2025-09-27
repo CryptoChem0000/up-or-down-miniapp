@@ -4,6 +4,7 @@ import { todaysPoll } from "@/lib/poll";
 import { renderOg } from "@/ui/og";
 import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 import { validateNeynar } from "@/lib/neynar";
+import { getServerPrice } from "@/lib/prices";
 
 export async function GET(request: NextRequest) {
   const date = todayUTC();
@@ -115,7 +116,15 @@ export async function POST(request: NextRequest) {
     // Check if user already voted (idempotency)
     const already = await redis.hexists(k.votes(date), fid);
     if (!already) {
-      await redis.hset(k.votes(date), { [fid]: choice });
+      // Get current price for vote stamping
+      const priceData = await getServerPrice();
+      const voteData = {
+        choice,
+        price: priceData.price,
+        timestamp: Date.now()
+      };
+      
+      await redis.hset(k.votes(date), { [fid]: JSON.stringify(voteData) });
       await redis.hincrby(k.counts(date), choice, 1);
     }
     

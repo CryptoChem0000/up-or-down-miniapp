@@ -226,6 +226,7 @@ export default function DailyOneTapPoll() {
   const [selectedVote, setSelectedVote] = useState<"up" | "down" | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [my, setMy] = useState<{streak:number; points:number} | null>(null);
+  const [ethData, setEthData] = useState<{price: number; change24h: number; changePercent: number}>({ price: 3420.5, change24h: 127.32, changePercent: 3.87 });
   const { toast } = useToast();
 
   // Show dev links only in development
@@ -240,8 +241,46 @@ export default function DailyOneTapPoll() {
     fetch(`/api/user/${fid}`).then(r => r.json()).then(setMy).catch(() => {});
   }, []);
 
-  // Mock UI data for the card (replace with API later)
-  const ethData = { price: 3420.5, change24h: 127.32, changePercent: 3.87 };
+  // Price fetching with recommended refresh policy
+  React.useEffect(() => {
+    const loadPrice = async () => {
+      try {
+        const response = await fetch("/api/price", { cache: "no-store" });
+        const data = await response.json();
+        if (data.price) {
+          // For now, use mock 24h change data since CoinGecko free tier doesn't include it
+          // In production, you might want to store historical prices for change calculation
+          setEthData({
+            price: data.price,
+            change24h: 127.32, // Mock data - replace with real calculation
+            changePercent: 3.87 // Mock data - replace with real calculation
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch price:", error);
+      }
+    };
+
+    // Initial load
+    loadPrice();
+
+    // Refresh on tab focus
+    const onFocus = () => {
+      if (document.visibilityState === "visible") {
+        loadPrice();
+      }
+    };
+    window.addEventListener("visibilitychange", onFocus);
+
+    // Poll every 2 minutes (120 seconds)
+    const intervalId = setInterval(loadPrice, 120_000);
+
+    return () => {
+      window.removeEventListener("visibilitychange", onFocus);
+      clearInterval(intervalId);
+    };
+  }, []);
+
   const userStats = { 
     streak: my?.streak ?? 7, 
     totalVotes: 23, 

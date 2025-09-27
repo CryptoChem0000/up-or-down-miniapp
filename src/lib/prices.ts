@@ -1,44 +1,57 @@
-type VenueMid = { venue: string; mid: number };
+import { redis, k } from "./redis";
 
-async function coinbaseMid(): Promise<VenueMid | null> {
-  try {
-    const r = await fetch("https://api.exchange.coinbase.com/products/ETH-USD/ticker", { cache: "no-store" });
-    const j = await r.json();
-    const bid = parseFloat(j.bid), ask = parseFloat(j.ask) || parseFloat(j.price);
-    if (!isFinite(bid) || !isFinite(ask)) return null;
-    return { venue: "coinbase", mid: (bid + ask) / 2 };
-  } catch { return null; }
+const KEY = "price:ETHUSD:v1";
+const STALE_MS = 60_000;          // 60 seconds
+const TTL_SEC = 90;               // cache survival
+const LOCK_KEY = "lock:price:ETHUSD";
+const LOCK_TTL = 5;               // seconds
+
+type PriceData = {
+  price: number;
+  ts: number;
+  source: string;
+};
+
+async function fetchUpstreamPrice(): Promise<PriceData> {
+  const res = await fetch(
+    "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd",
+    { headers: { accept: "application/json" }, cache: "no-store" }
+  );
+  const json = await res.json();
+  const price = Number(json?.ethereum?.usd);
+  if (!Number.isFinite(price)) throw new Error("Bad price from CoinGecko");
+  return { price, source: "coingecko", ts: Date.now() };
 }
 
-async function krakenMid(): Promise<VenueMid | null> {
-  try {
-    // Kraken uses XETHZUSD (sometimes "ETHUSD" alias). We try both safely.
-    const r = await fetch("https://api.kraken.com/0/public/Ticker?pair=ETHUSD", { cache: "no-store" });
-    const j = await r.json();
-    // Common keys: XETHZUSD or ETHUSD depending on response
-    const d = j?.result?.XETHZUSD || j?.result?.ETHUSD;
-    const bid = parseFloat(d?.b?.[0]), ask = parseFloat(d?.a?.[0]);
-    if (!isFinite(bid) || !isFinite(ask)) return null;
-    return { venue: "kraken", mid: (bid + ask) / 2 };
-  } catch { return null; }
+export async function getServerPrice(): Promise<PriceData> {
+  const now = Date.now();
+  const cached = await redis.get<PriceData>(KEY);
+
+  // fresh enough → just return
+  if (cached && now - cached.ts < STALE_MS) {
+    return cached;
+  }
+
+  // try to acquire a short lock so only 1 request refreshes upstream
+  const gotLock = await redis.set(LOCK_KEY, "1", { nx: true, ex: LOCK_TTL });
+
+  if (!gotLock) {
+    // someone else is refreshing; return stale (or empty) quickly
+    if (cached) return cached;
+    // no cache at all → fall back to a single upstream try
+  }
+
+  const fresh = await fetchUpstreamPrice();
+  const payload = { price: fresh.price, ts: now, source: fresh.source };
+  await redis.set(KEY, payload, { ex: TTL_SEC });
+  return payload;
 }
 
-async function binanceMid(): Promise<VenueMid | null> {
-  try {
-    const r = await fetch("https://api.binance.com/api/v3/ticker/bookTicker?symbol=ETHUSDT", { cache: "no-store" });
-    const j = await r.json();
-    const bid = parseFloat(j.bidPrice), ask = parseFloat(j.askPrice);
-    if (!isFinite(bid) || !isFinite(ask)) return null;
-    // USDT ~ USD for this purpose
-    return { venue: "binance", mid: (bid + ask) / 2 };
-  } catch { return null; }
-}
-
-export async function consensusMid(): Promise<{ mid?: number; mids: VenueMid[] }> {
-  const list = (await Promise.all([coinbaseMid(), krakenMid(), binanceMid()])) as (VenueMid | null)[];
-  const filtered = list.filter(Boolean) as VenueMid[];
-  if (filtered.length === 0) return { mids: [] };
-  const mids = filtered.map(x => x.mid).sort((a,b) => a - b);
-  const median = mids[Math.floor(mids.length / 2)];
-  return { mid: median, mids: filtered };
+// Legacy function for backward compatibility
+export async function consensusMid(): Promise<{ mid?: number; mids: Array<{ venue: string; mid: number }> }> {
+  const priceData = await getServerPrice();
+  return { 
+    mid: priceData.price, 
+    mids: [{ venue: priceData.source, mid: priceData.price }] 
+  };
 }
