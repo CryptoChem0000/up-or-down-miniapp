@@ -52,8 +52,8 @@ export function getVotingWindowMessage(): string {
   const status = getVotingStatus();
   
   if (status.isOpen) {
-    return `Vote closes at 23:00 UTC (${status.timeUntilClose} remaining)`;
+    return `Vote closes at 11:00 PM UTC (${status.timeUntilClose} remaining)`;
   } else {
-    return "Voting is closed. Opens tomorrow at 00:00 UTC";
+    return "Voting is closed. Opens tomorrow at 12:01 AM UTC";
   }
 }

@@ -293,7 +293,12 @@ export default function DailyOneTapPoll() {
   };
 
   function handleVote(dir: "up" | "down") {
-    if (hasVoted || !votingOpen) return;
+    if (hasVoted) return;
+    
+    if (!votingOpen) {
+      toast({ title: "Vote is Closed", description: "Vote is closed. Voting resets at 12:01 AM UTC. Check back in tomorrow to log your vote!" });
+      return;
+    }
     
     setSelectedVote(dir); setHasVoted(true);
     toast({ title: `Voted ${dir.toUpperCase()}!`, description: "Your prediction has been recorded. Check back tomorrow for results!\nResults revealed daily at 12:01 AM UTC" });
@@ -317,6 +322,7 @@ export default function DailyOneTapPoll() {
               <div className="text-center">
                 <h2 className="text-lg font-semibold mb-2 text-white">Make Your Prediction</h2>
                 {hasVoted && <Badge variant="outline" className="border-green-500 text-green-400">Voted {selectedVote?.toUpperCase()} ✓</Badge>}
+                {!hasVoted && !votingOpen && <Badge variant="outline" className="border-red-500 text-red-400">Vote is Closed</Badge>}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <VoteButton direction="up" onClick={() => handleVote("up")} isSelected={selectedVote === "up"} className={hasVoted && selectedVote !== "up" ? "opacity-50" : !votingOpen ? "opacity-50 cursor-not-allowed" : ""} />

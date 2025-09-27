@@ -16,7 +16,7 @@ export default function HeroHeader({
   title = "Ethereum", // Default title
   subtitle = "Will ETH price go up or down today?",
   pillHref = "#",
-  pillText = "Vote closes at 23:00 UTC",
+  pillText = "Vote closes at 11:00 PM UTC",
 }: HeroHeaderProps) {
   // Debug log to verify title prop - FORCE DEPLOYMENT
   console.log("HeroHeader title prop:", title);
