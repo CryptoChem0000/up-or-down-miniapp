@@ -1,3 +1,5 @@
+import { verifyFarcaster } from "./verify";
+
 export type Session = { fid: string };
 
 export async function getSessionFromRequest(req: Request): Promise<Session | null> {
@@ -6,6 +8,3 @@ export async function getSessionFromRequest(req: Request): Promise<Session | nul
   if (!verified.ok) return null;
   return { fid: String(verified.fid) };
 }
-
-// Import the verify function
-import { verifyFarcaster } from "./verify";

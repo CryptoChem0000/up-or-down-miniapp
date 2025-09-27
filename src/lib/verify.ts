@@ -1,4 +1,6 @@
-export async function verifyFarcaster(req: Request, body: unknown) {
+export type VerifyResult = { ok: boolean; fid?: string | number; error?: string };
+
+export async function verifyFarcaster(req: Request, body?: unknown): Promise<VerifyResult> {
   // Verify Neynar signature for Farcaster Mini App requests
   const signature = req.headers.get("x-neynar-signature");
   const timestamp = req.headers.get("x-neynar-timestamp");
@@ -23,8 +25,8 @@ export async function verifyFarcaster(req: Request, body: unknown) {
       return { ok: false, error: "invalid_signature" };
     }
 
-    // Extract FID from the request body
-    const fid = extractFidFromBody(body);
+    // Extract FID from the request body (if provided)
+    const fid = body ? extractFidFromBody(body) : null;
     if (!fid) {
       return { ok: false, error: "no_fid" };
     }
@@ -36,11 +38,11 @@ export async function verifyFarcaster(req: Request, body: unknown) {
   }
 }
 
-async function validateNeynarRequest(body: unknown, signature: string, timestamp: string, apiKey: string): Promise<boolean> {
+async function validateNeynarRequest(body: unknown | undefined, signature: string, timestamp: string, apiKey: string): Promise<boolean> {
   try {
     // For production, implement proper signature verification
     // This is a placeholder - implement according to Neynar's documentation
-    const bodyString = JSON.stringify(body);
+    const bodyString = body ? JSON.stringify(body) : '';
     const payload = `${timestamp}.${bodyString}`;
     
     // In production, verify the signature using HMAC-SHA256
