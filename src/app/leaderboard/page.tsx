@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Trophy, Crown, Medal, Award, ArrowLeft, User } from "lucide-react";
+import { Trophy, Crown, Medal, Award, ArrowLeft, User, Flame, Users } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Slot } from "@radix-ui/react-slot";
@@ -75,16 +75,16 @@ const Separator = ({ className = "", ...props }: React.HTMLAttributes<HTMLDivEle
 
 // Temporary mock data; swap for API fetch later
 const mockLeaderboardData = [
-  { id: 1, name: "alice.eth", address: "0x742d35Cc82C0...f4C8BD45c4", currentStreak: 25, accuracy: 94, totalPoints: 285, rank: 1 },
-  { id: 2, name: "0x8ba1f109...7e3c2a9f", address: "0x8ba1f109551bD432803012b06f3C8...7e3c2a9f", currentStreak: 18, accuracy: 91, totalPoints: 234, rank: 2 },
-  { id: 3, name: "bob.crypto", address: "0x1f2f377d...891b5c2f", currentStreak: 22, accuracy: 88, totalPoints: 218, rank: 3 },
-  { id: 4, name: "0x9d4a1c2b...f8e7d6a9", address: "0x9d4a1c2b3e5f4a7b8c9d0e1f2a3b4c...f8e7d6a9", currentStreak: 15, accuracy: 86, totalPoints: 195, rank: 4 },
-  { id: 5, name: "trader.defi", address: "0x3c8b7a9e...2d1f4e8b", currentStreak: 12, accuracy: 83, totalPoints: 172, rank: 5 },
-  { id: 6, name: "0xa7b8c9d0...5e4f3a2b", address: "0xa7b8c9d0e1f2a3b4c5d6e7f8a9b0c1...5e4f3a2b", currentStreak: 8, accuracy: 79, totalPoints: 148, rank: 6 },
-  { id: 7, name: "crypto.whale", address: "0x4f2e8d1a...9b6c3e7f", currentStreak: 14, accuracy: 82, totalPoints: 165, rank: 7 },
-  { id: 8, name: "0x7e9f3a2b...8c1d5e6f", address: "0x7e9f3a2b8c1d5e6f9a0b1c2d3e4f5a6b7c8d9e0f1a2b", currentStreak: 11, accuracy: 78, totalPoints: 142, rank: 8 },
-  { id: 9, name: "defi.trader", address: "0x2a3b4c5d...6e7f8a9b", currentStreak: 9, accuracy: 76, totalPoints: 128, rank: 9 },
-  { id: 10, name: "0x5c6d7e8f...9a0b1c2d", address: "0x5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f", currentStreak: 7, accuracy: 74, totalPoints: 115, rank: 10 },
+  { id: 1, name: "alice.eth", address: "0x742d35Cc82C0f4C8BD45c4a1b2c3d4e5f6a7b8c9d0e1f2", currentStreak: 25, accuracy: 94, totalPoints: 285, rank: 1 },
+  { id: 2, name: "0x8ba1f109551bD432803012b06f3C8a7e3c2a9f", address: "0x8ba1f109551bD432803012b06f3C8a7e3c2a9f1b2c3d4e5f6", currentStreak: 18, accuracy: 91, totalPoints: 234, rank: 2 },
+  { id: 3, name: "bob.crypto", address: "0x1f2f377d891b5c2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8", currentStreak: 22, accuracy: 88, totalPoints: 218, rank: 3 },
+  { id: 4, name: "0x9d4a1c2b3e5f4a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4", address: "0x9d4a1c2b3e5f4a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4", currentStreak: 15, accuracy: 86, totalPoints: 195, rank: 4 },
+  { id: 5, name: "trader.defi", address: "0x3c8b7a9e2d1f4e8b9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5", currentStreak: 12, accuracy: 83, totalPoints: 172, rank: 5 },
+  { id: 6, name: "0xa7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0", address: "0xa7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0", currentStreak: 8, accuracy: 79, totalPoints: 148, rank: 6 },
+  { id: 7, name: "crypto.whale", address: "0x4f2e8d1a9b6c3e7f8a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6", currentStreak: 14, accuracy: 82, totalPoints: 165, rank: 7 },
+  { id: 8, name: "0x7e9f3a2b8c1d5e6f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6", address: "0x7e9f3a2b8c1d5e6f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6", currentStreak: 11, accuracy: 78, totalPoints: 142, rank: 8 },
+  { id: 9, name: "defi.trader", address: "0x2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6", currentStreak: 9, accuracy: 76, totalPoints: 128, rank: 9 },
+  { id: 10, name: "0x5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9", address: "0x5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9", currentStreak: 7, accuracy: 74, totalPoints: 115, rank: 10 },
 ];
 
 // Mock current user data - will be replaced with real data from API
@@ -104,6 +104,27 @@ function getRankIcon(rank: number) {
     case 3: return <Award className="w-5 h-5 text-amber-600" />;
     default: return <Trophy className="w-4 h-4 text-muted-foreground" />;
   }
+}
+
+// Utility function to format names and addresses for mobile display
+function formatDisplayName(name: string, isCompact: boolean = false): string {
+  // If it's a domain name (contains .eth, .crypto, etc.)
+  if (name.includes('.eth') || name.includes('.crypto') || name.includes('.wallet')) {
+    if (isCompact) {
+      return name.length > 12 ? `${name.substring(0, 12)}...` : name;
+    }
+    return name; // Show full domain names in desktop
+  }
+  
+  // If it's a wallet address (starts with 0x)
+  if (name.startsWith('0x')) {
+    if (isCompact) {
+      return `${name.substring(0, 5)}...${name.substring(name.length - 5)}`;
+    }
+    return `${name.substring(0, 5)}...${name.substring(name.length - 5)}`;
+  }
+  
+  return name;
 }
 
 export default function LeaderboardPage({
@@ -169,13 +190,22 @@ export default function LeaderboardPage({
             {!compact ? (
               /* ===== Desktop/table layout ===== */
               <>
-                <div className="grid grid-cols-5 gap-4 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 font-semibold text-sm text-gray-300">
-                  <div>Rank</div>
-                  <div>Name</div>
-                  <div className="text-center">Current Streak</div>
-                  <div className="text-center">Accuracy</div>
-                  <div className="text-center">Total Points</div>
-                </div>
+                  <div className="grid grid-cols-5 gap-4 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 font-semibold text-sm text-gray-300">
+                    <div>Rank</div>
+                    <div>Name</div>
+                    <div className="text-center flex items-center justify-center gap-1">
+                      <Flame className="w-4 h-4 text-orange-400" />
+                      <span>Streak</span>
+                    </div>
+                    <div className="text-center flex items-center justify-center gap-1">
+                      <Users className="w-4 h-4 text-green-400" />
+                      <span>Accuracy</span>
+                    </div>
+                    <div className="text-center flex items-center justify-center gap-1">
+                      <Trophy className="w-4 h-4 text-blue-400" />
+                      <span>Points</span>
+                    </div>
+                  </div>
 
                 <div className="space-y-2">
                   {mockLeaderboardData.map((u) => (
@@ -191,8 +221,8 @@ export default function LeaderboardPage({
                       </div>
 
                       <div className="flex flex-col">
-                        <span className="font-medium text-white">{u.name}</span>
-                        <span className="text-xs text-gray-400 font-mono">{u.address}</span>
+                        <span className="font-medium text-white">{formatDisplayName(u.name, false)}</span>
+                        <span className="text-xs text-gray-400 font-mono">{formatDisplayName(u.address, false)}</span>
                       </div>
 
                       <div className="text-center">
@@ -228,8 +258,8 @@ export default function LeaderboardPage({
                         <span className="font-bold text-sm text-white">#{u.rank}</span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-medium text-sm text-white">{u.name}</span>
-                        {/* hide long address in compact mode */}
+                        <span className="font-medium text-sm text-white">{formatDisplayName(u.name, true)}</span>
+                        <span className="text-xs text-gray-400 font-mono">{formatDisplayName(u.address, true)}</span>
                       </div>
                     </div>
 
@@ -267,9 +297,18 @@ export default function LeaderboardPage({
                   <div className="grid grid-cols-5 gap-4 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 font-semibold text-sm text-gray-300">
                     <div>Rank</div>
                     <div>Name</div>
-                    <div className="text-center">Current Streak</div>
-                    <div className="text-center">Accuracy</div>
-                    <div className="text-center">Total Points</div>
+                    <div className="text-center flex items-center justify-center gap-1">
+                      <Flame className="w-4 h-4 text-orange-400" />
+                      <span>Streak</span>
+                    </div>
+                    <div className="text-center flex items-center justify-center gap-1">
+                      <Users className="w-4 h-4 text-green-400" />
+                      <span>Accuracy</span>
+                    </div>
+                    <div className="text-center flex items-center justify-center gap-1">
+                      <Trophy className="w-4 h-4 text-blue-400" />
+                      <span>Points</span>
+                    </div>
                   </div>
                   
                   <div className="grid grid-cols-5 gap-4 py-4 px-4 rounded-lg border bg-card/50 border-primary/30">
@@ -279,9 +318,9 @@ export default function LeaderboardPage({
                     </div>
                     
                     <div className="flex flex-col">
-                      <span className="font-medium text-white">{displayUser.name}</span>
+                      <span className="font-medium text-white">{formatDisplayName(displayUser.name, false)}</span>
                       <span className="text-xs text-gray-400 font-mono">
-                        {displayUser.address}
+                        {formatDisplayName(displayUser.address, false)}
                       </span>
                     </div>
                     
@@ -316,8 +355,8 @@ export default function LeaderboardPage({
                       <span className="font-bold text-sm text-white">#{displayUser.rank}</span>
                     </div>
                     <div className="flex flex-col">
-                      <span className="font-medium text-sm text-white">{displayUser.name}</span>
-                      {/* hide address in compact mode */}
+                      <span className="font-medium text-sm text-white">{formatDisplayName(displayUser.name, true)}</span>
+                      <span className="text-xs text-gray-400 font-mono">{formatDisplayName(displayUser.address, true)}</span>
                     </div>
                   </div>
 
