@@ -8,19 +8,34 @@ const LOCK_TTL = 5;               // seconds
 
 type PriceData = {
   price: number;
+  change24h: number;
+  changePercent: number;
   ts: number;
   source: string;
 };
 
 async function fetchUpstreamPrice(): Promise<PriceData> {
   const res = await fetch(
-    "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd",
+    "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd&include_24hr_change=true",
     { headers: { accept: "application/json" }, cache: "no-store" }
   );
   const json = await res.json();
   const price = Number(json?.ethereum?.usd);
+  const changePercent = Number(json?.ethereum?.usd_24h_change);
+  
   if (!Number.isFinite(price)) throw new Error("Bad price from CoinGecko");
-  return { price, source: "coingecko", ts: Date.now() };
+  if (!Number.isFinite(changePercent)) throw new Error("Bad 24h change from CoinGecko");
+  
+  // Calculate dollar amount change from percentage
+  const change24h = (price * changePercent) / 100;
+  
+  return { 
+    price, 
+    change24h, 
+    changePercent, 
+    source: "coingecko", 
+    ts: Date.now() 
+  };
 }
 
 export async function getServerPrice(): Promise<PriceData> {
@@ -42,7 +57,13 @@ export async function getServerPrice(): Promise<PriceData> {
   }
 
   const fresh = await fetchUpstreamPrice();
-  const payload = { price: fresh.price, ts: now, source: fresh.source };
+  const payload = { 
+    price: fresh.price, 
+    change24h: fresh.change24h, 
+    changePercent: fresh.changePercent,
+    ts: now, 
+    source: fresh.source 
+  };
   await redis.set(KEY, payload, { ex: TTL_SEC });
   return payload;
 }
