@@ -83,7 +83,7 @@ const mockLeaderboardData = [
 
 // Mock current user data
 const currentUser = {
-  name: "your.wallet",
+  name: "You",
   address: "0x1234567890abcdef...1234567890abcdef",
   currentStreak: 7,
   accuracy: 85,
