@@ -8,13 +8,13 @@ export async function GET() {
     },
     frame: {
       version: "1",
-      name: "Daily One-Tap Poll",
+      name: "ETH Daily",
       homeUrl: `${base}/`,
       iconUrl: `${base}/icon-1024.png`,
       splashImageUrl: `${base}/splash-200.png`,
       splashBackgroundColor: "#0b0b0b",
-      subtitle: "Predict ETH daily. Win streak multipliers.",
-      description: "ETHEREUM - Daily UP/DOWN ETH price predictions with streak points.",
+      subtitle: "Predict ETH up/down daily. Build streaks. Climb the leaderboard.",
+      description: "ETH Daily - Predict ETH up/down daily. Build streaks. Climb the leaderboard.",
     },
   });
 }
