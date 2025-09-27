@@ -290,7 +290,7 @@ export default function DailyOneTapPoll() {
   function handleVote(dir: "up" | "down") {
     if (hasVoted) return;
     setSelectedVote(dir); setHasVoted(true);
-    toast({ title: `Voted ${dir.toUpperCase()}!`, description: "Your prediction has been recorded. Check back tomorrow for results!" });
+    toast({ title: `Voted ${dir.toUpperCase()}!`, description: "Your prediction has been recorded. Check back tomorrow for results!\nResults revealed daily at 12:01 AM UTC" });
   }
 
   return (
@@ -324,7 +324,6 @@ export default function DailyOneTapPoll() {
               <Card className="p-3 bg-gray-800 border-gray-700">
                 <div className="text-xs text-gray-400 text-center space-y-2">
                   <div>Build your streak • Compete with others</div>
-                  <div className="text-primary">Results revealed daily at 12:01 AM UTC</div>
 
                   {SHOW_DEV_LINKS && (
                     <div className="pt-2 grid grid-cols-2 gap-2">
