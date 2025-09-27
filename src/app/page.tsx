@@ -319,7 +319,7 @@ export default function DailyOneTapPoll() {
 
             <div className="space-y-4">
               <div className="text-center">
-                <h2 className="text-lg font-semibold mb-2 text-white">Make Your Prediction</h2>
+                <h2 className="text-base font-semibold mb-2 text-white">Make Your Prediction</h2>
                 {hasVoted && <Badge variant="outline" className="border-green-500 text-green-400">Voted {selectedVote?.toUpperCase()} ✓</Badge>}
                 {!hasVoted && !votingOpen && <Badge variant="outline" className="border-red-500 text-red-400">Vote is Closed</Badge>}
               </div>
