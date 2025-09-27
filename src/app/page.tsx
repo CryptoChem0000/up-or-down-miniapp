@@ -312,7 +312,7 @@ export default function DailyOneTapPoll() {
           <div className="h-full flex flex-col p-6 space-y-6">
             <HeroHeader
               iconSrc="/eth-mark-tight-20.png"
-              title="ETHEREUM"
+              title="Ethereum"
               subtitle="Will ETH price go up or down today?"
               pillText={!hasVoted ? "Vote closes at midnight UTC" : undefined}
             />

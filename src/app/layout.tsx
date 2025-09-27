@@ -6,12 +6,12 @@ import { ClientToaster } from "@/components/ClientToaster";
 const baseUrl = process.env.APP_BASE_URL || "http://localhost:3010";
 
 export const metadata: Metadata = {
-  title: "ETHEREUM",
+  title: "Ethereum",
   description: "Predict ETH daily. Win streak multipliers.",
   other: {
     "fc:miniapp": miniAppEmbedJSON(baseUrl),
     "fc:frame": miniAppEmbedJSON(baseUrl),
-    "og:title": "ETHEREUM",
+    "og:title": "Ethereum",
     "og:description": "Predict ETH daily. Win streak multipliers.",
     "og:image": `${baseUrl}/api/results/today/image`,
   },

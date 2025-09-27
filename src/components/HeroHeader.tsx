@@ -13,7 +13,7 @@ type HeroHeaderProps = {
 
 export default function HeroHeader({
   iconSrc = "/eth-mark-tight-20.png",
-  title = "ETHEREUM", // Default title
+  title = "Ethereum", // Default title
   subtitle = "Will ETH price go up or down today?",
   pillHref = "#",
   pillText = "Vote closes at midnight UTC",

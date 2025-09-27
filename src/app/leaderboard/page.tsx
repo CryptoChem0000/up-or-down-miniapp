@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { Trophy, Crown, Medal, Award, ArrowLeft, User } from "lucide-react";
