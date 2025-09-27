@@ -13,8 +13,8 @@ export const ETHPriceDisplay = ({ price, change24h, changePercent }: ETHPriceDis
   const isPositive = change24h >= 0;
   
   return (
-    <Card className="p-3 bg-gray-800 border-gray-700">
-      <div className="text-center space-y-1.5">
+    <Card className="p-2.5 bg-gray-800 border-gray-700">
+      <div className="text-center space-y-1">
         <div className="text-xs text-gray-400 font-medium">Current ETH Price</div>
         
         <div className="text-xl font-bold text-white">
@@ -49,7 +49,7 @@ export const ETHPriceDisplay = ({ price, change24h, changePercent }: ETHPriceDis
           </span>
         </div>
         
-        <div className="text-xs text-gray-400">24h change</div>
+        <div className="text-xs text-gray-400 -mt-0.5">24h change</div>
       </div>
     </Card>
   );
