@@ -174,8 +174,8 @@ const ETHPriceDisplay = ({ price, change24h, changePercent }: ETHPriceDisplayPro
   );
 };
 
-interface StatsCardProps { streak: number; totalVotes: number; accuracy: number; }
-const StatsCard = ({ streak, totalVotes, accuracy }: StatsCardProps) => (
+interface StatsCardProps { streak: number; totalVotes: number; accuracy: number; points?: number; }
+const StatsCard = ({ streak, totalVotes, accuracy, points }: StatsCardProps) => (
   <Card className="p-4 bg-gray-800 border-gray-700">
     <div className="grid grid-cols-3 gap-4 text-center">
       <div className="space-y-1">
@@ -195,23 +195,43 @@ const StatsCard = ({ streak, totalVotes, accuracy }: StatsCardProps) => (
       <div className="space-y-1">
         <div className="flex items-center justify-center gap-1">
           <Trophy className="w-4 h-4 text-green-400" />
-          <span className="text-lg font-bold text-green-400">{accuracy}%</span>
+          <span className="text-lg font-bold text-green-400">{points ? points.toLocaleString() : accuracy + '%'}</span>
         </div>
-        <div className="text-xs text-gray-400">Accuracy</div>
+        <div className="text-xs text-gray-400">{points ? 'Points' : 'Accuracy'}</div>
       </div>
     </div>
   </Card>
 );
 
+/** Helper function to open composer with embed */
+function composeWithEmbed(baseHref: string) {
+  const embed = encodeURIComponent(baseHref);
+  const url = `https://warpcast.com/~/compose?text=&embeds[]=${embed}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
 /** Page */
 export default function DailyOneTapPoll() {
   const [selectedVote, setSelectedVote] = useState<"up" | "down" | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
+  const [my, setMy] = useState<{streak:number; points:number} | null>(null);
   const { toast } = useToast();
+
+  // Load personal stats if fid is in URL
+  React.useEffect(() => {
+    const fid = new URL(window.location.href).searchParams.get("fid");
+    if (!fid) return;
+    fetch(`/api/user/${fid}`).then(r => r.json()).then(setMy).catch(() => {});
+  }, []);
 
   // Mock UI data for the card (replace with API later)
   const ethData = { price: 3420.5, change24h: 127.32, changePercent: 3.87 };
-  const userStats = { streak: 7, totalVotes: 23, accuracy: 74 };
+  const userStats = { 
+    streak: my?.streak ?? 7, 
+    totalVotes: 23, 
+    accuracy: 74,
+    points: my?.points ?? 0
+  };
 
   function handleVote(dir: "up" | "down") {
     if (hasVoted) return;
@@ -226,13 +246,13 @@ export default function DailyOneTapPoll() {
           <div className="h-full flex flex-col p-6 space-y-6">
             <div className="text-center space-y-2">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-full bg-blue-500 border border-blue-400 flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">ETH</span>
+                <div className="w-8 h-8 rounded-full bg-primary border border-primary/70 flex items-center justify-center">
+                  <img src="/icon-1024.png" alt="logo" className="w-5 h-5 rounded-sm" />
                 </div>
                 <h1 className="text-xl font-bold text-white">Daily ETH Poll</h1>
               </div>
               <p className="text-gray-400 text-sm">Will ETH price go up or down today?</p>
-              {!hasVoted && <Badge variant="outline" className="border-blue-400 text-blue-400">Vote closes at midnight UTC</Badge>}
+              {!hasVoted && <Badge variant="outline" className="border-primary text-primary">Vote closes at midnight UTC</Badge>}
             </div>
 
             <ETHPriceDisplay price={ethData.price} change24h={ethData.change24h} changePercent={ethData.changePercent} />
@@ -248,16 +268,38 @@ export default function DailyOneTapPoll() {
               </div>
             </div>
 
-            <StatsCard streak={userStats.streak} totalVotes={userStats.totalVotes} accuracy={userStats.accuracy} />
+            <StatsCard streak={userStats.streak} totalVotes={userStats.totalVotes} accuracy={userStats.accuracy} points={userStats.points} />
 
             <div className="mt-auto">
               <Card className="p-3 bg-gray-800 border-gray-700">
-                <div className="text-xs text-gray-400 text-center space-y-1">
+                <div className="text-xs text-gray-400 text-center space-y-2">
                   <div>Build your streak • Compete with others</div>
-                  <div className="text-blue-400">Results revealed daily at 12:01 AM UTC</div>
+                  <div className="text-primary">Results revealed daily at 12:01 AM UTC</div>
+
                   <div className="flex gap-2 justify-center mt-2">
-                    <a href="/api/frames" className="text-blue-400 hover:underline">Frame →</a>
-                    <a href="/test" className="text-blue-400 hover:underline">Test Panel →</a>
+                    <a href="/api/frames" className="text-primary hover:underline">Frame →</a>
+                    <a href="/test" className="text-primary hover:underline">Test Panel →</a>
+                  </div>
+
+                  <div className="pt-2 grid grid-cols-2 gap-2">
+                    <Button
+                      variant="secondary"
+                      onClick={() => composeWithEmbed(window.location.origin)}
+                      className="border-primary text-primary hover:text-white hover:border-primary/80"
+                    >
+                      Compose (embed)
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => window.open("/api/frames", "_blank")}
+                      className="text-gray-200"
+                    >
+                      Open Frame
+                    </Button>
+                  </div>
+
+                  <div className="text-[11px] opacity-70 pt-2">
+                    Voting requires tapping inside the Farcaster frame (verified by Neynar).
                   </div>
                 </div>
               </Card>

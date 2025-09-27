@@ -16,6 +16,8 @@ export async function settleDay(date: string, open: number, close: number) {
     if (result === "FLAT" || vote !== result) {
       await redis.set(k.userStreak(fid), 0);
       await redis.lpush(k.userLedger(fid), JSON.stringify({ date, vote, result, awarded: 0, streak_after: 0 }));
+      // NEW: keep points as-is, but reset streak rank
+      await redis.zadd("lb:streak", { score: 0, member: fid });
     } else {
       const sOld = Number(await redis.get(k.userStreak(fid))) || 0;
       const sNew = sOld + 1;
@@ -24,6 +26,9 @@ export async function settleDay(date: string, open: number, close: number) {
       await redis.set(k.userStreak(fid), sNew);
       await redis.incrby(k.userPoints(fid), award);
       await redis.lpush(k.userLedger(fid), JSON.stringify({ date, vote, result, awarded: award, streak_after: sNew }));
+      // NEW: mirror into ZSETs for fast ranking
+      await redis.zincrby("lb:points", award, fid);
+      await redis.zadd("lb:streak", { score: sNew, member: fid }); // overwrite with new streak
     }
     settledCount++;
   }
