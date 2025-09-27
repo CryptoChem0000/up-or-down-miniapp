@@ -1,6 +1,14 @@
 {
   "crons": [
     {
+      "path": "/api/cron/open",
+      "schedule": "15 0 * * *"
+    },
+    {
+      "path": "/api/cron/close",
+      "schedule": "45 23 * * *"
+    },
+    {
       "path": "/api/price",
       "schedule": "* * * * *"
     }
