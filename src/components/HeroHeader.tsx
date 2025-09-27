@@ -39,7 +39,7 @@ export default function HeroHeader({
       </div>
 
       <div className="mt-3 space-y-2">
-        <p className="mx-auto max-w-[30ch] sm:max-w-[36ch] text-base text-gray-400 leading-relaxed">
+        <p className="mx-auto max-w-[30ch] sm:max-w-[36ch] text-base font-semibold text-gray-400 leading-relaxed">
           {subtitle}
         </p>
 
