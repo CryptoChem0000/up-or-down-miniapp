@@ -60,7 +60,12 @@ function extractFidFromBody(body: unknown): string | null {
       // Try common FID field names
       if (typeof bodyObj.fid === 'string') return bodyObj.fid;
       if (typeof bodyObj.user_fid === 'string') return bodyObj.user_fid;
-      if (typeof bodyObj.data?.fid === 'string') return bodyObj.data.fid;
+      
+      // Check for nested data object
+      if (bodyObj.data && typeof bodyObj.data === 'object' && bodyObj.data !== null) {
+        const dataObj = bodyObj.data as Record<string, unknown>;
+        if (typeof dataObj.fid === 'string') return dataObj.fid;
+      }
       
       // If it's a Frame button interaction, extract from the action
       if (bodyObj.untrustedData && typeof bodyObj.untrustedData === 'object') {
