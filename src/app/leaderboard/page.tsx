@@ -75,16 +75,16 @@ const Separator = ({ className = "", ...props }: React.HTMLAttributes<HTMLDivEle
 
 // Temporary mock data; swap for API fetch later
 const mockLeaderboardData = [
-  { id: 1, name: "alice.eth", address: "0x742d35Cc82C0...f4C8BD45c4", currentStreak: 25, accuracy: 94, totalPoints: 2850, rank: 1 },
-  { id: 2, name: "0x8ba1f109...7e3c2a9f", address: "0x8ba1f109551bD432803012b06f3C8...7e3c2a9f", currentStreak: 18, accuracy: 91, totalPoints: 2340, rank: 2 },
-  { id: 3, name: "bob.crypto", address: "0x1f2f377d...891b5c2f", currentStreak: 22, accuracy: 88, totalPoints: 2180, rank: 3 },
-  { id: 4, name: "0x9d4a1c2b...f8e7d6a9", address: "0x9d4a1c2b3e5f4a7b8c9d0e1f2a3b4c...f8e7d6a9", currentStreak: 15, accuracy: 86, totalPoints: 1950, rank: 4 },
-  { id: 5, name: "trader.defi", address: "0x3c8b7a9e...2d1f4e8b", currentStreak: 12, accuracy: 83, totalPoints: 1720, rank: 5 },
-  { id: 6, name: "0xa7b8c9d0...5e4f3a2b", address: "0xa7b8c9d0e1f2a3b4c5d6e7f8a9b0c1...5e4f3a2b", currentStreak: 8, accuracy: 79, totalPoints: 1480, rank: 6 },
-  { id: 7, name: "crypto.whale", address: "0x4f2e8d1a...9b6c3e7f", currentStreak: 14, accuracy: 82, totalPoints: 1650, rank: 7 },
-  { id: 8, name: "0x7e9f3a2b...8c1d5e6f", address: "0x7e9f3a2b8c1d5e6f9a0b1c2d3e4f5a6b7c8d9e0f1a2b", currentStreak: 11, accuracy: 78, totalPoints: 1420, rank: 8 },
-  { id: 9, name: "defi.trader", address: "0x2a3b4c5d...6e7f8a9b", currentStreak: 9, accuracy: 76, totalPoints: 1280, rank: 9 },
-  { id: 10, name: "0x5c6d7e8f...9a0b1c2d", address: "0x5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f", currentStreak: 7, accuracy: 74, totalPoints: 1150, rank: 10 },
+  { id: 1, name: "alice.eth", address: "0x742d35Cc82C0...f4C8BD45c4", currentStreak: 25, accuracy: 94, totalPoints: 285, rank: 1 },
+  { id: 2, name: "0x8ba1f109...7e3c2a9f", address: "0x8ba1f109551bD432803012b06f3C8...7e3c2a9f", currentStreak: 18, accuracy: 91, totalPoints: 234, rank: 2 },
+  { id: 3, name: "bob.crypto", address: "0x1f2f377d...891b5c2f", currentStreak: 22, accuracy: 88, totalPoints: 218, rank: 3 },
+  { id: 4, name: "0x9d4a1c2b...f8e7d6a9", address: "0x9d4a1c2b3e5f4a7b8c9d0e1f2a3b4c...f8e7d6a9", currentStreak: 15, accuracy: 86, totalPoints: 195, rank: 4 },
+  { id: 5, name: "trader.defi", address: "0x3c8b7a9e...2d1f4e8b", currentStreak: 12, accuracy: 83, totalPoints: 172, rank: 5 },
+  { id: 6, name: "0xa7b8c9d0...5e4f3a2b", address: "0xa7b8c9d0e1f2a3b4c5d6e7f8a9b0c1...5e4f3a2b", currentStreak: 8, accuracy: 79, totalPoints: 148, rank: 6 },
+  { id: 7, name: "crypto.whale", address: "0x4f2e8d1a...9b6c3e7f", currentStreak: 14, accuracy: 82, totalPoints: 165, rank: 7 },
+  { id: 8, name: "0x7e9f3a2b...8c1d5e6f", address: "0x7e9f3a2b8c1d5e6f9a0b1c2d3e4f5a6b7c8d9e0f1a2b", currentStreak: 11, accuracy: 78, totalPoints: 142, rank: 8 },
+  { id: 9, name: "defi.trader", address: "0x2a3b4c5d...6e7f8a9b", currentStreak: 9, accuracy: 76, totalPoints: 128, rank: 9 },
+  { id: 10, name: "0x5c6d7e8f...9a0b1c2d", address: "0x5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f", currentStreak: 7, accuracy: 74, totalPoints: 115, rank: 10 },
 ];
 
 // Mock current user data - will be replaced with real data from API
@@ -93,7 +93,7 @@ const currentUser = {
   address: "0x1234567890abcdef...1234567890abcdef",
   currentStreak: 7,
   accuracy: 85,
-  totalPoints: 1240,
+  totalPoints: 124,
   rank: 12
 };
 

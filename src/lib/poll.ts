@@ -1,5 +1,5 @@
 export const EPSILON = 0.001; // 0.10%
-export const BASE_POINTS = 1000;
+export const BASE_POINTS = 100;
 export const DAMPING_BETA = 0.6; // 0..1
 export const MULTIPLIER_CAP = 32;
 
