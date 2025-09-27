@@ -13,11 +13,14 @@ type HeroHeaderProps = {
 
 export default function HeroHeader({
   iconSrc = "/eth-mark-tight-20.png",
-  title = "ETHEREUM",
+  title = "ETHEREUM", // Default title
   subtitle = "Will ETH price go up or down today?",
   pillHref = "#",
   pillText = "Vote closes at midnight UTC",
 }: HeroHeaderProps) {
+  // Debug log to verify title prop
+  console.log("HeroHeader title prop:", title);
+  
   return (
     <div className="w-full flex flex-col items-center text-center">
       <div className="flex items-center justify-center">
