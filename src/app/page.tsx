@@ -335,7 +335,11 @@ export default function DailyOneTapPoll() {
               <Card className="p-3 bg-gray-800 border-gray-700">
                 <div className="text-xs text-gray-400 text-center space-y-2">
                   <div>Build your streak • Compete with others</div>
-                  {!hasVoted && <div className="text-primary">{votingMessage}</div>}
+                  {!hasVoted && (
+                    <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                      {votingMessage}
+                    </div>
+                  )}
 
                   {SHOW_DEV_LINKS && (
                     <div className="pt-2 grid grid-cols-2 gap-2">
