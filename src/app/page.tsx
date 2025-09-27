@@ -207,7 +207,7 @@ const StatsCard = ({ streak, totalVotes, accuracy, points }: StatsCardProps) => 
       variant="outline"
       className="w-full mt-4 border-primary/20 hover:bg-primary/5 transition-colors text-gray-200 hover:text-white"
     >
-      <Link href="/leaderboard">
+      <Link href="/leaderboard?compact=1">
         <Crown className="w-4 h-4 text-primary mr-2" />
         <span className="text-sm font-medium">View Leaderboard</span>
       </Link>

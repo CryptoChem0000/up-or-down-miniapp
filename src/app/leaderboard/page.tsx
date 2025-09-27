@@ -100,72 +100,114 @@ function getRankIcon(rank: number) {
   }
 }
 
-export default function LeaderboardPage() {
+export default function LeaderboardPage({
+  searchParams,
+}: {
+  searchParams: { compact?: string };
+}) {
+  const compact = searchParams?.compact === "1";
+
   return (
     <div className="min-h-screen bg-gray-900 p-4">
-      <div className="max-w-6xl mx-auto">
+      <div className={compact ? "mx-auto w-[424px] max-w-full" : "max-w-6xl mx-auto"}>
         <div className="flex items-center gap-4 mb-6">
           <Button variant="ghost" asChild className="flex items-center gap-2">
-            <Link href="/">
+            <Link href={compact ? "/?compact=1" : "/"}>
               <ArrowLeft className="w-4 h-4" />
               Back
             </Link>
           </Button>
-          <h1 className="text-3xl font-bold text-white">Leaderboard</h1>
+          <h1 className={compact ? "text-xl font-bold text-white" : "text-3xl font-bold text-white"}>Leaderboard</h1>
         </div>
 
         <Card className="bg-gray-800 border-gray-700">
-          <CardHeader>
+          <CardHeader className={compact ? "py-3 px-4" : undefined}>
             <CardTitle className="flex items-center gap-2 text-white">
-              <Trophy className="w-6 h-6 text-primary" />
-              Top Performers
+              <Trophy className={compact ? "w-5 h-5 text-primary" : "w-6 h-6 text-primary"} />
+              <span className={compact ? "text-base" : ""}>Top Performers</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <div className="grid grid-cols-5 gap-4 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 font-semibold text-sm text-gray-300">
-                <div>Rank</div>
-                <div>Name</div>
-                <div className="text-center">Current Streak</div>
-                <div className="text-center">Accuracy</div>
-                <div className="text-center">Total Points</div>
-              </div>
+          <CardContent className={compact ? "px-3 pb-3" : undefined}>
+            {!compact ? (
+              /* ===== Desktop/table layout ===== */
+              <>
+                <div className="grid grid-cols-5 gap-4 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 font-semibold text-sm text-gray-300">
+                  <div>Rank</div>
+                  <div>Name</div>
+                  <div className="text-center">Current Streak</div>
+                  <div className="text-center">Accuracy</div>
+                  <div className="text-center">Total Points</div>
+                </div>
 
+                <div className="space-y-2">
+                  {mockLeaderboardData.map((u) => (
+                    <div
+                      key={u.id}
+                      className={`grid grid-cols-5 gap-4 py-4 px-4 rounded-lg border transition-colors hover:bg-gray-700/30 ${
+                        u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        {getRankIcon(u.rank)}
+                        <span className="font-bold text-white">#{u.rank}</span>
+                      </div>
+
+                      <div className="flex flex-col">
+                        <span className="font-medium text-white">{u.name}</span>
+                        <span className="text-xs text-gray-400 font-mono">{u.address}</span>
+                      </div>
+
+                      <div className="text-center">
+                        <Badge variant="secondary" className="font-bold bg-orange-500/20 text-orange-400 border-orange-500/30">{u.currentStreak}</Badge>
+                      </div>
+
+                      <div className="text-center">
+                        <Badge variant={u.accuracy >= 90 ? "default" : "outline"} className="font-bold border-green-500/30 text-green-400 bg-green-500/10">
+                          {u.accuracy}%
+                        </Badge>
+                      </div>
+
+                      <div className="text-center">
+                        <span className="text-lg font-bold text-primary">{u.totalPoints.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              /* ===== Compact/mini-app layout ===== */
               <div className="space-y-2">
                 {mockLeaderboardData.map((u) => (
                   <div
                     key={u.id}
-                    className={`grid grid-cols-5 gap-4 py-4 px-4 rounded-lg border transition-colors hover:bg-gray-700/30 ${
+                    className={`flex items-center justify-between gap-3 rounded-lg border p-3 transition-colors hover:bg-gray-700/30 ${
                       u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
                     }`}
                   >
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1 min-w-[44px]">
+                        {getRankIcon(u.rank)}
+                        <span className="font-bold text-sm text-white">#{u.rank}</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-medium text-sm text-white">{u.name}</span>
+                        {/* hide long address in compact mode */}
+                      </div>
+                    </div>
+
                     <div className="flex items-center gap-2">
-                      {getRankIcon(u.rank)}
-                      <span className="font-bold text-white">#{u.rank}</span>
-                    </div>
-
-                    <div className="flex flex-col">
-                      <span className="font-medium text-white">{u.name}</span>
-                      <span className="text-xs text-gray-400 font-mono">{u.address}</span>
-                    </div>
-
-                    <div className="text-center">
-                      <Badge variant="secondary" className="font-bold bg-orange-500/20 text-orange-400 border-orange-500/30">{u.currentStreak}</Badge>
-                    </div>
-
-                    <div className="text-center">
-                      <Badge variant={u.accuracy >= 90 ? "default" : "outline"} className="font-bold border-green-500/30 text-green-400 bg-green-500/10">
+                      <Badge variant="secondary" className="font-bold text-xs px-2 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">{u.currentStreak}</Badge>
+                      <Badge variant={u.accuracy >= 90 ? "default" : "outline"} className="font-bold text-xs px-2 py-0.5 border-green-500/30 text-green-400 bg-green-500/10">
                         {u.accuracy}%
                       </Badge>
-                    </div>
-
-                    <div className="text-center">
-                      <span className="text-lg font-bold text-primary">{u.totalPoints.toLocaleString()}</span>
+                      <span className="text-primary font-bold text-sm tabular-nums">
+                        {u.totalPoints.toLocaleString()}
+                      </span>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
 
@@ -174,57 +216,89 @@ export default function LeaderboardPage() {
           <Separator className="mb-6 bg-gray-600" />
           
           <Card className="bg-primary/5 border-primary/20">
-            <CardHeader>
+            <CardHeader className={compact ? "py-3 px-4" : undefined}>
               <CardTitle className="flex items-center gap-2 text-white">
-                <User className="w-6 h-6 text-primary" />
-                Your Stats
+                <User className={compact ? "w-5 h-5 text-primary" : "w-6 h-6 text-primary"} />
+                <span className={compact ? "text-base" : ""}>Your Stats</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <div className="grid grid-cols-5 gap-4 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 font-semibold text-sm text-gray-300">
-                  <div>Rank</div>
-                  <div>Name</div>
-                  <div className="text-center">Current Streak</div>
-                  <div className="text-center">Accuracy</div>
-                  <div className="text-center">Total Points</div>
+            <CardContent className={compact ? "px-3 pb-3" : undefined}>
+              {!compact ? (
+                /* ===== Desktop layout ===== */
+                <div className="overflow-x-auto">
+                  <div className="grid grid-cols-5 gap-4 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 font-semibold text-sm text-gray-300">
+                    <div>Rank</div>
+                    <div>Name</div>
+                    <div className="text-center">Current Streak</div>
+                    <div className="text-center">Accuracy</div>
+                    <div className="text-center">Total Points</div>
+                  </div>
+                  
+                  <div className="grid grid-cols-5 gap-4 py-4 px-4 rounded-lg border bg-card/50 border-primary/30">
+                    <div className="flex items-center gap-2">
+                      {getRankIcon(currentUser.rank)}
+                      <span className="font-bold text-white">#{currentUser.rank}</span>
+                    </div>
+                    
+                    <div className="flex flex-col">
+                      <span className="font-medium text-white">{currentUser.name}</span>
+                      <span className="text-xs text-gray-400 font-mono">
+                        {currentUser.address}
+                      </span>
+                    </div>
+                    
+                    <div className="text-center">
+                      <Badge variant="secondary" className="font-bold bg-orange-500/20 text-orange-400 border-orange-500/30">
+                        {currentUser.currentStreak}
+                      </Badge>
+                    </div>
+                    
+                    <div className="text-center">
+                      <Badge 
+                        variant={currentUser.accuracy >= 90 ? "default" : "outline"}
+                        className="font-bold border-green-500/30 text-green-400 bg-green-500/10"
+                      >
+                        {currentUser.accuracy}%
+                      </Badge>
+                    </div>
+                    
+                    <div className="text-center">
+                      <span className="text-lg font-bold text-primary">
+                        {currentUser.totalPoints.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                
-                <div className="grid grid-cols-5 gap-4 py-4 px-4 rounded-lg border bg-card/50 border-primary/30">
+              ) : (
+                /* ===== Compact layout ===== */
+                <div className="flex items-center justify-between gap-3 rounded-lg border p-3 bg-card/50 border-primary/30">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1 min-w-[44px]">
+                      {getRankIcon(currentUser.rank)}
+                      <span className="font-bold text-sm text-white">#{currentUser.rank}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-medium text-sm text-white">{currentUser.name}</span>
+                      {/* hide address in compact mode */}
+                    </div>
+                  </div>
+
                   <div className="flex items-center gap-2">
-                    {getRankIcon(currentUser.rank)}
-                    <span className="font-bold text-white">#{currentUser.rank}</span>
-                  </div>
-                  
-                  <div className="flex flex-col">
-                    <span className="font-medium text-white">{currentUser.name}</span>
-                    <span className="text-xs text-gray-400 font-mono">
-                      {currentUser.address}
-                    </span>
-                  </div>
-                  
-                  <div className="text-center">
-                    <Badge variant="secondary" className="font-bold bg-orange-500/20 text-orange-400 border-orange-500/30">
+                    <Badge variant="secondary" className="font-bold text-xs px-2 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
                       {currentUser.currentStreak}
                     </Badge>
-                  </div>
-                  
-                  <div className="text-center">
                     <Badge 
                       variant={currentUser.accuracy >= 90 ? "default" : "outline"}
-                      className="font-bold border-green-500/30 text-green-400 bg-green-500/10"
+                      className="font-bold text-xs px-2 py-0.5 border-green-500/30 text-green-400 bg-green-500/10"
                     >
                       {currentUser.accuracy}%
                     </Badge>
-                  </div>
-                  
-                  <div className="text-center">
-                    <span className="text-lg font-bold text-primary">
+                    <span className="text-primary font-bold text-sm tabular-nums">
                       {currentUser.totalPoints.toLocaleString()}
                     </span>
                   </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>
