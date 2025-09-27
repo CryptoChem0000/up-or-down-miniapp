@@ -127,6 +127,20 @@ function formatDisplayName(name: string, isCompact: boolean = false): string {
   return name;
 }
 
+// Helper function to get display name from profile data
+function getDisplayName(row: LeaderboardRow): string {
+  return row.displayName || row.username || `fid:${row.fid}`;
+}
+
+type LeaderboardRow = {
+  rank: number;
+  fid: string;
+  score: number;
+  username: string | null;
+  displayName: string | null;
+  avatar: string | null;
+};
+
 export default function LeaderboardPage({
   searchParams,
 }: {
@@ -139,6 +153,8 @@ export default function LeaderboardPage({
     accuracy?: number;
     rank?: number;
   } | null>(null);
+  const [leaderboardData, setLeaderboardData] = React.useState<LeaderboardRow[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
   // Fetch real user stats if FID is provided
   React.useEffect(() => {
@@ -156,6 +172,22 @@ export default function LeaderboardPage({
         // Keep using mock data on error
       });
   }, [searchParams?.fid]);
+
+  // Fetch real leaderboard data
+  React.useEffect(() => {
+    fetch("/api/leaderboard?n=10", { cache: "no-store" })
+      .then(r => r.json())
+      .then(data => {
+        if (data.topPoints) {
+          setLeaderboardData(data.topPoints);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch leaderboard:", err);
+        setLoading(false);
+      });
+  }, []);
 
   // Use real user stats if available, otherwise mock data
   const displayUser = userStats ? {
@@ -205,38 +237,50 @@ export default function LeaderboardPage({
                   </div>
 
                 <div className="space-y-2">
-                  {mockLeaderboardData.map((u) => (
-                    <div
-                      key={u.id}
-                      className={`grid grid-cols-5 gap-4 py-4 px-4 rounded-lg border transition-colors hover:bg-gray-700/30 ${
-                        u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        {getRankIcon(u.rank)}
-                        <span className="font-bold text-white">#{u.rank}</span>
-                      </div>
+                  {loading ? (
+                    <div className="text-center py-8 text-gray-400">Loading leaderboard...</div>
+                  ) : leaderboardData.length > 0 ? (
+                    leaderboardData.map((u) => (
+                      <div
+                        key={u.fid}
+                        className={`grid grid-cols-5 gap-4 py-4 px-4 rounded-lg border transition-colors hover:bg-gray-700/30 ${
+                          u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          {getRankIcon(u.rank)}
+                          <span className="font-bold text-white">#{u.rank}</span>
+                        </div>
 
-                      <div className="flex flex-col">
-                        <span className="font-medium text-white">{formatDisplayName(u.name, false)}</span>
-                        <span className="text-xs text-gray-400 font-mono">{formatDisplayName(u.address, false)}</span>
-                      </div>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-white">{getDisplayName(u)}</span>
+                          {u.username && (
+                            <span className="text-xs text-gray-400">@{u.username}</span>
+                          )}
+                        </div>
 
-                      <div className="text-center">
-                        <Badge variant="secondary" className="font-bold bg-orange-500/20 text-orange-400 border-orange-500/30">{u.currentStreak}</Badge>
-                      </div>
+                        <div className="text-center">
+                          <Badge variant="secondary" className="font-bold bg-orange-500/20 text-orange-400 border-orange-500/30">
+                            {/* Mock streak data for now - will be updated when we have real data */}
+                            {Math.floor(Math.random() * 20) + 1}
+                          </Badge>
+                        </div>
 
-                      <div className="text-center">
-                        <Badge variant={u.accuracy >= 90 ? "default" : "outline"} className="font-bold border-green-500/30 text-green-400 bg-green-500/10">
-                          {u.accuracy}%
-                        </Badge>
-                      </div>
+                        <div className="text-center">
+                          <Badge variant="outline" className="font-bold border-green-500/30 text-green-400 bg-green-500/10">
+                            {/* Mock accuracy data for now - will be updated when we have real data */}
+                            {Math.floor(Math.random() * 30) + 70}%
+                          </Badge>
+                        </div>
 
-                      <div className="text-center">
-                        <span className="text-lg font-bold text-primary">{u.totalPoints.toLocaleString()}</span>
+                        <div className="text-center">
+                          <span className="text-lg font-bold text-primary">{u.score.toLocaleString()}</span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-gray-400">No leaderboard data available</div>
+                  )}
                 </div>
               </>
             ) : (
@@ -262,35 +306,47 @@ export default function LeaderboardPage({
                 </div>
                 
                 <div className="space-y-2">
-                  {mockLeaderboardData.map((u) => (
-                  <div
-                    key={u.id}
-                    className={`flex items-center justify-between gap-3 rounded-lg border p-3 transition-colors hover:bg-gray-700/30 ${
-                      u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-1 min-w-[44px]">
-                        {getRankIcon(u.rank)}
-                        <span className="font-bold text-sm text-white">#{u.rank}</span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-medium text-sm text-white">{formatDisplayName(u.name, true)}</span>
-                        <span className="text-xs text-gray-400 font-mono">{formatDisplayName(u.address, true)}</span>
-                      </div>
-                    </div>
+                  {loading ? (
+                    <div className="text-center py-8 text-gray-400 text-sm">Loading...</div>
+                  ) : leaderboardData.length > 0 ? (
+                    leaderboardData.map((u) => (
+                      <div
+                        key={u.fid}
+                        className={`flex items-center justify-between gap-3 rounded-lg border p-3 transition-colors hover:bg-gray-700/30 ${
+                          u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-1 min-w-[44px]">
+                            {getRankIcon(u.rank)}
+                            <span className="font-bold text-sm text-white">#{u.rank}</span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-medium text-sm text-white">{getDisplayName(u)}</span>
+                            {u.username && (
+                              <span className="text-xs text-gray-400">@{u.username}</span>
+                            )}
+                          </div>
+                        </div>
 
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="font-bold text-xs px-2 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">{u.currentStreak}</Badge>
-                      <Badge variant={u.accuracy >= 90 ? "default" : "outline"} className="font-bold text-xs px-2 py-0.5 border-green-500/30 text-green-400 bg-green-500/10">
-                        {u.accuracy}%
-                      </Badge>
-                      <span className="text-primary font-bold text-sm tabular-nums">
-                        {u.totalPoints.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary" className="font-bold text-xs px-2 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
+                            {/* Mock streak data for now */}
+                            {Math.floor(Math.random() * 20) + 1}
+                          </Badge>
+                          <Badge variant="outline" className="font-bold text-xs px-2 py-0.5 border-green-500/30 text-green-400 bg-green-500/10">
+                            {/* Mock accuracy data for now */}
+                            {Math.floor(Math.random() * 30) + 70}%
+                          </Badge>
+                          <span className="text-primary font-bold text-sm tabular-nums">
+                            {u.score.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-gray-400 text-sm">No data available</div>
+                  )}
                 </div>
               </>
             )}
