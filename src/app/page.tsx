@@ -320,7 +320,7 @@ export default function DailyOneTapPoll() {
         <div className="w-[424px] h-[695px] bg-gray-900 border border-gray-700 rounded-2xl overflow-hidden" style={{ boxShadow: "0 20px 60px -12px rgba(0,0,0,0.8)" }}>
           <div className="h-full flex flex-col p-6 space-y-6">
             <HeroHeader
-              iconSrc="/icon-256.png"
+              iconSrc="/eth-mark-tight-20.png"
               title="ETH Daily"
               subtitle="Will ETH price go up or down today?"
               pillText={!hasVoted ? "Vote closes at midnight UTC" : undefined}
