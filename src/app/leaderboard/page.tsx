@@ -1,5 +1,70 @@
+import React from "react";
 import Link from "next/link";
 import { Trophy, Crown, Medal, Award, ArrowLeft } from "lucide-react";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+
+// Utility function for class merging
+function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
+
+// Button component (copied from main page.tsx)
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: { default: "h-10 px-4 py-2", sm: "h-9 rounded-md px-3", lg: "h-11 rounded-md px-8", icon: "h-10 w-10" },
+    },
+    defaultVariants: { variant: "default", size: "default" },
+  }
+);
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> { asChild?: boolean; }
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
+    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+  }
+); Button.displayName = "Button";
+
+// Card components (copied from main page.tsx)
+const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} className={cn("rounded-lg border bg-card text-card-foreground shadow-sm", className)} {...props} />
+); Card.displayName = "Card";
+
+const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
+); CardHeader.displayName = "CardHeader";
+
+const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => <h3 ref={ref} className={cn("text-2xl font-semibold leading-none tracking-tight", className)} {...props} />
+); CardTitle.displayName = "CardTitle";
+
+const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+); CardContent.displayName = "CardContent";
+
+// Badge component (copied from main page.tsx)
+const badgeVariants = cva(
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  { variants: { variant: {
+      default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+      secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+      destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+      outline: "text-foreground",
+    }}, defaultVariants: { variant: "default" } }
+);
+function Badge({ className, variant, ...props }: React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof badgeVariants>) {
+  return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
+}
 
 // Temporary mock data; swap for API fetch later
 const mockLeaderboardData = [
@@ -10,63 +75,6 @@ const mockLeaderboardData = [
   { id: 5, name: "trader.defi", address: "0x3c8b7a9e...2d1f4e8b", currentStreak: 12, accuracy: 83, totalPoints: 1720, rank: 5 },
   { id: 6, name: "0xa7b8c9d0...5e4f3a2b", address: "0xa7b8c9d0e1f2a3b4c5d6e7f8a9b0c1...5e4f3a2b", currentStreak: 8, accuracy: 79, totalPoints: 1480, rank: 6 },
 ];
-
-// Button component (inline since we don't have separate UI components)
-const Button = ({ children, variant = "default", asChild = false, className = "", ...props }: any) => {
-  const baseClasses = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
-  const variantClasses = {
-    default: "bg-primary text-primary-foreground hover:bg-primary/90",
-    ghost: "hover:bg-accent hover:text-accent-foreground",
-    outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-  };
-  
-  const classes = `${baseClasses} ${variantClasses[variant] || variantClasses.default} ${className}`;
-  
-  if (asChild) {
-    return <Link className={classes} {...props}>{children}</Link>;
-  }
-  
-  return <button className={classes} {...props}>{children}</button>;
-};
-
-// Card components (inline)
-const Card = ({ children, className = "", ...props }: any) => (
-  <div className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`} {...props}>
-    {children}
-  </div>
-);
-
-const CardHeader = ({ children, className = "", ...props }: any) => (
-  <div className={`flex flex-col space-y-1.5 p-6 ${className}`} {...props}>
-    {children}
-  </div>
-);
-
-const CardTitle = ({ children, className = "", ...props }: any) => (
-  <h3 className={`text-2xl font-semibold leading-none tracking-tight ${className}`} {...props}>
-    {children}
-  </h3>
-);
-
-const CardContent = ({ children, className = "", ...props }: any) => (
-  <div className={`p-6 pt-0 ${className}`} {...props}>
-    {children}
-  </div>
-);
-
-// Badge component (inline)
-const Badge = ({ children, variant = "default", className = "", ...props }: any) => {
-  const baseClasses = "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2";
-  const variantClasses = {
-    default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
-    secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
-    outline: "text-foreground",
-  };
-  
-  const classes = `${baseClasses} ${variantClasses[variant] || variantClasses.default} ${className}`;
-  
-  return <div className={classes} {...props}>{children}</div>;
-};
 
 function RankIcon({ rank }: { rank: number }) {
   switch (rank) {
