@@ -14,14 +14,19 @@ export async function getProfiles(fids: string[]): Promise<Record<string, Profil
   if (fids.length === 0) return {};
   const unique = Array.from(new Set(fids));
   // 1) Try cache
-  const cached = await redis.hmget<Record<string, string>>("cache:profiles", unique);
+  const cached = await redis.hmget("cache:profiles", ...unique);
   const miss: string[] = [];
   const result: Record<string, Profile> = {};
 
   unique.forEach((fid, i) => {
     const raw = cached?.[i];
     if (raw) {
-      result[fid] = JSON.parse(raw);
+      try {
+        result[fid] = JSON.parse(raw);
+      } catch {
+        // Invalid JSON, treat as cache miss
+        miss.push(fid);
+      }
     } else {
       miss.push(fid);
     }
