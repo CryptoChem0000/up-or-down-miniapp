@@ -313,7 +313,6 @@ export default function DailyOneTapPoll() {
               iconSrc="/eth-mark-tight-20.png"
               title="Ethereum"
               subtitle="Will ETH price go up or down today?"
-              pillText={!hasVoted ? votingMessage : undefined}
             />
 
             <ETHPriceDisplay price={ethData.price} change24h={ethData.change24h} changePercent={ethData.changePercent} />
@@ -336,6 +335,7 @@ export default function DailyOneTapPoll() {
               <Card className="p-3 bg-gray-800 border-gray-700">
                 <div className="text-xs text-gray-400 text-center space-y-2">
                   <div>Build your streak • Compete with others</div>
+                  {!hasVoted && <div className="text-primary">{votingMessage}</div>}
 
                   {SHOW_DEV_LINKS && (
                     <div className="pt-2 grid grid-cols-2 gap-2">
