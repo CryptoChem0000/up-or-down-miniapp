@@ -12,6 +12,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { TrendingUp, TrendingDown, Flame, Users, Trophy, X, Crown } from "lucide-react";
 import Link from "next/link";
 import * as ToastPrimitives from "@radix-ui/react-toast";
+import HeroHeader from "@/components/HeroHeader";
 
 /** utils */
 function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
@@ -303,24 +304,12 @@ export default function DailyOneTapPoll() {
       <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
         <div className="w-[424px] h-[695px] bg-gray-900 border border-gray-700 rounded-2xl overflow-hidden" style={{ boxShadow: "0 20px 60px -12px rgba(0,0,0,0.8)" }}>
           <div className="h-full flex flex-col p-6 space-y-6">
-            <div className="text-center space-y-2">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center">
-                  <img
-                    src="/eth-mark-tight-20.png"
-                    srcSet="/eth-mark-tight-40.png 2x"
-                    alt="ETH"
-                    width={24}
-                    height={24}
-                    decoding="async"
-                    loading="eager"
-                  />
-                </div>
-                <h1 className="text-xl font-bold text-white">Daily ETH Poll</h1>
-              </div>
-              <p className="text-gray-400 text-sm">Will ETH price go up or down today?</p>
-              {!hasVoted && <Badge variant="outline" className="border-primary text-primary">Vote closes at midnight UTC</Badge>}
-            </div>
+            <HeroHeader
+              iconSrc="/eth-mark-tight-20.png"
+              title="Daily ETH Poll"
+              subtitle="Will ETH price go up or down today?"
+              pillText={!hasVoted ? "Vote closes at midnight UTC" : undefined}
+            />
 
             <ETHPriceDisplay price={ethData.price} change24h={ethData.change24h} changePercent={ethData.changePercent} />
 
