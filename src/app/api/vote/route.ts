@@ -4,6 +4,7 @@ import { getServerPrice } from "@/lib/prices";
 import { verifyFarcaster } from "@/lib/verify";
 import { redis, k } from "@/lib/redis";
 import { makeSessionCookie } from "@/lib/fc-session";
+import { isVotingOpen } from "@/lib/vote-window";
 
 export const runtime = "edge";
 
@@ -13,6 +14,11 @@ function isoDayUTC(ts = Date.now()) {
 
 export async function POST(req: Request) {
   try {
+    // Check if voting window is open
+    if (!isVotingOpen()) {
+      return NextResponse.json({ error: "voting_closed" }, { status: 423 });
+    }
+
     // Rate limit by IP
     const rl = await limitBy(req);
     if (!rl.success) {

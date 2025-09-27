@@ -12,6 +12,7 @@ import HeroHeader from "@/components/HeroHeader";
 import { useMyStats } from "@/hooks/useMyStats";
 import { useResultToast } from "@/hooks/useResultToast";
 import { useToast } from "@/lib/toast";
+import { isVotingOpen, getVotingWindowMessage } from "@/lib/vote-window";
 
 /** utils */
 function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
@@ -208,6 +209,10 @@ export default function DailyOneTapPoll() {
   const [ethData, setEthData] = useState<{price: number; change24h: number; changePercent: number}>({ price: 0, change24h: 0, changePercent: 0 });
   const { toast } = useToast();
   
+  // Check voting window status
+  const votingOpen = isVotingOpen();
+  const votingMessage = getVotingWindowMessage();
+  
   // Get real user stats
   const { data: myStats, loading: myStatsLoading } = useMyStats();
 
@@ -288,7 +293,8 @@ export default function DailyOneTapPoll() {
   };
 
   function handleVote(dir: "up" | "down") {
-    if (hasVoted) return;
+    if (hasVoted || !votingOpen) return;
+    
     setSelectedVote(dir); setHasVoted(true);
     toast({ title: `Voted ${dir.toUpperCase()}!`, description: "Your prediction has been recorded. Check back tomorrow for results!\nResults revealed daily at 12:01 AM UTC" });
   }
@@ -302,7 +308,7 @@ export default function DailyOneTapPoll() {
               iconSrc="/eth-mark-tight-20.png"
               title="Ethereum"
               subtitle="Will ETH price go up or down today?"
-              pillText={!hasVoted ? "Vote closes at midnight UTC" : undefined}
+              pillText={!hasVoted ? votingMessage : undefined}
             />
 
             <ETHPriceDisplay price={ethData.price} change24h={ethData.change24h} changePercent={ethData.changePercent} />
@@ -313,8 +319,8 @@ export default function DailyOneTapPoll() {
                 {hasVoted && <Badge variant="outline" className="border-green-500 text-green-400">Voted {selectedVote?.toUpperCase()} ✓</Badge>}
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <VoteButton direction="up" onClick={() => handleVote("up")} isSelected={selectedVote === "up"} className={hasVoted && selectedVote !== "up" ? "opacity-50" : ""} />
-                <VoteButton direction="down" onClick={() => handleVote("down")} isSelected={selectedVote === "down"} className={hasVoted && selectedVote !== "down" ? "opacity-50" : ""} />
+                <VoteButton direction="up" onClick={() => handleVote("up")} isSelected={selectedVote === "up"} className={hasVoted && selectedVote !== "up" ? "opacity-50" : !votingOpen ? "opacity-50 cursor-not-allowed" : ""} />
+                <VoteButton direction="down" onClick={() => handleVote("down")} isSelected={selectedVote === "down"} className={hasVoted && selectedVote !== "down" ? "opacity-50" : !votingOpen ? "opacity-50 cursor-not-allowed" : ""} />
               </div>
             </div>
 
