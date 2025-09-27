@@ -271,5 +271,5 @@ export default function DailyOneTapPoll() {
   );
 }
 
-// optional exports if you plan to reuse in other routes
-export { Button, Card, Badge, VoteButton, ETHPriceDisplay, StatsCard, Toaster, useToast, toast, cn };
+// Components are defined above for use within this page
+// If you need to reuse them elsewhere, move them to separate files
