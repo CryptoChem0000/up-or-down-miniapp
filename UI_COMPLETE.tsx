@@ -232,6 +232,11 @@ export default function DailyOneTapPoll() {
   const [my, setMy] = useState<{streak:number; points:number} | null>(null);
   const { toast } = useToast();
 
+  // Show dev links only in development
+  const SHOW_DEV_LINKS = 
+    process.env.NEXT_PUBLIC_SHOW_DEV_LINKS === "true" &&
+    process.env.NODE_ENV !== "production";
+
   // Load personal stats if fid is in URL
   React.useEffect(() => {
     const fid = new URL(window.location.href).searchParams.get("fid");
@@ -299,22 +304,24 @@ export default function DailyOneTapPoll() {
                   <div>Build your streak • Compete with others</div>
                   <div className="text-primary">Results revealed daily at 12:01 AM UTC</div>
 
-                  <div className="pt-2 grid grid-cols-2 gap-2">
-                    <Button
-                      variant="secondary"
-                      onClick={() => composeWithEmbed(window.location.origin)}
-                      className="border-primary text-primary hover:text-white hover:border-primary/80"
-                    >
-                      Compose (embed)
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => window.open("/api/frames", "_blank")}
-                      className="text-gray-200"
-                    >
-                      Open Frame
-                    </Button>
-                  </div>
+                  {SHOW_DEV_LINKS && (
+                    <div className="pt-2 grid grid-cols-2 gap-2">
+                      <Button
+                        variant="secondary"
+                        onClick={() => composeWithEmbed(window.location.origin)}
+                        className="border-primary text-primary hover:text-white hover:border-primary/80"
+                      >
+                        Compose (embed)
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => window.open("/api/frames", "_blank")}
+                        className="text-gray-200"
+                      >
+                        Open Frame
+                      </Button>
+                    </div>
+                  )}
 
                   <div className="text-[11px] opacity-70 pt-2">
                     Voting requires tapping inside the Farcaster frame (verified by Neynar).

@@ -1,5 +1,6 @@
 "use client";
 
+import { notFound } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 type State = {
@@ -14,6 +15,11 @@ type State = {
 };
 
 export default function TestPage() {
+  // Block access in production
+  if (process.env.NODE_ENV === "production") {
+    notFound();
+  }
+
   const [state, setState] = useState<State | null>(null);
   const [debugToken, setDebugToken] = useState<string>("");
 
