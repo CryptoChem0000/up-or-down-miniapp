@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Trophy, Crown, Medal, Award, ArrowLeft } from "lucide-react";
+import { Trophy, Crown, Medal, Award, ArrowLeft, User } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Slot } from "@radix-ui/react-slot";
@@ -66,6 +66,11 @@ function Badge({ className, variant, ...props }: React.HTMLAttributes<HTMLDivEle
   return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
 }
 
+// Separator component
+const Separator = ({ className = "", ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn("shrink-0 bg-border", "h-[1px] w-full", className)} {...props} />
+);
+
 // Temporary mock data; swap for API fetch later
 const mockLeaderboardData = [
   { id: 1, name: "alice.eth", address: "0x742d35Cc82C0...f4C8BD45c4", currentStreak: 25, accuracy: 94, totalPoints: 2850, rank: 1 },
@@ -76,7 +81,17 @@ const mockLeaderboardData = [
   { id: 6, name: "0xa7b8c9d0...5e4f3a2b", address: "0xa7b8c9d0e1f2a3b4c5d6e7f8a9b0c1...5e4f3a2b", currentStreak: 8, accuracy: 79, totalPoints: 1480, rank: 6 },
 ];
 
-function RankIcon({ rank }: { rank: number }) {
+// Mock current user data
+const currentUser = {
+  name: "your.wallet",
+  address: "0x1234567890abcdef...1234567890abcdef",
+  currentStreak: 7,
+  accuracy: 85,
+  totalPoints: 1240,
+  rank: 12
+};
+
+function getRankIcon(rank: number) {
   switch (rank) {
     case 1: return <Crown className="w-5 h-5 text-yellow-500" />;
     case 2: return <Medal className="w-5 h-5 text-gray-400" />;
@@ -125,7 +140,7 @@ export default function LeaderboardPage() {
                     }`}
                   >
                     <div className="flex items-center gap-2">
-                      <RankIcon rank={u.rank} />
+                      {getRankIcon(u.rank)}
                       <span className="font-bold text-white">#{u.rank}</span>
                     </div>
 
@@ -153,6 +168,66 @@ export default function LeaderboardPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Your Stats Section */}
+        <div className="mt-8">
+          <Separator className="mb-6 bg-gray-600" />
+          
+          <Card className="bg-primary/5 border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-white">
+                <User className="w-6 h-6 text-primary" />
+                Your Stats
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <div className="grid grid-cols-5 gap-4 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 font-semibold text-sm text-gray-300">
+                  <div>Rank</div>
+                  <div>Name</div>
+                  <div className="text-center">Current Streak</div>
+                  <div className="text-center">Accuracy</div>
+                  <div className="text-center">Total Points</div>
+                </div>
+                
+                <div className="grid grid-cols-5 gap-4 py-4 px-4 rounded-lg border bg-card/50 border-primary/30">
+                  <div className="flex items-center gap-2">
+                    {getRankIcon(currentUser.rank)}
+                    <span className="font-bold text-white">#{currentUser.rank}</span>
+                  </div>
+                  
+                  <div className="flex flex-col">
+                    <span className="font-medium text-white">{currentUser.name}</span>
+                    <span className="text-xs text-gray-400 font-mono">
+                      {currentUser.address}
+                    </span>
+                  </div>
+                  
+                  <div className="text-center">
+                    <Badge variant="secondary" className="font-bold bg-orange-500/20 text-orange-400 border-orange-500/30">
+                      {currentUser.currentStreak}
+                    </Badge>
+                  </div>
+                  
+                  <div className="text-center">
+                    <Badge 
+                      variant={currentUser.accuracy >= 90 ? "default" : "outline"}
+                      className="font-bold border-green-500/30 text-green-400 bg-green-500/10"
+                    >
+                      {currentUser.accuracy}%
+                    </Badge>
+                  </div>
+                  
+                  <div className="text-center">
+                    <span className="text-lg font-bold text-primary">
+                      {currentUser.totalPoints.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
