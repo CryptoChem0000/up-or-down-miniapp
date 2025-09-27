@@ -79,9 +79,13 @@ const mockLeaderboardData = [
   { id: 4, name: "0x9d4a1c2b...f8e7d6a9", address: "0x9d4a1c2b3e5f4a7b8c9d0e1f2a3b4c...f8e7d6a9", currentStreak: 15, accuracy: 86, totalPoints: 1950, rank: 4 },
   { id: 5, name: "trader.defi", address: "0x3c8b7a9e...2d1f4e8b", currentStreak: 12, accuracy: 83, totalPoints: 1720, rank: 5 },
   { id: 6, name: "0xa7b8c9d0...5e4f3a2b", address: "0xa7b8c9d0e1f2a3b4c5d6e7f8a9b0c1...5e4f3a2b", currentStreak: 8, accuracy: 79, totalPoints: 1480, rank: 6 },
+  { id: 7, name: "crypto.whale", address: "0x4f2e8d1a...9b6c3e7f", currentStreak: 14, accuracy: 82, totalPoints: 1650, rank: 7 },
+  { id: 8, name: "0x7e9f3a2b...8c1d5e6f", address: "0x7e9f3a2b8c1d5e6f9a0b1c2d3e4f5a6b7c8d9e0f1a2b", currentStreak: 11, accuracy: 78, totalPoints: 1420, rank: 8 },
+  { id: 9, name: "defi.trader", address: "0x2a3b4c5d...6e7f8a9b", currentStreak: 9, accuracy: 76, totalPoints: 1280, rank: 9 },
+  { id: 10, name: "0x5c6d7e8f...9a0b1c2d", address: "0x5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f", currentStreak: 7, accuracy: 74, totalPoints: 1150, rank: 10 },
 ];
 
-// Mock current user data
+// Mock current user data - will be replaced with real data from API
 const currentUser = {
   name: "You",
   address: "0x1234567890abcdef...1234567890abcdef",
@@ -103,9 +107,41 @@ function getRankIcon(rank: number) {
 export default function LeaderboardPage({
   searchParams,
 }: {
-  searchParams: { compact?: string };
+  searchParams: { compact?: string; fid?: string };
 }) {
   const compact = searchParams?.compact === "1";
+  const [userStats, setUserStats] = React.useState<{
+    streak: number;
+    points: number;
+    accuracy?: number;
+    rank?: number;
+  } | null>(null);
+
+  // Fetch real user stats if FID is provided
+  React.useEffect(() => {
+    const fid = searchParams?.fid;
+    if (!fid) return;
+    
+    fetch(`/api/user/${fid}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.streak !== undefined && data.points !== undefined) {
+          setUserStats(data);
+        }
+      })
+      .catch(() => {
+        // Keep using mock data on error
+      });
+  }, [searchParams?.fid]);
+
+  // Use real user stats if available, otherwise mock data
+  const displayUser = userStats ? {
+    ...currentUser,
+    currentStreak: userStats.streak,
+    totalPoints: userStats.points,
+    accuracy: userStats.accuracy ?? currentUser.accuracy,
+    rank: userStats.rank ?? currentUser.rank,
+  } : currentUser;
 
   return (
     <div className="min-h-screen bg-gray-900 p-4">
@@ -236,35 +272,35 @@ export default function LeaderboardPage({
                   
                   <div className="grid grid-cols-5 gap-4 py-4 px-4 rounded-lg border bg-card/50 border-primary/30">
                     <div className="flex items-center gap-2">
-                      {getRankIcon(currentUser.rank)}
-                      <span className="font-bold text-white">#{currentUser.rank}</span>
+                      {getRankIcon(displayUser.rank)}
+                      <span className="font-bold text-white">#{displayUser.rank}</span>
                     </div>
                     
                     <div className="flex flex-col">
-                      <span className="font-medium text-white">{currentUser.name}</span>
+                      <span className="font-medium text-white">{displayUser.name}</span>
                       <span className="text-xs text-gray-400 font-mono">
-                        {currentUser.address}
+                        {displayUser.address}
                       </span>
                     </div>
                     
                     <div className="text-center">
                       <Badge variant="secondary" className="font-bold bg-orange-500/20 text-orange-400 border-orange-500/30">
-                        {currentUser.currentStreak}
+                        {displayUser.currentStreak}
                       </Badge>
                     </div>
                     
                     <div className="text-center">
                       <Badge 
-                        variant={currentUser.accuracy >= 90 ? "default" : "outline"}
+                        variant={displayUser.accuracy >= 90 ? "default" : "outline"}
                         className="font-bold border-green-500/30 text-green-400 bg-green-500/10"
                       >
-                        {currentUser.accuracy}%
+                        {displayUser.accuracy}%
                       </Badge>
                     </div>
                     
                     <div className="text-center">
                       <span className="text-lg font-bold text-primary">
-                        {currentUser.totalPoints.toLocaleString()}
+                        {displayUser.totalPoints.toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -274,27 +310,27 @@ export default function LeaderboardPage({
                 <div className="flex items-center justify-between gap-3 rounded-lg border p-3 bg-card/50 border-primary/30">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1 min-w-[44px]">
-                      {getRankIcon(currentUser.rank)}
-                      <span className="font-bold text-sm text-white">#{currentUser.rank}</span>
+                      {getRankIcon(displayUser.rank)}
+                      <span className="font-bold text-sm text-white">#{displayUser.rank}</span>
                     </div>
                     <div className="flex flex-col">
-                      <span className="font-medium text-sm text-white">{currentUser.name}</span>
+                      <span className="font-medium text-sm text-white">{displayUser.name}</span>
                       {/* hide address in compact mode */}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <Badge variant="secondary" className="font-bold text-xs px-2 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
-                      {currentUser.currentStreak}
+                      {displayUser.currentStreak}
                     </Badge>
                     <Badge 
-                      variant={currentUser.accuracy >= 90 ? "default" : "outline"}
+                      variant={displayUser.accuracy >= 90 ? "default" : "outline"}
                       className="font-bold text-xs px-2 py-0.5 border-green-500/30 text-green-400 bg-green-500/10"
                     >
-                      {currentUser.accuracy}%
+                      {displayUser.accuracy}%
                     </Badge>
                     <span className="text-primary font-bold text-sm tabular-nums">
-                      {currentUser.totalPoints.toLocaleString()}
+                      {displayUser.totalPoints.toLocaleString()}
                     </span>
                   </div>
                 </div>
