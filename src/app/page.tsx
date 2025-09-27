@@ -247,7 +247,7 @@ export default function DailyOneTapPoll() {
             <div className="text-center space-y-2">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <div className="w-8 h-8 rounded-full bg-primary border border-primary/70 flex items-center justify-center">
-                  <img src="/icon-1024.png" alt="logo" className="w-5 h-5 rounded-sm" />
+                  <img src="/icon-eth.svg" alt="ETH" className="w-5 h-5" />
                 </div>
                 <h1 className="text-xl font-bold text-white">Daily ETH Poll</h1>
               </div>
