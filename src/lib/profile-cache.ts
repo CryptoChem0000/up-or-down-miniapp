@@ -19,8 +19,8 @@ export async function getProfiles(fids: string[]): Promise<Record<string, Profil
   const result: Record<string, Profile> = {};
 
   unique.forEach((fid, i) => {
-    const raw = cached?.[i];
-    if (raw) {
+    const raw = cached?.[i] as string | null | undefined;
+    if (raw && typeof raw === 'string') {
       try {
         result[fid] = JSON.parse(raw);
       } catch {
