@@ -8,7 +8,8 @@ This document contains all the code for the Daily One-Tap Poll Farcaster Mini Ap
 daily-one-tap-poll/
 ├── package.json
 ├── next.config.mjs
-├── tailwind.config.ts
+├── tailwind.config.cjs
+├── postcss.config.cjs
 ├── vercel.json
 ├── env.example
 ├── README.md
@@ -17,10 +18,14 @@ daily-one-tap-poll/
 │   │   ├── globals.css
 │   │   ├── layout.tsx
 │   │   ├── page.tsx
+│   │   ├── leaderboard/page.tsx
 │   │   ├── test/page.tsx
 │   │   ├── well-known/farcaster.json/route.ts
 │   │   └── api/
 │   │       ├── frames/route.ts
+│   │       ├── price/route.ts
+│   │       ├── leaderboard/route.ts
+│   │       ├── user/[fid]/route.ts
 │   │       ├── cron/open/route.ts
 │   │       ├── cron/close/route.ts
 │   │       ├── debug/state/route.ts
@@ -43,18 +48,74 @@ daily-one-tap-poll/
 │   │   │   ├── badge.tsx
 │   │   │   ├── toast.tsx
 │   │   │   └── toaster.tsx
+│   │   ├── HeroHeader.tsx
 │   │   ├── VoteButton.tsx
 │   │   ├── ETHPriceDisplay.tsx
 │   │   ├── StatsCard.tsx
 │   │   └── ClientToaster.tsx
 │   ├── hooks/
+│   │   ├── use-mobile.ts
 │   │   └── use-toast.ts
 │   └── ui/
 │       └── og.tsx
-└── public/
-    ├── icon-1024.png
-    └── splash-200.png
+├── public/
+│   ├── eth-mark-tight-20.png
+│   ├── eth-mark-tight-40.png
+│   ├── icon-1024.png
+│   ├── icon-eth.png
+│   └── splash-200.png
+└── UI_COMPLETE.tsx
 ```
+
+## Key Features
+
+- **Farcaster Mini App**: Optimized for 424×695px viewport
+- **Real-time ETH Price**: CoinGecko API with Redis caching and rate limiting
+- **Vote Stamping**: Each vote includes current server price and timestamp
+- **Leaderboard**: Points and streak tracking with Redis ZSETs
+- **Responsive Design**: Works on mobile and desktop
+- **Production Ready**: Environment-gated developer tools
+- **Rate Limited**: IP and FID based rate limiting
+- **Cron Jobs**: Vercel crons for price cache warming and daily settlement
+
+## Recent Updates
+
+### Latest Changes (Current State)
+
+1. **CoinGecko Price Feed Implementation**
+   - Replaced Binance/Coinbase/Kraken with CoinGecko API
+   - Added Redis caching with 60s staleness check and 90s TTL
+   - Implemented lock mechanism to prevent concurrent upstream requests
+   - Added `/api/price` endpoint with recommended refresh policy
+   - Client polls every 120s and refreshes on tab focus
+   - Votes are stamped with current server price for accurate timing
+   - Vercel cron job keeps price cache warm (every minute)
+
+2. **HeroHeader Component Refactor**
+   - Created responsive HeroHeader component with centered layout
+   - Uses consistent vertical rhythm with `gap-y-*` spacing
+   - Text widths constrained: `max-w-[30ch]` on small screens, `max-w-[36ch]` on desktop
+   - Title scales responsively: `text-2xl sm:text-3xl` with bold styling
+   - Pill is compact, centered, and conditionally rendered
+   - Updated title from "Daily ETH Poll" to "ETHEREUM"
+
+3. **Production Safety Features**
+   - Environment-gated developer tools (`NEXT_PUBLIC_SHOW_DEV_LINKS`)
+   - "Compose (embed)" and "Open Frame" buttons hidden in production
+   - `/test` page blocked in production with `notFound()`
+   - Clean production Farcaster Mini App without dev tools
+
+4. **UI Improvements**
+   - Increased ETH chip logo size (32px → 40px container, 20px → 24px image)
+   - Removed Neynar verification text for cleaner footer
+   - Vote button hover effects with border highlighting (maintains original colors)
+   - Updated header container styling for new blue ETH logos
+
+5. **Leaderboard Integration**
+   - Added `/leaderboard` page with responsive design (compact mode for mini-app)
+   - Redis ZSET operations for points and streak tracking
+   - Personal stats display with current user data
+   - "Your Stats" section showing rank, points, and accuracy
 
 ## Core Configuration Files
 
