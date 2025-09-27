@@ -138,8 +138,8 @@ const VoteButton = ({ direction, onClick, isSelected, className }: VoteButtonPro
       className={cn(
         "h-14 text-base font-bold transition-all duration-300 relative overflow-hidden group",
         "border-2 hover:scale-105 active:scale-95",
-        isUp ? "bg-green-500 border-green-500 text-white hover:border-green-400 hover:shadow-lg hover:shadow-green-500/25"
-             : "bg-red-500 border-red-500 text-white hover:border-red-400 hover:shadow-lg hover:shadow-red-500/25",
+        isUp ? "bg-green-500 border-green-500 text-white hover:bg-green-500 hover:border-green-400 hover:shadow-lg hover:shadow-green-500/25"
+             : "bg-red-500 border-red-500 text-white hover:bg-red-500 hover:border-red-400 hover:shadow-lg hover:shadow-red-500/25",
         isSelected && "ring-2 ring-white/30 shadow-xl",
         className
       )}
