@@ -318,10 +318,6 @@ export default function DailyOneTapPoll() {
                       </Button>
                     </div>
                   )}
-
-                  <div className="text-[11px] opacity-70 pt-2">
-                    Voting requires tapping inside the Farcaster frame (verified by Neynar).
-                  </div>
                 </div>
               </Card>
             </div>
