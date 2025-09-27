@@ -14,7 +14,7 @@ export async function GET() {
       splashImageUrl: `${base}/splash-200.png`,
       splashBackgroundColor: "#0b0b0b",
       subtitle: "Predict ETH daily. Win streak multipliers.",
-      description: "A simple daily UP/DOWN ETH poll with streak points.",
+      description: "ETHEREUM - Daily UP/DOWN ETH price predictions with streak points.",
     },
   });
 }

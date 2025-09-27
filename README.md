@@ -4,7 +4,7 @@ A Farcaster Mini App + Frame that runs daily ETH UP/DOWN polls with streak multi
 
 ## Features
 
-- 🗳️ **Daily ETH Polls** - Vote UP or DOWN on daily ETH price movements
+- 🗳️ **ETHEREUM Polls** - Vote UP or DOWN on daily ETH price movements
 - 🔐 **Neynar Validation** - Secure FID-based voting with identity verification
 - 📊 **Price Snapshots** - Automated ETH price collection from Coinbase, Kraken, and Binance
 - 🎯 **Streak Multipliers** - Exponential point rewards for consecutive correct predictions

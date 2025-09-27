@@ -680,7 +680,7 @@ export default function Page() {
               <div className="w-8 h-8 rounded-full bg-blue-500 border border-blue-400 flex items-center justify-center">
                 <span className="text-white font-bold text-sm">ETH</span>
               </div>
-              <h1 className="text-xl font-bold text-white">Daily ETH Poll</h1>
+              <h1 className="text-xl font-bold text-white">ETHEREUM</h1>
             </div>
             <p className="text-gray-400 text-sm">
               Will ETH price go up or down today?

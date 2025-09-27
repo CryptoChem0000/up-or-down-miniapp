@@ -5,7 +5,7 @@ import Link from "next/link";
 
 type HeroHeaderProps = {
   iconSrc?: string; // "/eth-mark-tight-20.png" (served inside a 32px chip)
-  title?: string;   // "Daily ETH Poll"
+  title?: string;   // "ETHEREUM"
   subtitle?: string;// "Will ETH price go up or down today?"
   pillHref?: string;// "/rules" or "#" for now
   pillText?: string;// "Vote closes at midnight UTC" - if undefined, pill is hidden
