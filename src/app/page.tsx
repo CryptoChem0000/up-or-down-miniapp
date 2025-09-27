@@ -224,6 +224,7 @@ function composeWithEmbed(baseHref: string) {
 
 /** Page */
 export default function DailyOneTapPoll() {
+  // FORCE DEPLOYMENT - ETHEREUM TITLE FIX - $(date)
   const [selectedVote, setSelectedVote] = useState<"up" | "down" | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [my, setMy] = useState<{streak:number; points:number} | null>(null);

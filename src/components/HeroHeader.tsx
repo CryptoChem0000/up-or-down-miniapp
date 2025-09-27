@@ -18,8 +18,9 @@ export default function HeroHeader({
   pillHref = "#",
   pillText = "Vote closes at midnight UTC",
 }: HeroHeaderProps) {
-  // Debug log to verify title prop
+  // Debug log to verify title prop - FORCE DEPLOYMENT
   console.log("HeroHeader title prop:", title);
+  console.log("DEPLOYMENT TEST - ETHEREUM TITLE FIX");
   
   return (
     <div className="w-full flex flex-col items-center text-center">
