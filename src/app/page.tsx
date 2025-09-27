@@ -248,7 +248,7 @@ export default function DailyOneTapPoll() {
               <div className="flex items-center justify-center gap-2 mb-2">
                 <div className="w-8 h-8 rounded-full bg-primary/80 border border-primary/50 flex items-center justify-center">
                   <img
-                    src="/eth-mark-tight-20.svg"
+                    src="/eth-mark-tight-20.png"
                     alt="ETH mark"
                     className="w-5 h-5"
                   />
