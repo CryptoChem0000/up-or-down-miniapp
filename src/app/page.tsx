@@ -175,8 +175,8 @@ const ETHPriceDisplay = ({ price, change24h, changePercent }: ETHPriceDisplayPro
   );
 };
 
-interface StatsCardProps { streak: number; totalVotes: number; accuracy: number; points?: number; }
-const StatsCard = ({ streak, totalVotes, accuracy, points }: StatsCardProps) => (
+interface StatsCardProps { streak: number; totalVotes: number; accuracy: number; points?: number; fidParam?: string; }
+const StatsCard = ({ streak, totalVotes, accuracy, points, fidParam = "" }: StatsCardProps) => (
   <Card className="p-4 bg-gray-800 border-gray-700">
     <div className="grid grid-cols-3 gap-4 text-center">
       <div className="space-y-1">
@@ -330,7 +330,7 @@ export default function DailyOneTapPoll() {
               </div>
             </div>
 
-            <StatsCard streak={userStats.streak} totalVotes={userStats.totalVotes} accuracy={userStats.accuracy} points={userStats.points} />
+            <StatsCard streak={userStats.streak} totalVotes={userStats.totalVotes} accuracy={userStats.accuracy} points={userStats.points} fidParam={fidParam} />
 
             <div className="mt-auto">
               <Card className="p-3 bg-gray-800 border-gray-700">
