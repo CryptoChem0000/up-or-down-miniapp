@@ -190,18 +190,18 @@ export default function LeaderboardPage({
             {!compact ? (
               /* ===== Desktop/table layout ===== */
               <>
-                  <div className="grid grid-cols-5 gap-4 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 font-semibold text-sm text-gray-300">
-                    <div>Rank</div>
-                    <div>Name</div>
-                    <div className="text-center flex items-center justify-center gap-1">
+                  <div className="grid grid-cols-5 gap-4 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 font-semibold text-sm">
+                    <div className="text-gray-300">Rank</div>
+                    <div className="text-gray-300">Name</div>
+                    <div className="text-center flex items-center justify-center gap-1 text-gray-300">
                       <Flame className="w-4 h-4 text-orange-400" />
                       <span>Streak</span>
                     </div>
-                    <div className="text-center flex items-center justify-center gap-1">
+                    <div className="text-center flex items-center justify-center gap-1 text-gray-300">
                       <Users className="w-4 h-4 text-green-400" />
                       <span>Accuracy</span>
                     </div>
-                    <div className="text-center flex items-center justify-center gap-1">
+                    <div className="text-center flex items-center justify-center gap-1 text-gray-300">
                       <Trophy className="w-4 h-4 text-blue-400" />
                       <span>Points</span>
                     </div>
@@ -244,8 +244,31 @@ export default function LeaderboardPage({
               </>
             ) : (
               /* ===== Compact/mini-app layout ===== */
-              <div className="space-y-2">
-                {mockLeaderboardData.map((u) => (
+              <>
+                {/* Compact headers */}
+                <div className="flex items-center justify-between gap-3 py-2 px-3 bg-gray-700/50 rounded-lg mb-3 font-semibold text-xs text-gray-300">
+                  <div className="flex items-center gap-3">
+                    <div className="min-w-[44px] text-center">Rank</div>
+                    <div>Name</div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                      <Flame className="w-3 h-3 text-orange-400" />
+                      <span>Streak</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Users className="w-3 h-3 text-green-400" />
+                      <span>Acc</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Trophy className="w-3 h-3 text-blue-400" />
+                      <span>Points</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  {mockLeaderboardData.map((u) => (
                   <div
                     key={u.id}
                     className={`flex items-center justify-between gap-3 rounded-lg border p-3 transition-colors hover:bg-gray-700/30 ${
@@ -274,7 +297,8 @@ export default function LeaderboardPage({
                     </div>
                   </div>
                 ))}
-              </div>
+                </div>
+              </>
             )}
           </CardContent>
         </Card>
