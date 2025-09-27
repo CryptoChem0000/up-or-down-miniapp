@@ -154,22 +154,22 @@ interface ETHPriceDisplayProps { price: number; change24h: number; changePercent
 const ETHPriceDisplay = ({ price, change24h, changePercent }: ETHPriceDisplayProps) => {
   const positive = change24h >= 0;
   return (
-    <Card className="p-6 bg-gray-800 border-gray-700">
-      <div className="text-center space-y-3">
-        <div className="text-sm text-gray-400 font-medium">Current ETH Price</div>
-        <div className="text-3xl font-bold text-white">${price.toLocaleString()}</div>
+    <Card className="p-4 bg-gray-800 border-gray-700">
+      <div className="text-center space-y-2">
+        <div className="text-xs text-gray-400 font-medium">Current ETH Price</div>
+        <div className="text-2xl font-bold text-white">${price.toLocaleString()}</div>
         <div className="flex items-center justify-center gap-2">
-          <Badge variant="outline" className={cn("px-3 py-1 font-medium border-2", positive ? "border-green-500 text-green-400 bg-green-500/10" : "border-red-500 text-red-400 bg-red-500/10")}>
+          <Badge variant="outline" className={cn("px-2 py-0.5 text-xs font-medium border-2", positive ? "border-green-500 text-green-400 bg-green-500/10" : "border-red-500 text-red-400 bg-red-500/10")}>
             <div className="flex items-center gap-1">
               {positive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
               <span>{positive ? "+" : ""}{changePercent.toFixed(2)}%</span>
             </div>
           </Badge>
-          <span className={cn("text-sm font-medium", positive ? "text-green-400" : "text-red-400")}>
+          <span className={cn("text-xs font-medium", positive ? "text-green-400" : "text-red-400")}>
             {positive ? "+" : ""}${change24h.toFixed(2)}
           </span>
         </div>
-        <div className="text-xs text-gray-400">24h change</div>
+        <div className="text-[10px] text-gray-400">24h change</div>
       </div>
     </Card>
   );
