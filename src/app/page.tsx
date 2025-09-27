@@ -296,11 +296,6 @@ export default function DailyOneTapPoll() {
                   <div>Build your streak • Compete with others</div>
                   <div className="text-primary">Results revealed daily at 12:01 AM UTC</div>
 
-                  <div className="flex gap-2 justify-center mt-2">
-                    <a href="/api/frames" className="text-primary hover:underline">Frame →</a>
-                    <a href="/test" className="text-primary hover:underline">Test Panel →</a>
-                  </div>
-
                   <div className="pt-2 grid grid-cols-2 gap-2">
                     <Button
                       variant="secondary"
