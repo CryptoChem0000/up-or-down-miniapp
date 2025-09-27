@@ -266,13 +266,13 @@ export default function DailyOneTapPoll() {
           <div className="h-full flex flex-col p-6 space-y-6">
             <div className="text-center space-y-2">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center">
                   <img
                     src="/eth-mark-tight-20.png"
                     srcSet="/eth-mark-tight-40.png 2x"
                     alt="ETH"
-                    width={20}
-                    height={20}
+                    width={24}
+                    height={24}
                     decoding="async"
                     loading="eager"
                   />
