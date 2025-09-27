@@ -25,7 +25,9 @@ export default function HeroHeader({
   return (
     <div className="w-full flex flex-col items-center text-center">
       <div className="flex items-center justify-center gap-3">
-        {/* 32px chip; swap to your new icon if desired */}
+        {/* Ethereum title display - horizontal layout */}
+        <h1 className="text-xl font-bold tracking-tight sm:text-2xl text-white">{title}</h1>
+        {/* 32px chip moved to right side */}
         <Image
           src={iconSrc}
           alt="App icon"
@@ -34,8 +36,6 @@ export default function HeroHeader({
           className="rounded-full"
           priority
         />
-        {/* Ethereum title display - horizontal layout */}
-        <h1 className="text-xl font-bold tracking-tight sm:text-2xl text-white">{title}</h1>
       </div>
 
       <div className="mt-3 space-y-2">
