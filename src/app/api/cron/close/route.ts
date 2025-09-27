@@ -3,10 +3,14 @@ import { consensusMid } from "@/lib/prices";
 import { redis, k, todayUTC } from "@/lib/redis";
 import { CLOSE_SNAPSHOT_DELAY_MS } from "@/lib/rules";
 import { settleDay } from "@/lib/settle";
+import { requireCronAuth } from "@/lib/cron";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: Request) {
+  // Protect cron route
+  const authError = requireCronAuth(req);
+  if (authError) return authError;
   await new Promise(r => setTimeout(r, CLOSE_SNAPSHOT_DELAY_MS));
   const date = todayUTC();
   const openRaw = await redis.get<string | number>(k.priceOpen(date));

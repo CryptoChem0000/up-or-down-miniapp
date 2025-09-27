@@ -4,6 +4,7 @@ const nextConfig = {
     serverActions: { allowedOrigins: ['*'] }
   },
   transpilePackages: ['frames.js'],
+  productionBrowserSourceMaps: false, // Don't ship client sourcemaps in production
   webpack: (config) => {
     config.experiments = {
       ...config.experiments,

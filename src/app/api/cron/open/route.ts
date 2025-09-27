@@ -3,10 +3,14 @@ import { consensusMid } from "@/lib/prices";
 import { redis, k, todayUTC } from "@/lib/redis";
 import { todaysPoll } from "@/lib/poll";
 import { OPEN_SNAPSHOT_DELAY_MS } from "@/lib/rules";
+import { requireCronAuth } from "@/lib/cron";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: Request) {
+  // Protect cron route
+  const authError = requireCronAuth(req);
+  if (authError) return authError;
   await new Promise(r => setTimeout(r, OPEN_SNAPSHOT_DELAY_MS));
   const date = todayUTC();
   const exists = await redis.get(k.poll(date));
