@@ -207,7 +207,7 @@ const StatsCard = ({ streak, totalVotes, accuracy, points }: StatsCardProps) => 
       variant="outline"
       className="w-full mt-4 border-primary/20 hover:bg-primary/5 transition-colors text-gray-200 hover:text-white"
     >
-      <Link href={`/leaderboard?compact=1&fid=${new URL(window.location.href).searchParams.get("fid") || ""}`}>
+      <Link href={`/leaderboard?compact=1&fid=${fidParam}`}>
         <Crown className="w-4 h-4 text-primary mr-2" />
         <span className="text-sm font-medium">View Leaderboard</span>
       </Link>
@@ -241,6 +241,15 @@ export default function DailyOneTapPoll() {
     const fid = new URL(window.location.href).searchParams.get("fid");
     if (!fid) return;
     fetch(`/api/user/${fid}`).then(r => r.json()).then(setMy).catch(() => {});
+  }, []);
+
+  // Get FID for leaderboard link
+  const [fidParam, setFidParam] = React.useState("");
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const fid = new URL(window.location.href).searchParams.get("fid") || "";
+      setFidParam(fid);
+    }
   }, []);
 
   // Price fetching with recommended refresh policy
