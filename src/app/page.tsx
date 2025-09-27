@@ -134,8 +134,8 @@ const VoteButton = ({ direction, onClick, isSelected, className }: VoteButtonPro
       className={cn(
         "h-14 text-base font-bold transition-all duration-300 relative overflow-hidden group",
         "border-2 hover:scale-105 active:scale-95",
-        isUp ? "bg-green-500 border-green-500 text-white hover:shadow-lg hover:shadow-green-500/25"
-             : "bg-red-500 border-red-500 text-white hover:shadow-lg hover:shadow-red-500/25",
+        isUp ? "bg-green-500 border-green-500 text-white hover:border-green-400 hover:shadow-lg hover:shadow-green-500/25"
+             : "bg-red-500 border-red-500 text-white hover:border-red-400 hover:shadow-lg hover:shadow-red-500/25",
         isSelected && "ring-2 ring-white/30 shadow-xl",
         className
       )}
@@ -145,7 +145,6 @@ const VoteButton = ({ direction, onClick, isSelected, className }: VoteButtonPro
         {isUp ? <TrendingUp className="w-10 h-10" /> : <TrendingDown className="w-10 h-10" />}
         <span>{isUp ? "UP" : "DOWN"}</span>
       </div>
-      <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300", isUp ? "bg-green-500" : "bg-red-500")} />
     </Button>
   );
 };
