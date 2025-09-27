@@ -9,6 +9,7 @@ import { TrendingUp, TrendingDown, Flame, Users, Trophy, X, Crown } from "lucide
 import Link from "next/link";
 import * as ToastPrimitives from "@radix-ui/react-toast";
 import HeroHeader from "@/components/HeroHeader";
+import { useMyStats } from "@/hooks/useMyStats";
 
 /** utils */
 function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
@@ -227,16 +228,25 @@ export default function DailyOneTapPoll() {
   // FORCE DEPLOYMENT - ETHEREUM TITLE FIX - $(date)
   const [selectedVote, setSelectedVote] = useState<"up" | "down" | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
-  const [my, setMy] = useState<{streak:number; points:number} | null>(null);
-  const [ethData, setEthData] = useState<{price: number; change24h: number; changePercent: number}>({ price: 3420.5, change24h: 127.32, changePercent: 3.87 });
+  const [my, setMy] = useState<{streak:number; points:number; totalVotes?: number; accuracy?: number} | null>(null);
+  const [ethData, setEthData] = useState<{price: number; change24h: number; changePercent: number}>({ price: 0, change24h: 0, changePercent: 0 });
   const { toast } = useToast();
+  
+  // Get real user stats
+  const { data: myStats, loading: myStatsLoading } = useMyStats();
+
+  // Establish session cookie on page load (fire and forget)
+  React.useEffect(() => {
+    // This will set the HttpOnly cookie if the request is signed
+    fetch("/api/auth/establish", { method: "POST", cache: "no-store" }).catch(() => {});
+  }, []);
 
   // Show dev links only in development
   const SHOW_DEV_LINKS = 
     process.env.NEXT_PUBLIC_SHOW_DEV_LINKS === "true" &&
     process.env.NODE_ENV !== "production";
 
-  // Load personal stats if fid is in URL
+  // Load personal stats if fid is in URL (legacy support)
   React.useEffect(() => {
     const fid = new URL(window.location.href).searchParams.get("fid");
     if (!fid) return;
@@ -259,12 +269,11 @@ export default function DailyOneTapPoll() {
         const response = await fetch("/api/price", { cache: "no-store" });
         const data = await response.json();
         if (data.price) {
-          // For now, use mock 24h change data since CoinGecko free tier doesn't include it
-          // In production, you might want to store historical prices for change calculation
+          // Use real price data - change data will be calculated from historical prices
           setEthData({
             price: data.price,
-            change24h: 127.32, // Mock data - replace with real calculation
-            changePercent: 3.87 // Mock data - replace with real calculation
+            change24h: data.change24h || 0, // Real data when available
+            changePercent: data.changePercent || 0 // Real data when available
           });
         }
       } catch (error) {
@@ -293,10 +302,10 @@ export default function DailyOneTapPoll() {
   }, []);
 
   const userStats = { 
-    streak: my?.streak ?? 7, 
-    totalVotes: 23, 
-    accuracy: 74,
-    points: my?.points ?? 0
+    streak: myStats?.ok ? (myStats.stats?.currentStreak ?? 0) : (my?.streak ?? 0), 
+    totalVotes: myStats?.ok ? (myStats.stats?.totalVotes ?? 0) : (my?.totalVotes ?? 0), 
+    accuracy: myStats?.ok ? (myStats.accuracy ?? 0) : (my?.accuracy ?? 0),
+    points: myStats?.ok ? (myStats.stats?.totalPoints ?? 0) : (my?.points ?? 0)
   };
 
   function handleVote(dir: "up" | "down") {

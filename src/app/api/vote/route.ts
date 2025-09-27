@@ -3,6 +3,7 @@ import { VoteSchema, limitBy, limitVotesBy, limitByFid, ensureSingleVote, getCli
 import { getServerPrice } from "@/lib/prices";
 import { verifyFarcaster } from "@/lib/verify";
 import { redis, k } from "@/lib/redis";
+import { makeSessionCookie } from "@/lib/fc-session";
 
 export const runtime = "edge";
 
@@ -72,12 +73,22 @@ export async function POST(req: Request) {
       redis.sadd(`votes:${day}:fids`, fid),
     ]);
 
-    return NextResponse.json({ 
+    // Create response and set session cookie
+    const res = NextResponse.json({ 
       ok: true, 
       direction,
       priceAtVote: price.price,
       timestamp: price.ts 
     });
+    
+    // Establish session cookie after successful vote
+    const cookie = await makeSessionCookie(fid);
+    res.headers.append(
+      "Set-Cookie",
+      `${cookie.name}=${encodeURIComponent(cookie.value)}; Path=/; Max-Age=${cookie.maxAge}; HttpOnly; Secure; SameSite=Lax`
+    );
+    
+    return res;
 
   } catch (error) {
     console.error("Vote API error:", error);

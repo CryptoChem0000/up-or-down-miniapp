@@ -3,6 +3,9 @@
 import React from "react";
 import Link from "next/link";
 import { Trophy, Crown, Medal, Award, ArrowLeft, User, Flame, Users } from "lucide-react";
+import { useMyStats } from "@/hooks/useMyStats";
+import { useLeaderboard } from "@/hooks/useLeaderboard";
+import type { LeaderboardRow } from "@/lib/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Slot } from "@radix-ui/react-slot";
@@ -132,14 +135,6 @@ function getDisplayName(row: LeaderboardRow): string {
   return row.displayName || row.username || `fid:${row.fid}`;
 }
 
-type LeaderboardRow = {
-  rank: number;
-  fid: string;
-  score: number;
-  username: string | null;
-  displayName: string | null;
-  avatar: string | null;
-};
 
 export default function LeaderboardPage({
   searchParams,
@@ -147,56 +142,26 @@ export default function LeaderboardPage({
   searchParams: { compact?: string; fid?: string };
 }) {
   const compact = searchParams?.compact === "1";
-  const [userStats, setUserStats] = React.useState<{
-    streak: number;
-    points: number;
-    accuracy?: number;
-    rank?: number;
-  } | null>(null);
-  const [leaderboardData, setLeaderboardData] = React.useState<LeaderboardRow[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  
+  // Use real data hooks
+  const { data: myStats, loading: myStatsLoading } = useMyStats();
+  const { rows: leaderboardData, loading: leaderboardLoading } = useLeaderboard(50);
 
-  // Fetch real user stats if FID is provided
+  // Establish session cookie on page load (fire and forget)
   React.useEffect(() => {
-    const fid = searchParams?.fid;
-    if (!fid) return;
-    
-    fetch(`/api/user/${fid}`)
-      .then(r => r.json())
-      .then(data => {
-        if (data.streak !== undefined && data.points !== undefined) {
-          setUserStats(data);
-        }
-      })
-      .catch(() => {
-        // Keep using mock data on error
-      });
-  }, [searchParams?.fid]);
-
-  // Fetch real leaderboard data
-  React.useEffect(() => {
-    fetch("/api/leaderboard?n=10", { cache: "no-store" })
-      .then(r => r.json())
-      .then(data => {
-        if (data.topPoints) {
-          setLeaderboardData(data.topPoints);
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Failed to fetch leaderboard:", err);
-        setLoading(false);
-      });
+    // This will set the HttpOnly cookie if the request is signed
+    fetch("/api/auth/establish", { method: "POST", cache: "no-store" }).catch(() => {});
   }, []);
 
-  // Use real user stats if available, otherwise mock data
-  const displayUser = userStats ? {
-    ...currentUser,
-    currentStreak: userStats.streak,
-    totalPoints: userStats.points,
-    accuracy: userStats.accuracy ?? currentUser.accuracy,
-    rank: userStats.rank ?? currentUser.rank,
-  } : currentUser;
+  // Use real user stats if available, otherwise fallback values
+  const displayUser = {
+    name: "You",
+    address: "fid:" + (myStats?.stats?.fid || "unknown"),
+    currentStreak: myStats?.ok ? (myStats.stats?.currentStreak ?? 0) : 0,
+    accuracy: myStats?.ok ? (myStats.accuracy ?? 0) : 0,
+    totalPoints: myStats?.ok ? (myStats.stats?.totalPoints ?? 0) : 0,
+    rank: myStats?.ok ? (myStats.rank ?? null) : null,
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 p-4">
@@ -237,7 +202,7 @@ export default function LeaderboardPage({
                   </div>
 
                 <div className="space-y-2">
-                  {loading ? (
+                  {leaderboardLoading ? (
                     <div className="text-center py-8 text-gray-400">Loading leaderboard...</div>
                   ) : leaderboardData.length > 0 ? (
                     leaderboardData.map((u) => (
@@ -261,20 +226,18 @@ export default function LeaderboardPage({
 
                         <div className="text-center">
                           <Badge variant="secondary" className="font-bold bg-orange-500/20 text-orange-400 border-orange-500/30">
-                            {/* Mock streak data for now - will be updated when we have real data */}
-                            {Math.floor(Math.random() * 20) + 1}
+                            {u.currentStreak || 0}
                           </Badge>
                         </div>
 
                         <div className="text-center">
                           <Badge variant="outline" className="font-bold border-green-500/30 text-green-400 bg-green-500/10">
-                            {/* Mock accuracy data for now - will be updated when we have real data */}
-                            {Math.floor(Math.random() * 30) + 70}%
+                            {u.accuracy || 0}%
                           </Badge>
                         </div>
 
                         <div className="text-center">
-                          <span className="text-lg font-bold text-primary">{u.score.toLocaleString()}</span>
+                          <span className="text-lg font-bold text-primary">{u.points.toLocaleString()}</span>
                         </div>
                       </div>
                     ))
@@ -306,7 +269,7 @@ export default function LeaderboardPage({
                 </div>
                 
                 <div className="space-y-2">
-                  {loading ? (
+                  {leaderboardLoading ? (
                     <div className="text-center py-8 text-gray-400 text-sm">Loading...</div>
                   ) : leaderboardData.length > 0 ? (
                     leaderboardData.map((u) => (
@@ -331,15 +294,13 @@ export default function LeaderboardPage({
 
                         <div className="flex items-center gap-2">
                           <Badge variant="secondary" className="font-bold text-xs px-2 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
-                            {/* Mock streak data for now */}
-                            {Math.floor(Math.random() * 20) + 1}
+                            {u.currentStreak || 0}
                           </Badge>
                           <Badge variant="outline" className="font-bold text-xs px-2 py-0.5 border-green-500/30 text-green-400 bg-green-500/10">
-                            {/* Mock accuracy data for now */}
-                            {Math.floor(Math.random() * 30) + 70}%
+                            {u.accuracy || 0}%
                           </Badge>
                           <span className="text-primary font-bold text-sm tabular-nums">
-                            {u.score.toLocaleString()}
+                            {u.points.toLocaleString()}
                           </span>
                         </div>
                       </div>
@@ -384,8 +345,8 @@ export default function LeaderboardPage({
                   
                   <div className="grid grid-cols-5 gap-4 py-4 px-4 rounded-lg border bg-card/50 border-primary/30">
                     <div className="flex items-center gap-2">
-                      {getRankIcon(displayUser.rank)}
-                      <span className="font-bold text-white">#{displayUser.rank}</span>
+                      {getRankIcon(displayUser.rank || 999)}
+                      <span className="font-bold text-white">#{displayUser.rank || "—"}</span>
                     </div>
                     
                     <div className="flex flex-col">
@@ -422,8 +383,8 @@ export default function LeaderboardPage({
                 <div className="flex items-center justify-between gap-3 rounded-lg border p-3 bg-card/50 border-primary/30">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1 min-w-[44px]">
-                      {getRankIcon(displayUser.rank)}
-                      <span className="font-bold text-sm text-white">#{displayUser.rank}</span>
+                      {getRankIcon(displayUser.rank || 999)}
+                      <span className="font-bold text-sm text-white">#{displayUser.rank || "—"}</span>
                     </div>
                     <div className="flex flex-col">
                       <span className="font-medium text-sm text-white">{formatDisplayName(displayUser.name, true)}</span>
