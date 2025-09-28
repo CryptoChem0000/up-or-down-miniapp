@@ -1,22 +1,38 @@
 "use client";
 
 import { useEffect } from "react";
-import init from "@farcaster/miniapp-sdk";
 
 export function FarcasterSDK() {
   useEffect(() => {
     const initializeSDK = async () => {
       try {
-        // Tell Farcaster that the app is ready
-        await init.actions.ready();
-        console.log("Farcaster Mini App SDK initialized and ready");
+        // Check if we're in a Farcaster environment
+        if (typeof window !== "undefined" && window.parent !== window) {
+          // We're in an iframe, try to use the SDK
+          const { init } = await import("@farcaster/miniapp-sdk");
+          const sdk = await init();
+          await sdk.actions.ready();
+          console.log("Farcaster Mini App SDK initialized and ready");
+        } else {
+          console.log("Not in Farcaster environment, skipping SDK initialization");
+        }
       } catch (error) {
-        console.log("Farcaster SDK not available (running outside Farcaster):", error);
-        // This is expected when running outside of Farcaster
+        console.log("Farcaster SDK not available:", error);
+        // Try alternative approach - direct postMessage
+        try {
+          if (typeof window !== "undefined" && window.parent !== window) {
+            window.parent.postMessage({ type: "ready" }, "*");
+            console.log("Sent ready message via postMessage");
+          }
+        } catch (postError) {
+          console.log("PostMessage also failed:", postError);
+        }
       }
     };
 
-    initializeSDK();
+    // Add a small delay to ensure the app is fully loaded
+    const timer = setTimeout(initializeSDK, 100);
+    return () => clearTimeout(timer);
   }, []);
 
   return null; // This component doesn't render anything
