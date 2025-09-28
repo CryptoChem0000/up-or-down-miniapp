@@ -9,6 +9,7 @@ import { TrendingUp, TrendingDown, Flame, Users, Trophy, X, Crown } from "lucide
 import Link from "next/link";
 import * as ToastPrimitives from "@radix-ui/react-toast";
 import HeroHeader from "@/components/HeroHeader";
+import { FarcasterSDK } from "@/components/FarcasterSDK";
 import { useMyStats } from "@/hooks/useMyStats";
 import { useResultToast } from "@/hooks/useResultToast";
 import { useToast } from "@/lib/toast";
@@ -306,6 +307,7 @@ export default function DailyOneTapPoll() {
 
   return (
     <>
+      <FarcasterSDK />
       <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
         <div className="w-[424px] h-[695px] bg-gray-900 border border-gray-700 rounded-2xl overflow-hidden" style={{ boxShadow: "0 20px 60px -12px rgba(0,0,0,0.8)" }}>
           <div className="h-full flex flex-col p-6 space-y-6">
