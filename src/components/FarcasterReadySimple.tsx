@@ -15,8 +15,21 @@ export default function FarcasterReadySimple() {
         if (inMiniApp) {
           console.log("✅ Running in Farcaster Mini App environment");
           
-          // Import SDK
-          const { sdk } = await import("@farcaster/miniapp-sdk");
+          // Import SDK - try both methods
+          let sdk;
+          try {
+            const { sdk: miniappSdk } = await import("@farcaster/miniapp-sdk");
+            sdk = miniappSdk;
+            console.log("📦 Using @farcaster/miniapp-sdk");
+          } catch (e1) {
+            try {
+              const frameSdk = await import("@farcaster/frame-sdk");
+              sdk = frameSdk.default || frameSdk;
+              console.log("📦 Using @farcaster/frame-sdk");
+            } catch (e2) {
+              throw new Error(`Both SDK imports failed: ${e1.message}, ${e2.message}`);
+            }
+          }
           console.log("📦 SDK imported successfully");
           
           // Call ready() immediately
@@ -59,7 +72,14 @@ export default function FarcasterReadySimple() {
     // Also try on window load as backup
     const handleLoad = async () => {
       try {
-        const { sdk } = await import("@farcaster/miniapp-sdk");
+        let sdk;
+        try {
+          const { sdk: miniappSdk } = await import("@farcaster/miniapp-sdk");
+          sdk = miniappSdk;
+        } catch (e1) {
+          const frameSdk = await import("@farcaster/frame-sdk");
+          sdk = frameSdk.default || frameSdk;
+        }
         await sdk.actions.ready();
         console.log("✅ Ready() called on window load");
       } catch (e) {
