@@ -1,4 +1,5 @@
 {
+  "_comment": "Updated manifest schema",
   "accountAssociation": {
     "header": "",
     "payload": "",
