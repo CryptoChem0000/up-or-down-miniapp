@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { miniAppEmbedJSON } from "@/lib/miniapp";
 import { ClientToaster } from "@/components/ClientToaster";
-import FarcasterReadyOfficial from "@/components/FarcasterReadyOfficial";
+import FarcasterReadyFrame from "@/components/FarcasterReadyFrame";
 import FarcasterDebug from "@/components/FarcasterDebug";
 
 const baseUrl = process.env.APP_BASE_URL || "http://localhost:3010";
@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-                <FarcasterReadyOfficial />
+                <FarcasterReadyFrame />
                 <FarcasterDebug />
         {children}
         <ClientToaster />
