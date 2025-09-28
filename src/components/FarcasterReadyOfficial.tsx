@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-export default function FarcasterReadySimple() {
+export default function FarcasterReadyOfficial() {
   useEffect(() => {
     const initializeSDK = async () => {
       try {
@@ -15,24 +15,12 @@ export default function FarcasterReadySimple() {
         if (inMiniApp) {
           console.log("✅ Running in Farcaster Mini App environment");
           
-          // Import SDK - try both methods
-          let sdk;
-          try {
-            const { sdk: miniappSdk } = await import("@farcaster/miniapp-sdk");
-            sdk = miniappSdk;
-            console.log("📦 Using @farcaster/miniapp-sdk");
-          } catch (e1) {
-            try {
-              const frameSdk = await import("@farcaster/frame-sdk");
-              sdk = frameSdk.default || frameSdk;
-              console.log("📦 Using @farcaster/frame-sdk");
-            } catch (e2) {
-              throw new Error(`Both SDK imports failed: ${e1.message}, ${e2.message}`);
-            }
-          }
+          // Import SDK according to official docs
+          const { sdk } = await import("@farcaster/miniapp-sdk");
           console.log("📦 SDK imported successfully");
           
-          // Call ready() immediately - according to official docs
+          // Call ready() according to official documentation
+          // https://miniapps.farcaster.xyz/docs/guides/loading
           console.log("🚀 Calling ready()...");
           await sdk.ready();
           console.log("✅ ready() called successfully - splash screen should hide");
@@ -66,22 +54,15 @@ export default function FarcasterReadySimple() {
       }
     };
 
-    // Call immediately
+    // Call immediately when component mounts
     initializeSDK();
     
     // Also try on window load as backup
     const handleLoad = async () => {
       try {
-        let sdk;
-        try {
-          const { sdk: miniappSdk } = await import("@farcaster/miniapp-sdk");
-          sdk = miniappSdk;
-        } catch (e1) {
-          const frameSdk = await import("@farcaster/frame-sdk");
-          sdk = frameSdk.default || frameSdk;
-        }
+        const { sdk } = await import("@farcaster/miniapp-sdk");
         await sdk.ready();
-        console.log("✅ Ready() called on window load");
+        console.log("✅ ready() called on window load");
       } catch (e) {
         console.log("Window load ready() not needed:", e);
       }
