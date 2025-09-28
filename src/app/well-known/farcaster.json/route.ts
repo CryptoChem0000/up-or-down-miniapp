@@ -6,7 +6,7 @@ export async function GET() {
     accountAssociation: {
       header: "", payload: "", signature: ""
     },
-            miniapp: {
+    miniapp: {
       version: "1",
       name: "ETH Daily",
       iconUrl: `${base}/icon-1024.png`,
