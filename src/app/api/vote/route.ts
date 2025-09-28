@@ -14,6 +14,10 @@ function isoDayUTC(ts = Date.now()) {
 
 export async function POST(req: Request) {
   try {
+    // Debug logging
+    console.log("Vote API called");
+    console.log("Headers:", Object.fromEntries(req.headers.entries()));
+    
     // Check if voting window is open
     if (!isVotingOpen()) {
       return NextResponse.json({ error: "voting_closed" }, { status: 423 });
@@ -33,11 +37,15 @@ export async function POST(req: Request) {
 
     // Verify Farcaster signature
     const body = await req.json();
+    console.log("Request body:", JSON.stringify(body, null, 2));
+    
     const sanitizedBody = sanitizeInput(body);
     const verified = await verifyFarcaster(req, sanitizedBody);
     
+    console.log("Verification result:", verified);
+    
     if (!verified.ok) {
-      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "unauthorized", details: verified.error }, { status: 401 });
     }
     
     const fid = String((verified as any).fid);
