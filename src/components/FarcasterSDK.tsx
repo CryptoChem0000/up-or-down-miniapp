@@ -9,8 +9,7 @@ export function FarcasterSDK() {
         // Check if we're in a Farcaster environment
         if (typeof window !== "undefined" && window.parent !== window) {
           // We're in an iframe, try to use the SDK
-          const { init } = await import("@farcaster/miniapp-sdk");
-          const sdk = await init();
+          const sdk = await import("@farcaster/miniapp-sdk");
           await sdk.actions.ready();
           console.log("Farcaster Mini App SDK initialized and ready");
         } else {
