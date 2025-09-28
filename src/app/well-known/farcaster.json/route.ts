@@ -6,15 +6,15 @@ export async function GET() {
     accountAssociation: {
       header: "", payload: "", signature: ""
     },
-    frame: {
+    miniapp: {
       version: "1",
       name: "ETH Daily",
-      homeUrl: `${base}/`,
       iconUrl: `${base}/icon-1024.png`,
-      splashImageUrl: `${base}/splash-200.png`,
-      splashBackgroundColor: "#0b0b0b",
-      subtitle: "Predict ETH up/down daily. Build streaks. Climb the leaderboard.",
-      description: "ETH Daily - Predict ETH up/down daily. Build streaks. Climb the leaderboard.",
+      homeUrl: `${base}/`,
+      imageUrl: `${base}/api/results/today/image`,
+      buttonTitle: "🚀 Start",
+      splashImageUrl: `${base}/icon-1024.png`,
+      splashBackgroundColor: "#0b0b0b"
     },
   });
 }
