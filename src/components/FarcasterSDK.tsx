@@ -9,9 +9,12 @@ export function FarcasterSDK() {
         // Check if we're in a Farcaster environment
         if (typeof window !== "undefined" && window.parent !== window) {
           // We're in an iframe, try to use the SDK
-          const sdk = await import("@farcaster/miniapp-sdk");
+          const { sdk } = await import("@farcaster/miniapp-sdk");
           await sdk.actions.ready();
           console.log("Farcaster Mini App SDK initialized and ready");
+          
+          // Log context information for debugging
+          console.log("SDK Context:", sdk.context);
         } else {
           console.log("Not in Farcaster environment, skipping SDK initialization");
         }
