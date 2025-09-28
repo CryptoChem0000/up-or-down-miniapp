@@ -7,9 +7,9 @@ export function FarcasterSDK() {
   useEffect(() => {
     const initializeSDK = async () => {
       try {
-        const { actions } = await init();
+        const sdk = await init();
         // Tell Farcaster that the app is ready
-        await actions.ready();
+        await sdk.actions.ready();
         console.log("Farcaster Mini App SDK initialized and ready");
       } catch (error) {
         console.log("Farcaster SDK not available (running outside Farcaster):", error);
