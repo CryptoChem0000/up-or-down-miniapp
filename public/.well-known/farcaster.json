@@ -1,0 +1,15 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "frame": {
+    "version": "1",
+    "imageUrl": "https://up-or-down-miniapp.vercel.app/api/results/today/image",
+    "buttonTitle": "🚀 Start",
+    "postUrl": "https://up-or-down-miniapp.vercel.app/api/vote",
+    "splashImageUrl": "https://up-or-down-miniapp.vercel.app/splash-200.png",
+    "splashBackgroundColor": "#0b0b0b"
+  }
+}
