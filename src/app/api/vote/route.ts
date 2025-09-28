@@ -18,7 +18,8 @@ export async function OPTIONS() {
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With, Origin, Accept",
+      "Access-Control-Allow-Credentials": "true",
     },
   });
 }
@@ -33,6 +34,8 @@ export async function POST(req: Request) {
     if (!isVotingOpen()) {
       const res = NextResponse.json({ error: "voting_closed" }, { status: 423 });
       res.headers.set("Access-Control-Allow-Origin", "*");
+      res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Origin, Accept");
+      res.headers.set("Access-Control-Allow-Credentials", "true");
       return res;
     }
 
@@ -41,6 +44,8 @@ export async function POST(req: Request) {
     if (!rl.success) {
       const res = NextResponse.json({ error: "rate_limited" }, { status: 429 });
       res.headers.set("Access-Control-Allow-Origin", "*");
+      res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Origin, Accept");
+      res.headers.set("Access-Control-Allow-Credentials", "true");
       return res;
     }
 
@@ -49,6 +54,8 @@ export async function POST(req: Request) {
     if (!voteLimit.success) {
       const res = NextResponse.json({ error: "daily_vote_limit_exceeded" }, { status: 429 });
       res.headers.set("Access-Control-Allow-Origin", "*");
+      res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Origin, Accept");
+      res.headers.set("Access-Control-Allow-Credentials", "true");
       return res;
     }
 
@@ -64,6 +71,8 @@ export async function POST(req: Request) {
     if (!verified.ok) {
       const res = NextResponse.json({ error: "unauthorized", details: verified.error }, { status: 401 });
       res.headers.set("Access-Control-Allow-Origin", "*");
+      res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Origin, Accept");
+      res.headers.set("Access-Control-Allow-Credentials", "true");
       return res;
     }
     
@@ -74,6 +83,8 @@ export async function POST(req: Request) {
     if (!fidLimit.success) {
       const res = NextResponse.json({ error: "fid_rate_limited" }, { status: 429 });
       res.headers.set("Access-Control-Allow-Origin", "*");
+      res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Origin, Accept");
+      res.headers.set("Access-Control-Allow-Credentials", "true");
       return res;
     }
 
@@ -87,6 +98,8 @@ export async function POST(req: Request) {
     if (!single) {
       const res = NextResponse.json({ error: "already_voted" }, { status: 409 });
       res.headers.set("Access-Control-Allow-Origin", "*");
+      res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Origin, Accept");
+      res.headers.set("Access-Control-Allow-Credentials", "true");
       return res;
     }
 
@@ -121,7 +134,8 @@ export async function POST(req: Request) {
     // Add CORS headers for Farcaster Frames
     res.headers.set("Access-Control-Allow-Origin", "*");
     res.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-    res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Origin, Accept");
+    res.headers.set("Access-Control-Allow-Credentials", "true");
     
     // Establish session cookie after successful vote
     const cookie = await makeSessionCookie(fid);
@@ -138,11 +152,15 @@ export async function POST(req: Request) {
     if (error instanceof Error && error.name === "ZodError") {
       const res = NextResponse.json({ error: "invalid_input" }, { status: 400 });
       res.headers.set("Access-Control-Allow-Origin", "*");
+      res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Origin, Accept");
+      res.headers.set("Access-Control-Allow-Credentials", "true");
       return res;
     }
     
     const res = NextResponse.json({ error: "internal_error" }, { status: 500 });
     res.headers.set("Access-Control-Allow-Origin", "*");
+    res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Origin, Accept");
+    res.headers.set("Access-Control-Allow-Credentials", "true");
     return res;
   }
 }

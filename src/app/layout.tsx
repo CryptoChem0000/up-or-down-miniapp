@@ -23,8 +23,10 @@ export const metadata: Metadata = {
       version: "next",
       imageUrl: `${baseUrl}/api/results/today/image`,
       button: {
-        label: "🚀 Start",
-        action: "post"
+        title: "🚀 Start",
+        action: {
+          type: "post"
+        }
       },
       postUrl: `${baseUrl}/api/vote`
     }),
