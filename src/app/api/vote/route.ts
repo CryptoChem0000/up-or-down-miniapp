@@ -6,13 +6,13 @@ import { redis, k } from "@/lib/redis";
 import { makeSessionCookie } from "@/lib/fc-session";
 import { isVotingOpen } from "@/lib/vote-window";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 function isoDayUTC(ts = Date.now()) {
   return new Date(ts).toISOString().slice(0, 10);
 }
 
-export async function OPTIONS(req: Request) {
+export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
     headers: {
