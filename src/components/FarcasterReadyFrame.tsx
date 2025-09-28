@@ -21,8 +21,8 @@ export default function FarcasterReadyFrame() {
             console.log("📦 miniapp-sdk imported successfully");
             
             // Call ready() immediately
-            console.log("🚀 Calling sdk.ready()...");
-            await sdk.ready();
+            console.log("🚀 Calling sdk.actions.ready()...");
+            await sdk.actions.ready();
             console.log("✅ ready() called successfully - splash screen should hide");
             
           } catch (miniappError) {
@@ -57,7 +57,7 @@ export default function FarcasterReadyFrame() {
     const handleLoad = async () => {
       try {
         const { sdk } = await import("@farcaster/miniapp-sdk");
-        await sdk.ready();
+        await sdk.actions.ready();
         console.log("✅ ready() called on window load");
       } catch (e) {
         console.log("Window load ready() not needed:", e);
