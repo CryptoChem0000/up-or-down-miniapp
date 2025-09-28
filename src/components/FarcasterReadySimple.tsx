@@ -27,7 +27,7 @@ export default function FarcasterReadySimple() {
               sdk = frameSdk.default || frameSdk;
               console.log("📦 Using @farcaster/frame-sdk");
             } catch (e2) {
-              throw new Error(`Both SDK imports failed: ${e1.message}, ${e2.message}`);
+              throw new Error(`Both SDK imports failed: ${e1 instanceof Error ? e1.message : String(e1)}, ${e2 instanceof Error ? e2.message : String(e2)}`);
             }
           }
           console.log("📦 SDK imported successfully");
