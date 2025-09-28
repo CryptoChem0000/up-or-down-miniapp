@@ -8,8 +8,8 @@ export default function FarcasterReady() {
     const callReadyImmediately = async () => {
       try {
         console.log("🚀 Calling ready() immediately...");
-        const sdk = await import("@farcaster/miniapp-sdk");
-        await sdk.ready();
+        const { sdk } = await import("@farcaster/miniapp-sdk");
+        await sdk.actions.ready();
         console.log("✅ Ready() called successfully");
       } catch (e) {
         console.log("Immediate ready() failed:", e);
@@ -32,12 +32,12 @@ export default function FarcasterReady() {
           console.log("✅ Running in Farcaster Mini App environment");
           
           try {
-            const sdk = await import("@farcaster/miniapp-sdk");
+            const { sdk } = await import("@farcaster/miniapp-sdk");
             console.log("📦 SDK imported successfully");
             
             // Call ready() again
-            console.log("🚀 Calling sdk.ready()...");
-            await sdk.ready();
+            console.log("🚀 Calling sdk.actions.ready()...");
+            await sdk.actions.ready();
             console.log("✅ SDK ready() called successfully");
             
             // Get context
@@ -78,8 +78,8 @@ export default function FarcasterReady() {
     // Also try on window load
     const handleLoad = async () => {
       try {
-        const sdk = await import("@farcaster/miniapp-sdk");
-        await sdk.ready();
+        const { sdk } = await import("@farcaster/miniapp-sdk");
+        await sdk.actions.ready();
         console.log("✅ Ready() called on window load");
       } catch (e) {
         console.log("Window load ready() not needed:", e);
