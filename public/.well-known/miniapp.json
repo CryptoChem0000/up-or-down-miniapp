@@ -2,11 +2,11 @@
   "name": "ETH Daily (Staging)",
   "description": "Predict ETH up/down daily — staging environment for testing.",
   "icon": "/icon-1024.png",
-  "homepage": "https://up-or-down-miniapp-git-staging-yourhash.vercel.app/",
+  "homepage": "https://up-or-down-miniapp-git-staging-maxs-projects-302aab92.vercel.app/",
   "platforms": [
     {
       "type": "web",
-      "entrypoint": "https://up-or-down-miniapp-git-staging-yourhash.vercel.app/"
+      "entrypoint": "https://up-or-down-miniapp-git-staging-maxs-projects-302aab92.vercel.app/"
     }
   ],
   "permissions": {
