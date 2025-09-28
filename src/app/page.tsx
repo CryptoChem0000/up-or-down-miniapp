@@ -305,7 +305,8 @@ export default function DailyOneTapPoll() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+    <>
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
         <div className="w-[424px] h-[695px] bg-gray-900 border border-gray-700 rounded-2xl overflow-hidden" style={{ boxShadow: "0 20px 60px -12px rgba(0,0,0,0.8)" }}>
           <div className="h-full flex flex-col p-6 space-y-6">
             <HeroHeader
@@ -366,6 +367,7 @@ export default function DailyOneTapPoll() {
       </div>
 
       <Toaster />
+    </>
   );
 }
 
