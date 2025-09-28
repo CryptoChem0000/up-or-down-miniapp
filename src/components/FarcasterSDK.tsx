@@ -5,45 +5,71 @@ import { useEffect } from "react";
 export function FarcasterSDK() {
   useEffect(() => {
     const initializeSDK = async () => {
+      console.log("Initializing Farcaster SDK...");
+      
       try {
-        // Check if we're in a Farcaster environment
+        // Check if we're in a Farcaster environment (iframe)
         if (typeof window !== "undefined" && window.parent !== window) {
-          // We're in an iframe, try to use the SDK
-          const { sdk } = await import("@farcaster/miniapp-sdk");
+          console.log("Detected iframe environment, attempting SDK initialization");
           
-          // Call ready() to hide the splash screen
-          await sdk.actions.ready();
-          console.log("Farcaster Mini App SDK initialized and ready");
-          
-          // Get and log context information for debugging
-          const context = await sdk.context;
-          console.log("SDK Context:", context);
-          console.log("User:", context?.user);
-          console.log("Client:", context?.client);
-          console.log("Location:", context?.location);
-          
-          // Log available actions for debugging
-          console.log("Available actions:", Object.keys(sdk.actions));
+          // Try multiple approaches to call ready()
+          try {
+            // Approach 1: Direct SDK import
+            const { sdk } = await import("@farcaster/miniapp-sdk");
+            console.log("SDK imported successfully");
+            
+            // Call ready() immediately
+            await sdk.actions.ready();
+            console.log("✅ SDK ready() called successfully");
+            
+            // Get context
+            try {
+              const context = await sdk.context;
+              console.log("SDK Context:", context);
+            } catch (contextError) {
+              console.log("Context error:", contextError);
+            }
+            
+          } catch (sdkError) {
+            console.log("SDK approach failed:", sdkError);
+            
+            // Approach 2: Try postMessage
+            try {
+              window.parent.postMessage({ 
+                type: "ready",
+                source: "farcaster-miniapp"
+              }, "*");
+              console.log("✅ Sent ready message via postMessage");
+            } catch (postError) {
+              console.log("PostMessage failed:", postError);
+            }
+          }
           
         } else {
-          console.log("Not in Farcaster environment, skipping SDK initialization");
+          console.log("Not in iframe environment, skipping SDK initialization");
         }
       } catch (error) {
-        console.log("Farcaster SDK not available:", error);
-        // Try alternative approach - direct postMessage
+        console.log("SDK initialization failed:", error);
+        
+        // Fallback: Try postMessage anyway
         try {
           if (typeof window !== "undefined" && window.parent !== window) {
-            window.parent.postMessage({ type: "ready" }, "*");
-            console.log("Sent ready message via postMessage");
+            window.parent.postMessage({ 
+              type: "ready",
+              source: "farcaster-miniapp-fallback"
+            }, "*");
+            console.log("✅ Fallback postMessage sent");
           }
-        } catch (postError) {
-          console.log("PostMessage also failed:", postError);
+        } catch (fallbackError) {
+          console.log("Fallback also failed:", fallbackError);
         }
       }
     };
 
-    // Add a small delay to ensure the app is fully loaded
-    const timer = setTimeout(initializeSDK, 100);
+    // Try immediately and also with a delay
+    initializeSDK();
+    const timer = setTimeout(initializeSDK, 500);
+    
     return () => clearTimeout(timer);
   }, []);
 
