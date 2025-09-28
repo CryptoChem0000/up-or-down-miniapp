@@ -12,17 +12,17 @@ export function FarcasterSDK() {
         if (typeof window !== "undefined" && window.parent !== window) {
           console.log("Detected iframe environment, attempting SDK initialization");
           
-          // Try multiple approaches to call ready()
           try {
-            // Approach 1: Direct SDK import
+            // Import SDK exactly as shown in official documentation
             const { sdk } = await import("@farcaster/miniapp-sdk");
             console.log("SDK imported successfully");
             
-            // Call ready() immediately
+            // Call ready() exactly as per official documentation
+            // This is the critical call that hides the splash screen
             await sdk.actions.ready();
-            console.log("✅ SDK ready() called successfully");
+            console.log("✅ SDK ready() called successfully - splash screen should hide");
             
-            // Get context
+            // Get context for debugging
             try {
               const context = await sdk.context;
               console.log("SDK Context:", context);
@@ -33,13 +33,13 @@ export function FarcasterSDK() {
           } catch (sdkError) {
             console.log("SDK approach failed:", sdkError);
             
-            // Approach 2: Try postMessage
+            // Fallback: Try postMessage
             try {
               window.parent.postMessage({ 
                 type: "ready",
                 source: "farcaster-miniapp"
               }, "*");
-              console.log("✅ Sent ready message via postMessage");
+              console.log("✅ Sent ready message via postMessage fallback");
             } catch (postError) {
               console.log("PostMessage failed:", postError);
             }
