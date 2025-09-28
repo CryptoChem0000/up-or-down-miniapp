@@ -13,7 +13,7 @@ export async function GET() {
       homeUrl: `${base}/`,
       imageUrl: `${base}/api/results/today/image`,
       buttonTitle: "🚀 Start",
-      splashImageUrl: `${base}/icon-1024.png`,
+      splashImageUrl: `${base}/splash-200.png`,
       splashBackgroundColor: "#0b0b0b"
     },
   });

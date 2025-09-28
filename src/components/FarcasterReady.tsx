@@ -25,6 +25,16 @@ export default function FarcasterReady() {
             await sdk.actions.ready();
             console.log("✅ SDK ready() called successfully - splash screen should hide");
             
+            // Additional ready() call to ensure splash screen is hidden
+            setTimeout(async () => {
+              try {
+                await sdk.actions.ready();
+                console.log("✅ Additional ready() call completed");
+              } catch (e) {
+                console.log("Additional ready() call not needed:", e);
+              }
+            }, 100);
+            
             // Get context information after ready()
             try {
               const context = await sdk.context;
