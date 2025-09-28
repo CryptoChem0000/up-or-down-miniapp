@@ -15,11 +15,12 @@ export function FarcasterSDK() {
           await sdk.actions.ready();
           console.log("Farcaster Mini App SDK initialized and ready");
           
-          // Log context information for debugging
-          console.log("SDK Context:", sdk.context);
-          console.log("User:", sdk.context?.user);
-          console.log("Client:", sdk.context?.client);
-          console.log("Location:", sdk.context?.location);
+          // Get and log context information for debugging
+          const context = await sdk.context;
+          console.log("SDK Context:", context);
+          console.log("User:", context?.user);
+          console.log("Client:", context?.client);
+          console.log("Location:", context?.location);
           
           // Log available actions for debugging
           console.log("Available actions:", Object.keys(sdk.actions));
