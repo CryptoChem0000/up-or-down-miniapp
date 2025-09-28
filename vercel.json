@@ -19,7 +19,7 @@
       "headers": [
         {
           "key": "X-Frame-Options",
-          "value": ""
+          "value": "ALLOWALL"
         },
         {
           "key": "Content-Security-Policy",
