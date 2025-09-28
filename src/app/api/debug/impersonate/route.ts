@@ -4,6 +4,11 @@ import { makeSessionCookie } from "@/lib/fc-session";
 export const runtime = "edge";
 
 export async function POST(req: Request) {
+  // Only allow in staging/preview environments
+  if (process.env.NODE_ENV === "production" && !process.env.VERCEL_ENV?.includes("preview")) {
+    return NextResponse.json({ ok: false, error: "not available in production" }, { status: 404 });
+  }
+
   const body = await req.json().catch(() => ({}));
   const fid = String(body.fid || "");
   if (!fid) return NextResponse.json({ ok: false, error: "fid required" }, { status: 400 });

@@ -4,6 +4,11 @@ import { redis } from "@/lib/redis";
 export const runtime = "edge";
 
 export async function POST(req: Request) {
+  // Only allow in staging/preview environments
+  if (process.env.NODE_ENV === "production" && !process.env.VERCEL_ENV?.includes("preview")) {
+    return NextResponse.json({ ok: false, error: "not available in production" }, { status: 404 });
+  }
+
   // simple auth guard (set ADMIN_TOKEN in your env)
   const auth = req.headers.get("authorization");
   if (!auth || auth !== `Bearer ${process.env.ADMIN_TOKEN}`) {
