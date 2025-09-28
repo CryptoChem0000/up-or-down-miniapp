@@ -10,11 +10,20 @@ export function FarcasterSDK() {
         if (typeof window !== "undefined" && window.parent !== window) {
           // We're in an iframe, try to use the SDK
           const { sdk } = await import("@farcaster/miniapp-sdk");
+          
+          // Call ready() to hide the splash screen
           await sdk.actions.ready();
           console.log("Farcaster Mini App SDK initialized and ready");
           
           // Log context information for debugging
           console.log("SDK Context:", sdk.context);
+          console.log("User:", sdk.context?.user);
+          console.log("Client:", sdk.context?.client);
+          console.log("Location:", sdk.context?.location);
+          
+          // Log available actions for debugging
+          console.log("Available actions:", Object.keys(sdk.actions));
+          
         } else {
           console.log("Not in Farcaster environment, skipping SDK initialization");
         }
