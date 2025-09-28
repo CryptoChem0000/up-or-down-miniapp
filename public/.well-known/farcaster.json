@@ -4,7 +4,7 @@
     "payload": "",
     "signature": ""
   },
-  "frame": {
+  "miniapp": {
     "version": "1",
     "name": "ETH Daily",
     "iconUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
