@@ -12,6 +12,17 @@ function isoDayUTC(ts = Date.now()) {
   return new Date(ts).toISOString().slice(0, 10);
 }
 
+export async function OPTIONS(req: Request) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  });
+}
+
 export async function POST(req: Request) {
   try {
     // Debug logging
@@ -20,19 +31,25 @@ export async function POST(req: Request) {
     
     // Check if voting window is open
     if (!isVotingOpen()) {
-      return NextResponse.json({ error: "voting_closed" }, { status: 423 });
+      const res = NextResponse.json({ error: "voting_closed" }, { status: 423 });
+      res.headers.set("Access-Control-Allow-Origin", "*");
+      return res;
     }
 
     // Rate limit by IP
     const rl = await limitBy(req);
     if (!rl.success) {
-      return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+      const res = NextResponse.json({ error: "rate_limited" }, { status: 429 });
+      res.headers.set("Access-Control-Allow-Origin", "*");
+      return res;
     }
 
     // Rate limit votes by IP (5 per day)
     const voteLimit = await limitVotesBy(req);
     if (!voteLimit.success) {
-      return NextResponse.json({ error: "daily_vote_limit_exceeded" }, { status: 429 });
+      const res = NextResponse.json({ error: "daily_vote_limit_exceeded" }, { status: 429 });
+      res.headers.set("Access-Control-Allow-Origin", "*");
+      return res;
     }
 
     // Verify Farcaster signature
@@ -45,7 +62,9 @@ export async function POST(req: Request) {
     console.log("Verification result:", verified);
     
     if (!verified.ok) {
-      return NextResponse.json({ error: "unauthorized", details: verified.error }, { status: 401 });
+      const res = NextResponse.json({ error: "unauthorized", details: verified.error }, { status: 401 });
+      res.headers.set("Access-Control-Allow-Origin", "*");
+      return res;
     }
     
     const fid = String((verified as any).fid);
@@ -53,7 +72,9 @@ export async function POST(req: Request) {
     // Rate limit by FID (10 requests per day)
     const fidLimit = await limitByFid(fid);
     if (!fidLimit.success) {
-      return NextResponse.json({ error: "fid_rate_limited" }, { status: 429 });
+      const res = NextResponse.json({ error: "fid_rate_limited" }, { status: 429 });
+      res.headers.set("Access-Control-Allow-Origin", "*");
+      return res;
     }
 
     // Validate input
@@ -64,7 +85,9 @@ export async function POST(req: Request) {
     const day = isoDayUTC();
     const single = await ensureSingleVote(fid, day);
     if (!single) {
-      return NextResponse.json({ error: "already_voted" }, { status: 409 });
+      const res = NextResponse.json({ error: "already_voted" }, { status: 409 });
+      res.headers.set("Access-Control-Allow-Origin", "*");
+      return res;
     }
 
     // Server-stamped price (cached)
@@ -95,6 +118,11 @@ export async function POST(req: Request) {
       timestamp: price.ts 
     });
     
+    // Add CORS headers for Farcaster Frames
+    res.headers.set("Access-Control-Allow-Origin", "*");
+    res.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    
     // Establish session cookie after successful vote
     const cookie = await makeSessionCookie(fid);
     res.headers.append(
@@ -108,9 +136,13 @@ export async function POST(req: Request) {
     console.error("Vote API error:", error);
     
     if (error instanceof Error && error.name === "ZodError") {
-      return NextResponse.json({ error: "invalid_input" }, { status: 400 });
+      const res = NextResponse.json({ error: "invalid_input" }, { status: 400 });
+      res.headers.set("Access-Control-Allow-Origin", "*");
+      return res;
     }
     
-    return NextResponse.json({ error: "internal_error" }, { status: 500 });
+    const res = NextResponse.json({ error: "internal_error" }, { status: 500 });
+    res.headers.set("Access-Control-Allow-Origin", "*");
+    return res;
   }
 }
