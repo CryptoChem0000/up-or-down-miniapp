@@ -366,7 +366,6 @@ export default function DailyOneTapPoll() {
       </div>
 
       <Toaster />
-    </>
   );
 }
 
