@@ -16,6 +16,6 @@ export async function GET() {
       splashImageUrl: `${base}/splash-200.png`,
       splashBackgroundColor: "#0b0b0b"
     },
-    _timestamp: Date.now()
+    _cacheBust: Math.random().toString(36).substring(7)
   });
 }

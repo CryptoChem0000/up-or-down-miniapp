@@ -15,46 +15,30 @@ export default function FarcasterReadyFrame() {
         if (inMiniApp) {
           console.log("✅ Running in Farcaster Mini App environment");
           
-          // Try Frame SDK constructor approach
+          // Try miniapp-sdk approach
           try {
-            const { Frame } = await import("@farcaster/frame-sdk");
-            console.log("📦 Frame SDK imported successfully");
-            
-            const sdk = new Frame();
-            console.log("📦 Frame SDK instance created");
+            const { sdk } = await import("@farcaster/miniapp-sdk");
+            console.log("📦 miniapp-sdk imported successfully");
             
             // Call ready() immediately
             console.log("🚀 Calling sdk.ready()...");
             await sdk.ready();
             console.log("✅ ready() called successfully - splash screen should hide");
             
-          } catch (frameError) {
-            console.error("❌ Frame SDK failed:", frameError);
+          } catch (miniappError) {
+            console.error("❌ miniapp-sdk failed:", miniappError);
             
-            // Fallback to miniapp-sdk
+            // PostMessage fallback
             try {
-              const { sdk } = await import("@farcaster/miniapp-sdk");
-              console.log("📦 Fallback to miniapp-sdk");
-              
-              console.log("🚀 Calling sdk.ready()...");
-              await sdk.ready();
-              console.log("✅ ready() called successfully - splash screen should hide");
-              
-            } catch (miniappError) {
-              console.error("❌ Both SDK approaches failed:", miniappError);
-              
-              // PostMessage fallback
-              try {
-                if (window.parent && window.parent !== window) {
-                  window.parent.postMessage({ 
-                    type: "ready",
-                    source: "farcaster-miniapp"
-                  }, "*");
-                  console.log("✅ PostMessage fallback sent");
-                }
-              } catch (postError) {
-                console.error("❌ PostMessage fallback failed:", postError);
+              if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ 
+                  type: "ready",
+                  source: "farcaster-miniapp"
+                }, "*");
+                console.log("✅ PostMessage fallback sent");
               }
+            } catch (postError) {
+              console.error("❌ PostMessage fallback failed:", postError);
             }
           }
           
@@ -72,8 +56,7 @@ export default function FarcasterReadyFrame() {
     // Also try on window load as backup
     const handleLoad = async () => {
       try {
-        const { Frame } = await import("@farcaster/frame-sdk");
-        const sdk = new Frame();
+        const { sdk } = await import("@farcaster/miniapp-sdk");
         await sdk.ready();
         console.log("✅ ready() called on window load");
       } catch (e) {
