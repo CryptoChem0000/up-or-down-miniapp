@@ -5,17 +5,17 @@ export function middleware() {
 
   const csp = [
     "default-src 'self'",
-    "script-src 'self'",
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https:",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https:",
-    "connect-src 'self' https://api.neynar.com https://api.coingecko.com https://*.upstash.io",
-    "frame-ancestors 'self'",
+    "connect-src 'self' https:",
+    "frame-ancestors 'self' https://warpcast.com https://*.warpcast.com",
     "base-uri 'self'",
     "form-action 'self'",
   ].join("; ");
 
   res.headers.set("Content-Security-Policy", csp);
-  res.headers.set("X-Frame-Options", "SAMEORIGIN");
+  // Remove X-Frame-Options to allow Warpcast embedding
   res.headers.set("X-Content-Type-Options", "nosniff");
   res.headers.set("Referrer-Policy", "no-referrer");
   res.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
