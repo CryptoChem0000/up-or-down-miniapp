@@ -13,6 +13,7 @@ import { useMyStats } from "@/hooks/useMyStats";
 import { useResultToast } from "@/hooks/useResultToast";
 import { useToast } from "@/lib/toast";
 import { isVotingOpen, getVotingWindowMessage } from "@/lib/vote-window";
+import { tryEstablishFcSession } from "@/lib/fc-establish";
 
 /** utils */
 function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
@@ -221,8 +222,7 @@ export default function DailyOneTapPoll() {
 
   // Establish session cookie on page load (fire and forget)
   React.useEffect(() => {
-    // This will set the HttpOnly cookie if the request is signed
-    fetch("/api/auth/establish", { method: "POST", cache: "no-store" }).catch(() => {});
+    tryEstablishFcSession();
   }, []);
 
   // Show dev links only in development
