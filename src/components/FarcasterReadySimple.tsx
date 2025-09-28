@@ -33,8 +33,8 @@ export default function FarcasterReadySimple() {
           console.log("📦 SDK imported successfully");
           
           // Call ready() immediately - according to official docs
-          console.log("🚀 Calling ready()...");
-          await sdk.ready();
+          console.log("🚀 Calling sdk.actions.ready()...");
+          await sdk.actions.ready();
           console.log("✅ ready() called successfully - splash screen should hide");
           
           // Get context for debugging
@@ -80,7 +80,7 @@ export default function FarcasterReadySimple() {
           const frameSdk = await import("@farcaster/frame-sdk");
           sdk = frameSdk.default || frameSdk;
         }
-        await sdk.ready();
+        await sdk.actions.ready();
         console.log("✅ Ready() called on window load");
       } catch (e) {
         console.log("Window load ready() not needed:", e);
