@@ -6,12 +6,12 @@
   },
   "miniapp": {
     "version": "1",
-    "name": "ETH Daily (Staging)",
-    "iconUrl": "https://up-or-down-miniapp-git-staging-maxs-projects-302aab92.vercel.app/icon-1024.png",
-    "homeUrl": "https://up-or-down-miniapp-git-staging-maxs-projects-302aab92.vercel.app/",
-    "imageUrl": "https://up-or-down-miniapp-git-staging-maxs-projects-302aab92.vercel.app/api/results/today/image",
+    "name": "ETH Daily",
+    "iconUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
+    "homeUrl": "https://up-or-down-miniapp.vercel.app/",
+    "imageUrl": "https://up-or-down-miniapp.vercel.app/api/results/today/image",
     "buttonTitle": "🚀 Start",
-    "splashImageUrl": "https://up-or-down-miniapp-git-staging-maxs-projects-302aab92.vercel.app/icon-1024.png",
+    "splashImageUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
     "splashBackgroundColor": "#0b0b0b"
   }
 }
