@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 
-// Force deployment - manifest route
 export async function GET() {
   const base = process.env.APP_BASE_URL!;
   return NextResponse.json({
     accountAssociation: {
       header: "", payload: "", signature: ""
     },
-    miniapp: {
+    frame: {
       version: "1",
       name: "ETH Daily",
       iconUrl: `${base}/icon-1024.png`,
