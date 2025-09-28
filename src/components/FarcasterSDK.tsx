@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { init } from "@farcaster/miniapp-sdk";
+import init from "@farcaster/miniapp-sdk";
 
 export function FarcasterSDK() {
   useEffect(() => {
