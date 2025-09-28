@@ -19,17 +19,10 @@ export const metadata: Metadata = {
     apple: [{ url: "/icon-256.png" }],
   },
   other: {
-    "fc:frame": JSON.stringify({
-      version: "next",
-      imageUrl: `${baseUrl}/api/results/today/image`,
-      button: {
-        title: "🚀 Start",
-        action: {
-          type: "post"
-        }
-      },
-      postUrl: `${baseUrl}/api/vote`
-    }),
+    "fc:frame": "vNext",
+    "fc:frame:image": `${baseUrl}/api/results/today/image`,
+    "fc:frame:button:1": "🚀 Start",
+    "fc:frame:post_url": `${baseUrl}/api/vote`,
     "og:title": "Ethereum",
     "og:description": "Predict ETH daily. Win streak multipliers.",
     "og:image": `${baseUrl}/api/results/today/image`,
