@@ -1,6 +1,8 @@
-import { frames } from "frames.js/next";
+import { createFrames } from "frames.js/next";
 
 const base = process.env.APP_BASE_URL || "https://up-or-down-miniapp.vercel.app";
+
+const frames = createFrames();
 
 export const GET = frames(async () => {
   return {
