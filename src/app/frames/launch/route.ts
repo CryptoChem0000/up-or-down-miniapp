@@ -10,7 +10,7 @@ export const GET = frames(async () => {
     buttons: [
       {
         label: "Open App",
-        action: "launch_frame",        // ✅ required for Mini App launch
+        action: "link",                // Use link action for Mini App launch
         target: `${base}/`             // ✅ your Mini App entrypoint
       }
     ],
