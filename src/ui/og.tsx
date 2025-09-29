@@ -19,11 +19,19 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
     (
       <div
         style={{
-          width: 1200, height: 800, display: "flex", flexDirection: "column",
-          justifyContent: "center", alignItems: "center", background: "#0b0b0b", color: "white", fontFamily: "sans-serif", padding: 40
+          width: 1200, 
+          height: 800, 
+          display: "flex", 
+          flexDirection: "column",
+          justifyContent: "center", 
+          alignItems: "center", 
+          background: "#0b0b0b", 
+          color: "white", 
+          fontFamily: "sans-serif", 
+          padding: 40
         }}
       >
-        <div style={{ fontSize: 56, fontWeight: 700, textAlign: "center", marginBottom: 32 }}>
+        <div style={{ fontSize: 56, fontWeight: 700, textAlign: "center", marginBottom: 32, display: "flex" }}>
           {question}
         </div>
         <div style={{ display: "flex", gap: 32, width: "100%", maxWidth: 1000 }}>
@@ -32,17 +40,37 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
             const val = opt === "UP" ? up : down;
             const isH = highlight === opt;
             return (
-              <div key={opt} style={{ display: "flex", flexDirection: "column", flex: 1, border: isH ? "4px solid #6cf" : "2px solid #333", borderRadius: 20, padding: 24 }}>
-                <div style={{ fontSize: 32, opacity: 0.8, marginBottom: 8 }}>{opt}</div>
-                <div style={{ fontSize: 96, fontWeight: 800, marginBottom: 8 }}>{pct}%</div>
-                <div style={{ fontSize: 24, opacity: 0.6 }}>{val} votes</div>
+              <div 
+                key={opt} 
+                style={{ 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  flex: 1, 
+                  border: isH ? "4px solid #6cf" : "2px solid #333", 
+                  borderRadius: 20, 
+                  padding: 24 
+                }}
+              >
+                <div style={{ fontSize: 32, opacity: 0.8, marginBottom: 8, display: "flex" }}>{opt}</div>
+                <div style={{ fontSize: 96, fontWeight: 800, marginBottom: 8, display: "flex" }}>{pct}%</div>
+                <div style={{ fontSize: 24, opacity: 0.6, display: "flex" }}>{val} votes</div>
               </div>
             );
           })}
         </div>
-        {subtitle && <div style={{ marginTop: 32, fontSize: 24, opacity: 0.8 }}>{subtitle}</div>}
+        {subtitle && (
+          <div style={{ marginTop: 32, fontSize: 24, opacity: 0.8, display: "flex" }}>
+            {subtitle}
+          </div>
+        )}
       </div>
     ),
-    { width: 1200, height: 800 }
+    { 
+      width: 1200, 
+      height: 800,
+      headers: {
+        'Cache-Control': 'public, max-age=31536000, immutable',
+      },
+    }
   );
 }

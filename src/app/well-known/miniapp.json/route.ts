@@ -6,14 +6,15 @@ export async function GET() {
     accountAssociation: {
       header: "", payload: "", signature: ""
     },
-    frame: {
+    miniapp: {
       version: "1",
+      name: "ETH Daily",
+      iconUrl: `${base}/icon-1024.png`,
+      homeUrl: `${base}/`,
       imageUrl: `${base}/api/results/today/image`,
       buttonTitle: "🚀 Start",
-      postUrl: `${base}/api/vote`,
       splashImageUrl: `${base}/splash-200.png`,
       splashBackgroundColor: "#0b0b0b"
     },
-    _cacheBust: Math.random().toString(36).substring(7)
   });
 }

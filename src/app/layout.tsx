@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { miniAppEmbedJSON } from "@/lib/miniapp";
 import { ClientToaster } from "@/components/ClientToaster";
-import FarcasterReady from "@/components/FarcasterReady";
+import FarcasterReadyFrame from "@/components/FarcasterReadyFrame";
 
 const baseUrl = process.env.APP_BASE_URL || "http://localhost:3010";
 
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
       button: {
         title: "🚀 Start",
         action: {
-          type: "post"
+          type: "launch_frame"
         }
       },
       postUrl: `${baseUrl}/api/vote`
@@ -40,10 +40,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <FarcasterReady />
+                <FarcasterReadyFrame />
         {children}
         <ClientToaster />
       </body>
     </html>
   );
 }
+// Force deployment
