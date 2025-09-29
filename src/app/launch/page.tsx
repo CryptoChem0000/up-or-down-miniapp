@@ -8,12 +8,14 @@ export const metadata: Metadata = {
   other: {
     // Farcaster Frame v2 JSON format for Mini App launch
     "fc:frame": JSON.stringify({
-      version: "vNext",
-      image: `${baseUrl}/hero.png`,
+      version: "next",
+      imageUrl: `${baseUrl}/hero.png`,
       button: {
         title: "Open App",
-        action: "link",
-        target: `${baseUrl}/`
+        action: {
+          type: "link",
+          target: `${baseUrl}/`
+        }
       }
     }),
   },
