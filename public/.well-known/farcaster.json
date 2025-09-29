@@ -1,11 +1,9 @@
 {
-  "frame": {
-    "name": "Up or Down",
+  "miniapp": {
     "version": "1",
+    "name": "Up or Down",
     "iconUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
     "homeUrl": "https://up-or-down-miniapp.vercel.app",
-    "imageUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
-    "buttonTitle": "Make Prediction",
     "splashImageUrl": "https://up-or-down-miniapp.vercel.app/splash.png",
     "splashBackgroundColor": "#0b0b0b",
     "webhookUrl": "https://up-or-down-miniapp.vercel.app/api/webhook",
@@ -26,7 +24,6 @@
     "ogImageUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
     "screenshotUrls": [
       "https://up-or-down-miniapp.vercel.app/up-or-down.png"
-    ],
-    "castShareUrl": "https://warpcast.com/~/compose?text=Predict+ETH+and+build+your+streak!+Play+now:+"
+    ]
   }
 }
