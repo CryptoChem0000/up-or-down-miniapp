@@ -25,7 +25,7 @@ export const metadata: Metadata = {
       button: {
         title: "🚀 Start",
         action: {
-          type: "post"
+          type: "launch_frame"
         }
       },
       postUrl: `${baseUrl}/api/vote`
