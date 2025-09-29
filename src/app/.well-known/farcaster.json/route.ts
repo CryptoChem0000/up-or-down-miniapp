@@ -27,7 +27,19 @@ export async function GET() {
       ogDescription: "Predict ETH price movement, build your streak, earn points.",
       ogImageUrl: `${baseUrl}/icon-1024.png`,
       screenshotUrls: [`${baseUrl}/up-or-down.png`]
-    }
+    },
+    // Add Frame meta tags for frames.js debugger
+    "fc:frame": JSON.stringify({
+      version: "next",
+      imageUrl: `${baseUrl}/api/results/today/image`,
+      button: {
+        title: "🚀 Start",
+        action: {
+          type: "post"
+        }
+      },
+      postUrl: `${baseUrl}/api/vote`
+    })
   };
 
   return NextResponse.json(manifest, {
