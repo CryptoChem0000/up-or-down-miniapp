@@ -6,12 +6,16 @@ export const metadata: Metadata = {
   title: "Up or Down - Launch",
   description: "Launch the Up or Down Mini App",
   other: {
-    // Farcaster Frame v2 individual meta tags for Mini App launch
-    "fc:frame": "vNext",
-    "fc:frame:image": `${baseUrl}/hero.png`,
-    "fc:frame:button:1": "Open App",
-    "fc:frame:button:1:action": "link",
-    "fc:frame:button:1:target": `${baseUrl}/`,
+    // Farcaster Frame v2 JSON format for Mini App launch
+    "fc:frame": JSON.stringify({
+      version: "vNext",
+      image: `${baseUrl}/hero.png`,
+      button: {
+        title: "Open App",
+        action: "link",
+        target: `${baseUrl}/`
+      }
+    }),
   },
 };
 
