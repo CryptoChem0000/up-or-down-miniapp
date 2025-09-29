@@ -13,7 +13,7 @@ export const metadata: Metadata = {
       button: {
         title: "Open App",
         action: {
-          type: "link",
+          type: "launch_frame",
           target: `${baseUrl}/`
         }
       }
