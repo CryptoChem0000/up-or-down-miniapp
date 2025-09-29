@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     "fc:frame": "vNext",
     "fc:frame:image": `${baseUrl}/hero.png`,
     "fc:frame:button:1": "Open App",
-    "fc:frame:button:1:action": "link",
+    "fc:frame:button:1:action": "launch_frame",
     "fc:frame:button:1:target": `${baseUrl}/`,
   },
 };
