@@ -20,14 +20,14 @@ export const metadata: Metadata = {
   },
   other: {
     "fc:frame": JSON.stringify({
-      version: "vNext",
-      image: `${baseUrl}/api/results/today/image`,
-      buttons: [
-        {
-          label: "🚀 Start",
-          action: "post"
+      version: "next",
+      imageUrl: `${baseUrl}/api/results/today/image`,
+      button: {
+        title: "🚀 Start",
+        action: {
+          type: "post"
         }
-      ],
+      },
       postUrl: `${baseUrl}/api/vote`
     }),
     "og:title": "Ethereum",
