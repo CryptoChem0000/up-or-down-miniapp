@@ -1,34 +1,32 @@
 {
-  "version": "1",
-  "name": "Up or Down",
-  "subtitle": "Build your streak. Compete with others.",
-  "description": "Make a daily prediction on whether the price of ETH will go up or down. Earn points and build your streak to gain multipliers.",
-  "primaryCategory": "games",
-  "iconUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
-  "screenshotUrls": [
-    "https://up-or-down-miniapp.vercel.app/screenshot1.png",
-    "https://up-or-down-miniapp.vercel.app/screenshot2.png"
-  ],
-  "imageUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
-  "heroImageUrl": "https://up-or-down-miniapp.vercel.app/hero.png",
-  "splashImageUrl": "https://up-or-down-miniapp.vercel.app/splash.png",
-  "splashBackgroundColor": "#6200EA",
-  "tags": ["social", "messaging", "community"],
-  "tagline": "Grow, Raid & Rise in Stoke Fire",
-  "buttonTitle": "Open mini app",
-  "ogTitle": "Up or Down – Daily ETH Predictions",
-  "ogDescription": "Make daily predictions on ETH price movements. Build your streak and compete with others.",
-  "ogImageUrl": "https://up-or-down-miniapp.vercel.app/og-image.png",
-  "castShareUrl": "https://warpcast.com/~/compose?text=Check+out+this+app",
-  "homeUrl": "https://up-or-down-miniapp.vercel.app",
-  "webhookUrl": "https://up-or-down-miniapp.vercel.app/api/webhook",
-  "platforms": [
-    {
-      "type": "web",
-      "entrypoint": "https://up-or-down-miniapp.vercel.app/"
-    }
-  ],
-  "permissions": {
-    "farcaster": ["read_user", "sign_actions"]
+  "frame": {
+    "name": "Up or Down",
+    "version": "1",
+    "iconUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
+    "homeUrl": "https://up-or-down-miniapp.vercel.app",
+    "imageUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
+    "buttonTitle": "Make Prediction",
+    "splashImageUrl": "https://up-or-down-miniapp.vercel.app/splash.png",
+    "splashBackgroundColor": "#0b0b0b",
+    "webhookUrl": "https://up-or-down-miniapp.vercel.app/api/webhook",
+    "subtitle": "Build your streak. Compete with others.",
+    "description": "Make a daily prediction on whether the price of ETH will go up or down. Earn points and build your streak to gain multipliers.",
+    "primaryCategory": "games",
+    "heroImageUrl": "https://up-or-down-miniapp.vercel.app/hero.png",
+    "tags": [
+      "prediction",
+      "community",
+      "ethereum",
+      "daily",
+      "eth"
+    ],
+    "tagline": "Build your streak and compete.",
+    "ogTitle": "Up or Down - ETH Prediction",
+    "ogDescription": "Predict ETH price movement, build your streak, earn points.",
+    "ogImageUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
+    "screenshotUrls": [
+      "https://up-or-down-miniapp.vercel.app/up-or-down.png"
+    ],
+    "castShareUrl": "https://warpcast.com/~/compose?text=Predict+ETH+and+build+your+streak!+Play+now:+"
   }
 }
