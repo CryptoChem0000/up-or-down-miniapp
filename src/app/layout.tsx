@@ -24,7 +24,9 @@ export const metadata: Metadata = {
       imageUrl: `${baseUrl}/api/results/today/image`,
       button: {
         title: "🚀 Start",
-        action: "post"
+        action: {
+          type: "post"
+        }
       },
       postUrl: `${baseUrl}/api/vote`
     }),
