@@ -1,0 +1,8 @@
+{
+  "name": "Up or Down",
+  "description": "Predict ETH up/down daily.",
+  "icon": "/icon-1024.png",
+  "homepage": "https://up-or-down-miniapp.vercel.app/",
+  "platforms": [{ "type": "web", "entrypoint": "https://up-or-down-miniapp.vercel.app/" }],
+  "permissions": { "farcaster": ["read_user","sign_actions"] }
+}
