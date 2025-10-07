@@ -48,7 +48,7 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
         </div>
 
         {/* Question */}
-        <div style={{ fontSize: 32, textAlign: "center", marginBottom: 40, opacity: 0.9 }}>
+        <div style={{ fontSize: 32, textAlign: "center", marginBottom: 40, opacity: 0.9, display: "flex", justifyContent: "center" }}>
           Will ETH price go up or down today?
         </div>
 
@@ -76,7 +76,6 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
               alignItems: "center",
               gap: 8
             }}>
-              <span>📉</span>
               {priceChange}
             </div>
             <div style={{ fontSize: 18, color: "#dc2626", fontWeight: 600 }}>{priceChangeAbs}</div>
@@ -85,7 +84,7 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
         </div>
 
         {/* Make Your Prediction */}
-        <div style={{ fontSize: 24, textAlign: "center", marginBottom: 24, fontWeight: 600 }}>
+        <div style={{ fontSize: 24, textAlign: "center", marginBottom: 24, fontWeight: 600, display: "flex", justifyContent: "center" }}>
           Make Your Prediction
         </div>
 
@@ -100,11 +99,9 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
             fontWeight: 700,
             display: "flex",
             alignItems: "center",
-            gap: 12,
-            flex: 1,
-            justifyContent: "center"
+            justifyContent: "center",
+            flex: 1
           }}>
-            <span>📈</span>
             UP
           </div>
           <div style={{
@@ -116,11 +113,9 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
             fontWeight: 700,
             display: "flex",
             alignItems: "center",
-            gap: 12,
-            flex: 1,
-            justifyContent: "center"
+            justifyContent: "center",
+            flex: 1
           }}>
-            <span>📉</span>
             DOWN
           </div>
         </div>
