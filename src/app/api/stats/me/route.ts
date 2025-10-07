@@ -12,38 +12,49 @@ function num(x: unknown) {
 }
 
 export async function GET(req: Request) {
-  const sess = await getSessionFromRequest(req);
-  if (!sess) return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+  try {
+    const sess = await getSessionFromRequest(req);
+    if (!sess) return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
 
-  const key = `stats:${sess.fid}`;
-  const raw = await redis.hgetall<Record<string, string>>(key);
+    const key = `stats:${sess.fid}`;
+    const raw = await redis.hgetall<Record<string, string>>(key);
 
-  const stats: UserStats = {
-    fid: sess.fid,
-    totalVotes: num(raw?.totalVotes),
-    correctCount: num(raw?.correctCount),
-    currentStreak: num(raw?.currentStreak),
-    bestStreak: num(raw?.bestStreak),
-    totalPoints: num(raw?.totalPoints),
-  };
-  const accuracy = stats.totalVotes ? Math.round((stats.correctCount / stats.totalVotes) * 100) : 0;
+    const stats: UserStats = {
+      fid: sess.fid,
+      totalVotes: num(raw?.totalVotes),
+      correctCount: num(raw?.correctCount),
+      currentStreak: num(raw?.currentStreak),
+      bestStreak: num(raw?.bestStreak),
+      totalPoints: num(raw?.totalPoints),
+    };
+    const accuracy = stats.totalVotes ? Math.round((stats.correctCount / stats.totalVotes) * 100) : 0;
 
-  const rankRaw = await redis.zrevrank("lb:points", sess.fid);
-  const rank = typeof rankRaw === "number" ? rankRaw + 1 : null;
+    const rankRaw = await redis.zrevrank("lb:points", sess.fid);
+    const rank = typeof rankRaw === "number" ? rankRaw + 1 : null;
 
-  // Fetch profile data for the current user
-  const profiles = await getProfiles([sess.fid]);
-  const profile = profiles[sess.fid];
-
-  return NextResponse.json({ 
-    ok: true, 
-    stats, 
-    accuracy, 
-    rank,
-    profile: {
-      username: profile?.username ?? null,
-      displayName: profile?.displayName ?? null,
-      avatar: profile?.avatar ?? null,
+    // Fetch profile data for the current user with error handling
+    let profile = null;
+    try {
+      const profiles = await getProfiles([sess.fid]);
+      profile = profiles[sess.fid];
+    } catch (profileError) {
+      console.error("Error fetching profile for FID", sess.fid, ":", profileError);
+      // Continue without profile data rather than failing completely
     }
-  });
+
+    return NextResponse.json({ 
+      ok: true, 
+      stats, 
+      accuracy, 
+      rank,
+      profile: {
+        username: profile?.username ?? null,
+        displayName: profile?.displayName ?? null,
+        avatar: profile?.avatar ?? null,
+      }
+    });
+  } catch (error) {
+    console.error("Error in /api/stats/me:", error);
+    return NextResponse.json({ ok: false, error: "internal_error" }, { status: 500 });
+  }
 }

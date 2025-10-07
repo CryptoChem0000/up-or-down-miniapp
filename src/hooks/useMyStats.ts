@@ -29,14 +29,10 @@ export function useMyStats() {
     let alive = true;
     (async () => {
       try {
-        console.log("useMyStats: Fetching /api/stats/me");
         const r = await fetch("/api/stats/me", { cache: "no-store" });
-        console.log("useMyStats: Response status:", r.status);
         const j: MeResp = await r.json();
-        console.log("useMyStats: Response data:", j);
         if (alive) setData(j);
       } catch (error) {
-        console.error("useMyStats: Fetch error:", error);
         if (alive) setData({ ok: false, error: "fetch_failed" });
       } finally {
         if (alive) setLoading(false);

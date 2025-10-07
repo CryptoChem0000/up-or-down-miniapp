@@ -158,20 +158,16 @@ export default function LeaderboardPage({
     fetch("/api/auth/establish", { method: "POST", cache: "no-store" }).catch(() => {});
   }, []);
 
-  // Debug logging
-  React.useEffect(() => {
-    console.log("Leaderboard myStats:", myStats);
-    console.log("Leaderboard loading:", myStatsLoading);
-  }, [myStats, myStatsLoading]);
 
   // Use real user stats if available, otherwise fallback values
+  const hasValidSession = myStats?.ok === true;
   const displayUser = {
-    name: myStats?.ok && myStats?.profile ? getCurrentUserDisplayName(myStats.profile) : "You",
-    address: myStats?.ok && myStats?.stats?.fid ? myStats.stats.fid : "unknown",
-    currentStreak: myStats?.ok ? (myStats.stats?.currentStreak ?? 0) : 0,
-    accuracy: myStats?.ok ? (myStats.accuracy ?? 0) : 0,
-    totalPoints: myStats?.ok ? (myStats.stats?.totalPoints ?? 0) : 0,
-    rank: myStats?.ok ? (myStats.rank ?? null) : null,
+    name: hasValidSession && myStats?.profile ? getCurrentUserDisplayName(myStats.profile) : "You",
+    address: hasValidSession && myStats?.stats?.fid ? myStats.stats.fid : "Vote to see your stats",
+    currentStreak: hasValidSession ? (myStats.stats?.currentStreak ?? 0) : 0,
+    accuracy: hasValidSession ? (myStats.accuracy ?? 0) : 0,
+    totalPoints: hasValidSession ? (myStats.stats?.totalPoints ?? 0) : 0,
+    rank: hasValidSession ? (myStats.rank ?? null) : null,
   };
 
   return (
@@ -421,6 +417,25 @@ export default function LeaderboardPage({
               )}
             </CardContent>
           </Card>
+
+          {/* Show helpful message if user hasn't voted yet */}
+          {!hasValidSession && !myStatsLoading && (
+            <Card className="bg-blue-500/10 border-blue-500/20 mt-4">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3 text-blue-300">
+                  <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                    <span className="text-blue-400">💡</span>
+                  </div>
+                  <div>
+                    <p className="font-medium">Want to see your stats?</p>
+                    <p className="text-sm text-blue-400/80">
+                      Cast your vote first to establish your session and track your progress!
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>
