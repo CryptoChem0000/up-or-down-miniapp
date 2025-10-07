@@ -19,6 +19,20 @@ export const metadata: Metadata = {
     apple: [{ url: "/icon-256.png" }],
   },
   other: {
+    "fc:miniapp": JSON.stringify({
+      version: "1",
+      imageUrl: `${baseUrl}/api/results/today/image`,
+      button: {
+        title: "🚀 Start",
+        action: {
+          type: "launch_frame",
+          name: "Up or Down",
+          url: baseUrl,
+          splashImageUrl: `${baseUrl}/splash.png`,
+          splashBackgroundColor: "#0b0b0b"
+        }
+      }
+    }),
     "og:title": "Ethereum",
     "og:description": "Predict ETH daily. Win streak multipliers.",
     "og:image": `${baseUrl}/api/results/today/image`,
