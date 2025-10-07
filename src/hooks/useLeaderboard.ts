@@ -37,7 +37,7 @@ export function useLeaderboard(limit = 50) {
             { rank: 12, fid: "1012", points: 756, totalVotes: 17, currentStreak: 5, accuracy: 72, username: "nft_collector", displayName: "NFT Collector", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=nft" },
             { rank: 13, fid: "1013", points: 723, totalVotes: 16, currentStreak: 4, accuracy: 70, username: "dao_member", displayName: "DAO Member", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=dao" },
             { rank: 14, fid: "1014", points: 689, totalVotes: 15, currentStreak: 3, accuracy: 68, username: "web3_builder", displayName: "Web3 Builder", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=web3" },
-            { rank: 15, fid: "12345", points: 284, totalVotes: 23, currentStreak: 7, accuracy: 78, username: "alice.eth", displayName: "Alice", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=alice" }
+            { rank: 15, fid: "12345", points: 12545, totalVotes: 23, currentStreak: 7, accuracy: 78, username: "alice.eth", displayName: "Alice", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=alice" }
           ];
           
           // Simulate loading delay

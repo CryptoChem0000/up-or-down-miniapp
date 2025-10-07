@@ -49,7 +49,7 @@ export function useMyStats() {
               correctCount: 18,
               currentStreak: 7,
               bestStreak: 12,
-              totalPoints: 284
+              totalPoints: 12545
             },
             accuracy: 78,
             rank: 15,
