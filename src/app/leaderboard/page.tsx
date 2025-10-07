@@ -158,10 +158,16 @@ export default function LeaderboardPage({
     fetch("/api/auth/establish", { method: "POST", cache: "no-store" }).catch(() => {});
   }, []);
 
+  // Debug logging
+  React.useEffect(() => {
+    console.log("Leaderboard myStats:", myStats);
+    console.log("Leaderboard loading:", myStatsLoading);
+  }, [myStats, myStatsLoading]);
+
   // Use real user stats if available, otherwise fallback values
   const displayUser = {
-    name: getCurrentUserDisplayName(myStats?.profile),
-    address: myStats?.stats?.fid || "unknown",
+    name: myStats?.ok && myStats?.profile ? getCurrentUserDisplayName(myStats.profile) : "You",
+    address: myStats?.ok && myStats?.stats?.fid ? myStats.stats.fid : "unknown",
     currentStreak: myStats?.ok ? (myStats.stats?.currentStreak ?? 0) : 0,
     accuracy: myStats?.ok ? (myStats.accuracy ?? 0) : 0,
     totalPoints: myStats?.ok ? (myStats.stats?.totalPoints ?? 0) : 0,
