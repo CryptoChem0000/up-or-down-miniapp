@@ -11,9 +11,12 @@ export async function GET(req: NextRequest, { params }: { params: { date: string
   const counts = (await redis.hgetall<Record<string, number>>(k.counts(date))) ?? {};
   const response = renderOg({ question: `[${date}] ${poll.question}`, counts });
   
-  // Add cache-busting headers
-  response.headers.set('Cache-Control', 'public, max-age=3600, must-revalidate');
+  // Add aggressive cache-busting headers
+  response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+  response.headers.set('Pragma', 'no-cache');
+  response.headers.set('Expires', '0');
   response.headers.set('ETag', `"${Date.now()}"`);
+  response.headers.set('Last-Modified', new Date().toUTCString());
   
   return response;
 }

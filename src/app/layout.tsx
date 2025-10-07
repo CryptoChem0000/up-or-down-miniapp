@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   other: {
     "fc:miniapp": JSON.stringify({
       version: "1",
-      imageUrl: `${baseUrl}/api/results/today/image`,
+      imageUrl: `${baseUrl}/api/results/today/image?v=1759871275`,
       button: {
         title: "🚀 Start",
         action: {
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     }),
     "og:title": "Ethereum",
     "og:description": "Predict ETH daily. Win streak multipliers.",
-    "og:image": `${baseUrl}/api/results/today/image`,
+    "og:image": `${baseUrl}/api/results/today/image?v=1759871275`,
   },
 };
 

@@ -164,7 +164,9 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
       width: 1200, 
       height: 800,
       headers: {
-        'Cache-Control': 'public, max-age=3600, must-revalidate',
+        'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+        'Pragma': 'no-cache',
+        'Expires': '0',
       },
     }
   );
