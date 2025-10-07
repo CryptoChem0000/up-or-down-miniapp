@@ -15,12 +15,13 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self';",
-              "img-src 'self' data: https:;",
+              "img-src 'self' data: https: blob:;",
               "style-src 'self' 'unsafe-inline';",
               "script-src 'self' 'unsafe-eval' 'unsafe-inline' https:;",
-              "connect-src 'self' https:;",
-              // ✅ allow Warpcast to embed your app
-              "frame-ancestors 'self' https://warpcast.com https://*.warpcast.com https://farcaster.xyz https://*.farcaster.xyz;",
+              "connect-src 'self' https: wss: ws: https://ws.farcaster.xyz wss://ws.farcaster.xyz https://mypinata.cloud https://*.mypinata.cloud;",
+              "frame-src 'self' https:;",
+              // ✅ allow Farcaster domains to embed your app
+              "frame-ancestors 'self' https://warpcast.com https://*.warpcast.com https://farcaster.xyz https://*.farcaster.xyz https://client.farcaster.xyz https://*.client.farcaster.xyz;",
             ].join(" "),
           },
         ],
