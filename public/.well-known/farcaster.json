@@ -12,7 +12,7 @@
     "name": "Up or Down",
     "iconUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
     "homeUrl": "https://up-or-down-miniapp.vercel.app",
-    "imageUrl": "https://up-or-down-miniapp.vercel.app/api/results/today/image",
+    "imageUrl": "https://up-or-down-miniapp.vercel.app/api/results/today/image?v=1759869886",
     "buttonTitle": "🚀 Start",
     "splashImageUrl": "https://up-or-down-miniapp.vercel.app/splash.png",
     "splashBackgroundColor": "#0b0b0b",
