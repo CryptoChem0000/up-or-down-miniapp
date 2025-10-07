@@ -48,7 +48,7 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
         </div>
 
         {/* Question */}
-        <div style={{ fontSize: 32, textAlign: "center", marginBottom: 40, opacity: 0.9, display: "flex", justifyContent: "center" }}>
+        <div style={{ fontSize: 32, textAlign: "center", marginBottom: 60, opacity: 0.9, display: "flex", justifyContent: "center" }}>
           Will ETH price go up or down today?
         </div>
 
@@ -84,7 +84,7 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
         </div>
 
         {/* Make Your Prediction */}
-        <div style={{ fontSize: 24, textAlign: "center", marginBottom: 24, fontWeight: 600, display: "flex", justifyContent: "center" }}>
+        <div style={{ fontSize: 24, textAlign: "center", marginBottom: 40, fontWeight: 600, display: "flex", justifyContent: "center" }}>
           Make Your Prediction
         </div>
 
