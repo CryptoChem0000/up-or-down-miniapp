@@ -266,17 +266,14 @@ export default function LeaderboardPage({
                     <div>Name</div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="flex items-center justify-center gap-1">
+                    <div className="flex items-center justify-center" title="Streak">
                       <Flame className="w-3 h-3 text-orange-400" />
-                      <span className="text-xs">S</span>
                     </div>
-                    <div className="flex items-center justify-center gap-1">
+                    <div className="flex items-center justify-center" title="Accuracy">
                       <Users className="w-3 h-3 text-green-400" />
-                      <span className="text-xs">A</span>
                     </div>
-                    <div className="flex items-center justify-center gap-1">
+                    <div className="flex items-center justify-center" title="Points">
                       <Trophy className="w-3 h-3 text-blue-400" />
-                      <span className="text-xs">P</span>
                     </div>
                   </div>
                 </div>
