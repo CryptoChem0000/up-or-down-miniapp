@@ -9,5 +9,11 @@ export async function GET(req: NextRequest, { params }: { params: { date: string
   const date = params.date === "today" ? todayUTC() : params.date;
   const poll = (await redis.get<ReturnType<typeof todaysPoll>>(k.poll(date))) ?? todaysPoll(date);
   const counts = (await redis.hgetall<Record<string, number>>(k.counts(date))) ?? {};
-  return renderOg({ question: `[${date}] ${poll.question}`, counts });
+  const response = renderOg({ question: `[${date}] ${poll.question}`, counts });
+  
+  // Add cache-busting headers
+  response.headers.set('Cache-Control', 'public, max-age=3600, must-revalidate');
+  response.headers.set('ETag', `"${Date.now()}"`);
+  
+  return response;
 }

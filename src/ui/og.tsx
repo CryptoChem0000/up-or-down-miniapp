@@ -169,7 +169,7 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
       width: 1200, 
       height: 800,
       headers: {
-        'Cache-Control': 'public, max-age=31536000, immutable',
+        'Cache-Control': 'public, max-age=3600, must-revalidate',
       },
     }
   );
