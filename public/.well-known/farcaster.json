@@ -1,4 +1,7 @@
 {
+  "baseBuilder": {
+    "allowedAddresses": ["0x225f5539435ccFE4A7759dd1cED3AE26D72e40D2"]
+  },
   "miniapp": {
     "version": "1",
     "name": "Up or Down",
