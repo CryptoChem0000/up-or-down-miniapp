@@ -16,6 +16,8 @@
     "ogTitle": "Up or Down - ETH Prediction",
     "ogDescription": "Predict ETH price movement, build your streak, earn points.",
     "ogImageUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
-    "screenshotUrls": ["https://up-or-down-miniapp.vercel.app/up-or-down.png"]
+    "screenshotUrls": ["https://up-or-down-miniapp.vercel.app/up-or-down.png"],
+    "requiredChains": ["eip155:1"],
+    "requiredCapabilities": ["actions.ready", "context"]
   }
 }
