@@ -19,6 +19,6 @@
     "webhookUrl": "https://up-or-down-miniapp.vercel.app/api/webhook",
     "description": "Make a daily prediction on whether the price of ETH will go up or down. Earn points and build your streak to gain multipliers.",
     "requiredChains": ["eip155:1", "eip155:8453"],
-    "requiredCapabilities": ["actions.ready", "context"]
+    "requiredCapabilities": ["actions.ready"]
   }
 }
