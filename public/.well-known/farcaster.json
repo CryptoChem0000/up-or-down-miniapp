@@ -6,17 +6,7 @@
     "homeUrl": "https://up-or-down-miniapp.vercel.app",
     "splashImageUrl": "https://up-or-down-miniapp.vercel.app/splash.png",
     "splashBackgroundColor": "#0b0b0b",
-    "webhookUrl": "https://up-or-down-miniapp.vercel.app/api/webhook",
-    "subtitle": "Build your streak. Compete with others.",
     "description": "Make a daily prediction on whether the price of ETH will go up or down. Earn points and build your streak to gain multipliers.",
-    "primaryCategory": "games",
-    "heroImageUrl": "https://up-or-down-miniapp.vercel.app/hero.png",
-    "tags": ["prediction", "community", "ethereum", "daily", "eth"],
-    "tagline": "Build your streak and compete.",
-    "ogTitle": "Up or Down - ETH Prediction",
-    "ogDescription": "Predict ETH price movement, build your streak, earn points.",
-    "ogImageUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
-    "screenshotUrls": ["https://up-or-down-miniapp.vercel.app/up-or-down.png"],
     "requiredChains": ["eip155:1", "eip155:8453"],
     "requiredCapabilities": ["actions.ready", "context"]
   }

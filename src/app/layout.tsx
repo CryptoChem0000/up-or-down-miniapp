@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { miniAppEmbedJSON } from "@/lib/miniapp";
 import { ClientToaster } from "@/components/ClientToaster";
 import FarcasterReady from "@/components/FarcasterReady";
 import RuntimeDetection from "@/components/RuntimeDetection";
@@ -20,17 +19,6 @@ export const metadata: Metadata = {
     apple: [{ url: "/icon-256.png" }],
   },
   other: {
-    "fc:frame": JSON.stringify({
-      version: "next",
-      imageUrl: `${baseUrl}/api/results/today/image`,
-      button: {
-        title: "🚀 Start",
-        action: {
-          type: "post"
-        }
-      },
-      postUrl: `${baseUrl}/api/vote`
-    }),
     "og:title": "Ethereum",
     "og:description": "Predict ETH daily. Win streak multipliers.",
     "og:image": `${baseUrl}/api/results/today/image`,
