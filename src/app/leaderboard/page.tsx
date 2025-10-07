@@ -135,6 +135,11 @@ function getDisplayName(row: LeaderboardRow): string {
   return row.displayName || row.username || `fid:${row.fid}`;
 }
 
+// Helper function to get display name for current user
+function getCurrentUserDisplayName(profile: { displayName?: string | null; username?: string | null } | undefined): string {
+  return profile?.displayName || profile?.username || "You";
+}
+
 
 export default function LeaderboardPage({
   searchParams,
@@ -155,8 +160,8 @@ export default function LeaderboardPage({
 
   // Use real user stats if available, otherwise fallback values
   const displayUser = {
-    name: "You",
-    address: "fid:" + (myStats?.stats?.fid || "unknown"),
+    name: getCurrentUserDisplayName(myStats?.profile),
+    address: myStats?.stats?.fid || "unknown",
     currentStreak: myStats?.ok ? (myStats.stats?.currentStreak ?? 0) : 0,
     accuracy: myStats?.ok ? (myStats.accuracy ?? 0) : 0,
     totalPoints: myStats?.ok ? (myStats.stats?.totalPoints ?? 0) : 0,

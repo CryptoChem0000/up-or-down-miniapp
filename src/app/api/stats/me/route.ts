@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
 import { getSessionFromRequest } from "@/lib/session";
+import { getProfiles } from "@/lib/profile-cache";
 import type { UserStats } from "@/lib/types";
 
 export const runtime = "edge";
@@ -30,5 +31,19 @@ export async function GET(req: Request) {
   const rankRaw = await redis.zrevrank("lb:points", sess.fid);
   const rank = typeof rankRaw === "number" ? rankRaw + 1 : null;
 
-  return NextResponse.json({ ok: true, stats, accuracy, rank });
+  // Fetch profile data for the current user
+  const profiles = await getProfiles([sess.fid]);
+  const profile = profiles[sess.fid];
+
+  return NextResponse.json({ 
+    ok: true, 
+    stats, 
+    accuracy, 
+    rank,
+    profile: {
+      username: profile?.username ?? null,
+      displayName: profile?.displayName ?? null,
+      avatar: profile?.avatar ?? null,
+    }
+  });
 }

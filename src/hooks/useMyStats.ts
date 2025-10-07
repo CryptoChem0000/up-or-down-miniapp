@@ -13,6 +13,11 @@ type MeResp = {
   };
   accuracy?: number;
   rank?: number | null;
+  profile?: {
+    username: string | null;
+    displayName: string | null;
+    avatar: string | null;
+  };
   error?: string;
 };
 
