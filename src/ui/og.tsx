@@ -15,6 +15,11 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
   const upPct = Math.round((up / total) * 100);
   const downPct = 100 - upPct;
 
+  // Mock ETH price data for the preview
+  const ethPrice = "$4,516.34";
+  const priceChange = "-3.96%";
+  const priceChangeAbs = "$-178.92";
+
   return new ImageResponse(
     (
       <div
@@ -23,60 +28,141 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
           height: 800, 
           display: "flex", 
           flexDirection: "column",
-          justifyContent: "center", 
-          alignItems: "center", 
           background: "#0b0b0b",
-          // Alternative: Use a custom background image
-          // backgroundImage: "url('https://up-or-down-miniapp.vercel.app/your-custom-bg.png')",
-          // backgroundSize: "cover",
-          // backgroundPosition: "center", 
           color: "white", 
-          fontFamily: "sans-serif", 
-          padding: 40
+          fontFamily: "Inter, sans-serif", 
+          padding: 40,
+          position: "relative"
         }}
       >
-        {/* Add your new logo */}
-        <div style={{ marginBottom: 24, display: "flex" }}>
+        {/* Header with Logo and Title */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 32 }}>
+          <div style={{ fontSize: 48, fontWeight: 700, marginRight: 16 }}>Ethereum</div>
           <img
             src="https://up-or-down-miniapp.vercel.app/icon-256.png"
-            alt="Up or Down Logo"
-            width={80}
-            height={80}
-            style={{ borderRadius: 16 }}
+            alt="ETH Logo"
+            width={60}
+            height={60}
+            style={{ borderRadius: 12 }}
           />
         </div>
-        <div style={{ fontSize: 56, fontWeight: 700, textAlign: "center", marginBottom: 32, display: "flex" }}>
-          {question}
+
+        {/* Question */}
+        <div style={{ fontSize: 32, textAlign: "center", marginBottom: 40, opacity: 0.9 }}>
+          Will ETH price go up or down today?
         </div>
-        <div style={{ display: "flex", gap: 32, width: "100%", maxWidth: 1000 }}>
-          {(["UP", "DOWN"] as const).map((opt) => {
-            const pct = opt === "UP" ? upPct : downPct;
-            const val = opt === "UP" ? up : down;
-            const isH = highlight === opt;
-            return (
-              <div 
-                key={opt} 
-                style={{ 
-                  display: "flex", 
-                  flexDirection: "column", 
-                  flex: 1, 
-                  border: isH ? "4px solid #6cf" : "2px solid #333", 
-                  borderRadius: 20, 
-                  padding: 24 
-                }}
-              >
-                <div style={{ fontSize: 32, opacity: 0.8, marginBottom: 8, display: "flex" }}>{opt}</div>
-                <div style={{ fontSize: 96, fontWeight: 800, marginBottom: 8, display: "flex" }}>{pct}%</div>
-                <div style={{ fontSize: 24, opacity: 0.6, display: "flex" }}>{val} votes</div>
-              </div>
-            );
-          })}
-        </div>
-        {subtitle && (
-          <div style={{ marginTop: 32, fontSize: 24, opacity: 0.8, display: "flex" }}>
-            {subtitle}
+
+        {/* ETH Price Card */}
+        <div style={{ 
+          backgroundColor: "#1a1a1a", 
+          borderRadius: 16, 
+          padding: 24, 
+          marginBottom: 32,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center"
+        }}>
+          <div style={{ fontSize: 18, opacity: 0.7, marginBottom: 12 }}>Current ETH Price</div>
+          <div style={{ fontSize: 72, fontWeight: 800, marginBottom: 16 }}>{ethPrice}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ 
+              backgroundColor: "#dc2626", 
+              color: "white", 
+              padding: "8px 16px", 
+              borderRadius: 20, 
+              fontSize: 16,
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              gap: 8
+            }}>
+              <span>📉</span>
+              {priceChange}
+            </div>
+            <div style={{ fontSize: 18, color: "#dc2626", fontWeight: 600 }}>{priceChangeAbs}</div>
           </div>
-        )}
+          <div style={{ fontSize: 14, opacity: 0.6, marginTop: 8 }}>24h change</div>
+        </div>
+
+        {/* Make Your Prediction */}
+        <div style={{ fontSize: 24, textAlign: "center", marginBottom: 24, fontWeight: 600 }}>
+          Make Your Prediction
+        </div>
+
+        {/* UP/DOWN Buttons */}
+        <div style={{ display: "flex", gap: 24, marginBottom: 32 }}>
+          <div style={{
+            backgroundColor: "#16a34a",
+            color: "white",
+            padding: "20px 40px",
+            borderRadius: 16,
+            fontSize: 28,
+            fontWeight: 700,
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            flex: 1,
+            justifyContent: "center"
+          }}>
+            <span>📈</span>
+            UP
+          </div>
+          <div style={{
+            backgroundColor: "#dc2626",
+            color: "white",
+            padding: "20px 40px",
+            borderRadius: 16,
+            fontSize: 28,
+            fontWeight: 700,
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            flex: 1,
+            justifyContent: "center"
+          }}>
+            <span>📉</span>
+            DOWN
+          </div>
+        </div>
+
+        {/* Stats Card */}
+        <div style={{ 
+          backgroundColor: "#1a1a1a", 
+          borderRadius: 16, 
+          padding: 24,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center"
+        }}>
+          <div style={{ display: "flex", gap: 32, marginBottom: 20 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span>🔥</span>
+              <span style={{ fontSize: 16 }}>0 Streak</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span>👥</span>
+              <span style={{ fontSize: 16 }}>0 Votes</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span>🏆</span>
+              <span style={{ fontSize: 16 }}>0% Accuracy</span>
+            </div>
+          </div>
+          <div style={{
+            border: "1px solid #374151",
+            color: "white",
+            padding: "12px 24px",
+            borderRadius: 12,
+            fontSize: 16,
+            fontWeight: 600,
+            display: "flex",
+            alignItems: "center",
+            gap: 8
+          }}>
+            <span>👑</span>
+            View Leaderboard
+          </div>
+        </div>
       </div>
     ),
     { 
