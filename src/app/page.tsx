@@ -168,16 +168,16 @@ const StatsCard = ({ streak, totalVotes, accuracy, points, fidParam = "" }: Stat
       <div className="space-y-1">
         <div className="flex items-center justify-center gap-1">
           <Users className="w-4 h-4 text-blue-400" />
-          <span className="text-lg font-bold text-white">{totalVotes}</span>
+          <span className="text-lg font-bold text-blue-400">{accuracy}%</span>
         </div>
-        <div className="text-xs text-gray-400">Votes</div>
+        <div className="text-xs text-gray-400">Accuracy</div>
       </div>
       <div className="space-y-1">
         <div className="flex items-center justify-center gap-1">
           <Trophy className="w-4 h-4 text-green-400" />
-          <span className="text-lg font-bold text-green-400">{points ? points.toLocaleString() : accuracy + '%'}</span>
+          <span className="text-lg font-bold text-green-400">{points ? points.toLocaleString() : '0'}</span>
         </div>
-        <div className="text-xs text-gray-400">{points ? 'Points' : 'Accuracy'}</div>
+        <div className="text-xs text-gray-400">Points</div>
       </div>
     </div>
 
