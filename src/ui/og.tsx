@@ -25,12 +25,26 @@ export function renderOg({ question, counts, highlight, subtitle }: OgProps) {
           flexDirection: "column",
           justifyContent: "center", 
           alignItems: "center", 
-          background: "#0b0b0b", 
+          background: "#0b0b0b",
+          // Alternative: Use a custom background image
+          // backgroundImage: "url('https://up-or-down-miniapp.vercel.app/your-custom-bg.png')",
+          // backgroundSize: "cover",
+          // backgroundPosition: "center", 
           color: "white", 
           fontFamily: "sans-serif", 
           padding: 40
         }}
       >
+        {/* Add your new logo */}
+        <div style={{ marginBottom: 24, display: "flex" }}>
+          <img
+            src="https://up-or-down-miniapp.vercel.app/icon-256.png"
+            alt="Up or Down Logo"
+            width={80}
+            height={80}
+            style={{ borderRadius: 16 }}
+          />
+        </div>
         <div style={{ fontSize: 56, fontWeight: 700, textAlign: "center", marginBottom: 32, display: "flex" }}>
           {question}
         </div>
