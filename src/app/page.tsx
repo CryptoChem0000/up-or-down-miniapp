@@ -12,6 +12,7 @@ import HeroHeader from "@/components/HeroHeader";
 import { useMyStats } from "@/hooks/useMyStats";
 import { useResultToast } from "@/hooks/useResultToast";
 import { useToast } from "@/lib/toast";
+import { useHapticFeedback } from "@/hooks/useCapabilities";
 import { isVotingOpen, getVotingWindowMessage } from "@/lib/vote-window";
 
 /** utils */
@@ -208,6 +209,7 @@ export default function DailyOneTapPoll() {
   const [my, setMy] = useState<{streak:number; points:number; totalVotes?: number; accuracy?: number} | null>(null);
   const [ethData, setEthData] = useState<{price: number; change24h: number; changePercent: number}>({ price: 0, change24h: 0, changePercent: 0 });
   const { toast } = useToast();
+  const { triggerImpact, triggerSelection } = useHapticFeedback();
   
   // Check voting window status
   const votingOpen = isVotingOpen();
@@ -292,7 +294,7 @@ export default function DailyOneTapPoll() {
     points: myStats?.ok ? (myStats.stats?.totalPoints ?? 0) : (my?.points ?? 0)
   };
 
-  function handleVote(dir: "up" | "down") {
+  async function handleVote(dir: "up" | "down") {
     if (hasVoted) return;
     
     if (!votingOpen) {
@@ -300,7 +302,14 @@ export default function DailyOneTapPoll() {
       return;
     }
     
+    // Trigger haptic feedback on vote selection
+    await triggerSelection();
+    
     setSelectedVote(dir); setHasVoted(true);
+    
+    // Trigger haptic feedback on successful vote
+    await triggerImpact('medium');
+    
     toast({ title: `Voted ${dir.toUpperCase()}!`, description: "Your prediction has been recorded. Check back tomorrow for results!\nResults revealed daily at 12:01 AM UTC" });
   }
 

@@ -3,6 +3,7 @@ import "./globals.css";
 import { miniAppEmbedJSON } from "@/lib/miniapp";
 import { ClientToaster } from "@/components/ClientToaster";
 import FarcasterReady from "@/components/FarcasterReady";
+import RuntimeDetection from "@/components/RuntimeDetection";
 
 const baseUrl = process.env.APP_BASE_URL || "http://localhost:3010";
 
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <FarcasterReady />
         {children}
         <ClientToaster />
+        <RuntimeDetection />
       </body>
     </html>
   );
