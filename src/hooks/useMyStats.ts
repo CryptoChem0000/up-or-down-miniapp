@@ -31,8 +31,15 @@ export function useMyStats() {
       try {
         // Check if we're in staging mode with mock data
         const isStagingWithMock = process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true";
+        // Also check if we're on a staging/preview deployment
+        const isPreviewDeployment = window.location.hostname.includes('vercel.app') && window.location.hostname.includes('git-');
+        console.log("🔍 useMyStats: NEXT_PUBLIC_USE_MOCK_DATA =", process.env.NEXT_PUBLIC_USE_MOCK_DATA);
+        console.log("🔍 useMyStats: isStagingWithMock =", isStagingWithMock);
+        console.log("🔍 useMyStats: isPreviewDeployment =", isPreviewDeployment);
+        console.log("🔍 useMyStats: hostname =", window.location.hostname);
         
-        if (isStagingWithMock) {
+        if (isStagingWithMock || isPreviewDeployment) {
+          console.log("🎭 useMyStats: Using mock data");
           // Return mock data for UX testing
           const mockData: MeResp = {
             ok: true,

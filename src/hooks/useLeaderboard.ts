@@ -12,8 +12,15 @@ export function useLeaderboard(limit = 50) {
       try {
         // Check if we're in staging mode with mock data
         const isStagingWithMock = process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true";
+        // Also check if we're on a staging/preview deployment
+        const isPreviewDeployment = window.location.hostname.includes('vercel.app') && window.location.hostname.includes('git-');
+        console.log("🔍 useLeaderboard: NEXT_PUBLIC_USE_MOCK_DATA =", process.env.NEXT_PUBLIC_USE_MOCK_DATA);
+        console.log("🔍 useLeaderboard: isStagingWithMock =", isStagingWithMock);
+        console.log("🔍 useLeaderboard: isPreviewDeployment =", isPreviewDeployment);
+        console.log("🔍 useLeaderboard: hostname =", window.location.hostname);
         
-        if (isStagingWithMock) {
+        if (isStagingWithMock || isPreviewDeployment) {
+          console.log("🎭 useLeaderboard: Using mock data");
           // Return mock leaderboard data for UX testing
           const mockLeaderboard: LeaderboardRow[] = [
             { rank: 1, fid: "1001", points: 1247, totalVotes: 31, currentStreak: 18, accuracy: 94, username: "crypto_whale", displayName: "Crypto Whale", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=whale" },
