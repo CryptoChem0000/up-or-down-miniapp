@@ -227,24 +227,6 @@ export default function DailyOneTapPoll() {
     fetch("/api/auth/establish", { method: "POST", cache: "no-store" }).catch(() => {});
   }, []);
 
-  // Call sdk.actions.ready() when component is fully loaded
-  React.useEffect(() => {
-    const callReady = async () => {
-      try {
-        const { sdk } = await import("@farcaster/miniapp-sdk");
-        console.log("📱 Calling sdk.actions.ready() from main page component");
-        await sdk.actions.ready();
-        console.log("✅ Main page ready() called successfully");
-      } catch (error) {
-        console.error("❌ Error calling ready() from main page:", error);
-      }
-    };
-
-    // Call ready after a short delay to ensure everything is loaded
-    const timeoutId = setTimeout(callReady, 200);
-    
-    return () => clearTimeout(timeoutId);
-  }, []);
 
   // Show dev links only in development
   const SHOW_DEV_LINKS = 

@@ -1,35 +1,48 @@
 "use client";
-import { useEffect } from "react";
-import { sdk } from "@farcaster/miniapp-sdk";
+import { useEffect, useState } from "react";
 
 export default function FarcasterReady() {
+  const [isReady, setIsReady] = useState(false);
+
   useEffect(() => {
-    console.log("🚀 FarcasterReady component mounted");
-    
-    // Try to call ready() immediately
-    const callReady = async () => {
+    const initializeSDK = async () => {
       try {
-        console.log("📱 Calling sdk.actions.ready()...");
-        await sdk.actions.ready();
-        console.log("✅ sdk.actions.ready() called successfully");
+        console.log("🚀 FarcasterReady: Initializing SDK...");
+        
+        // Import SDK dynamically to avoid SSR issues
+        const { sdk } = await import("@farcaster/miniapp-sdk");
+        
+        // Check if we're in a Farcaster context
+        if (typeof window !== "undefined") {
+          const inIframe = window !== window.parent;
+          console.log("📱 FarcasterReady: In iframe:", inIframe);
+          
+          if (inIframe) {
+            console.log("📱 FarcasterReady: Calling sdk.actions.ready()...");
+            await sdk.actions.ready();
+            console.log("✅ FarcasterReady: SDK ready() called successfully");
+            setIsReady(true);
+          } else {
+            console.log("ℹ️ FarcasterReady: Not in iframe, skipping ready() call");
+            setIsReady(true);
+          }
+        }
       } catch (error) {
-        console.error("❌ Error calling sdk.actions.ready():", error);
+        console.error("❌ FarcasterReady: Error initializing SDK:", error);
+        // Still set ready to true to avoid blocking the app
+        setIsReady(true);
       }
     };
 
-    // Call ready immediately
-    callReady();
-
-    // Also call ready after a short delay to handle timing issues
-    const timeoutId = setTimeout(() => {
-      console.log("🔄 Calling sdk.actions.ready() again after delay...");
-      callReady();
-    }, 100);
-
-    // Cleanup timeout on unmount
-    return () => {
-      clearTimeout(timeoutId);
-    };
+    // Wait for DOM to be ready and then initialize
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initializeSDK);
+      return () => {
+        document.removeEventListener("DOMContentLoaded", initializeSDK);
+      };
+    } else {
+      initializeSDK();
+    }
   }, []);
   
   return null;

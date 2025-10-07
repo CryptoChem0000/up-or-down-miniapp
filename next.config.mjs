@@ -20,7 +20,7 @@ const nextConfig = {
               "script-src 'self' 'unsafe-eval' 'unsafe-inline' https:;",
               "connect-src 'self' https:;",
               // ✅ allow Warpcast to embed your app
-              "frame-ancestors 'self' https://warpcast.com https://*.warpcast.com;",
+              "frame-ancestors 'self' https://warpcast.com https://*.warpcast.com https://farcaster.xyz https://*.farcaster.xyz;",
             ].join(" "),
           },
         ],
