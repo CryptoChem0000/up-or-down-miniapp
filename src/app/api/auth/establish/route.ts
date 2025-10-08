@@ -26,7 +26,7 @@ export async function POST(req: Request) {
         const res = NextResponse.json({ ok: true, fid: String(verified.fid) });
         res.headers.append(
           "Set-Cookie",
-          `${cookie.name}=${encodeURIComponent(cookie.value)}; Path=/; Max-Age=${cookie.maxAge}; HttpOnly; Secure; SameSite=Lax`
+          `${cookie.name}=${encodeURIComponent(cookie.value)}; Path=/; Max-Age=${cookie.maxAge}; HttpOnly; Secure; SameSite=None`
         );
         return res;
       }
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       const res = NextResponse.json({ ok: true, fid: body.fid });
       res.headers.append(
         "Set-Cookie",
-        `${cookie.name}=${encodeURIComponent(cookie.value)}; Path=/; Max-Age=${cookie.maxAge}; HttpOnly; Secure; SameSite=Lax`
+        `${cookie.name}=${encodeURIComponent(cookie.value)}; Path=/; Max-Age=${cookie.maxAge}; HttpOnly; Secure; SameSite=None`
       );
       return res;
     }
