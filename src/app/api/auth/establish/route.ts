@@ -18,20 +18,28 @@ export async function POST(req: Request) {
       return res;
     }
 
-    // For Mini App context without signatures, create a mock session for testing
-    // In production, this should use the Farcaster Mini App SDK to get the real FID
-    console.log("No Farcaster signature found, creating mock session for Mini App testing");
-    
-    // Use a mock FID for testing (this should be replaced with real FID from SDK)
-    const mockFid = "12345"; // This matches the mock FID in the manifest
-    
-    const cookie = await makeSessionCookie(mockFid);
-    const res = NextResponse.json({ ok: true, fid: mockFid, mock: true });
-    res.headers.append(
-      "Set-Cookie",
-      `${cookie.name}=${encodeURIComponent(cookie.value)}; Path=/; Max-Age=${cookie.maxAge}; HttpOnly; Secure; SameSite=Lax`
-    );
-    return res;
+    // Try to get FID from request body (from Mini App SDK)
+    try {
+      const body = await req.json();
+      console.log("Auth establish request body:", body);
+      
+      if (body && typeof body.fid === 'string' && body.fid.length > 0) {
+        console.log("Using FID from request body:", body.fid);
+        const cookie = await makeSessionCookie(body.fid);
+        const res = NextResponse.json({ ok: true, fid: body.fid });
+        res.headers.append(
+          "Set-Cookie",
+          `${cookie.name}=${encodeURIComponent(cookie.value)}; Path=/; Max-Age=${cookie.maxAge}; HttpOnly; Secure; SameSite=Lax`
+        );
+        return res;
+      }
+    } catch (bodyError) {
+      console.log("No valid request body found:", bodyError);
+    }
+
+    // No valid authentication found
+    console.log("No valid Farcaster authentication found");
+    return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
 
   } catch (error) {
     console.error("Error in /api/auth/establish:", error);

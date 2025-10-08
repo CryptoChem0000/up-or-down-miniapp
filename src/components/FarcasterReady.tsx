@@ -21,6 +21,36 @@ export default function FarcasterReady() {
             console.log("📱 FarcasterReady: Calling sdk.actions.ready()...");
             await sdk.actions.ready();
             console.log("✅ FarcasterReady: SDK ready() called successfully");
+
+            // Get user context and establish session
+            try {
+              console.log("🔐 FarcasterReady: Getting user context...");
+              const context = await sdk.context.getFid();
+              console.log("📋 FarcasterReady: User FID:", context);
+              
+              if (context) {
+                // Establish session with the real FID
+                console.log("🔑 FarcasterReady: Establishing session with FID:", context);
+                const response = await fetch("/api/auth/establish", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ fid: context }),
+                });
+                
+                if (response.ok) {
+                  console.log("✅ FarcasterReady: Session established successfully");
+                } else {
+                  console.error("❌ FarcasterReady: Failed to establish session:", response.status);
+                }
+              } else {
+                console.warn("⚠️ FarcasterReady: No FID found in context");
+              }
+            } catch (contextError) {
+              console.error("❌ FarcasterReady: Error getting user context:", contextError);
+            }
+
             setIsReady(true);
           } else {
             console.log("ℹ️ FarcasterReady: Not in iframe, skipping ready() call");
