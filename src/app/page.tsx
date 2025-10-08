@@ -343,14 +343,14 @@ export default function DailyOneTapPoll() {
           toast({ 
             title: "Already Voted", 
             description: `You've already voted ${actualVote.toUpperCase()} today. Check back tomorrow to see the results!`,
-            variant: "default"
+            variant: "success"
           });
         } catch (statsError) {
           // Fallback to button direction if stats fetch fails
           toast({ 
             title: "Already Voted", 
             description: `You've already voted ${dir.toUpperCase()} today. Check back tomorrow to see the results!`,
-            variant: "default"
+            variant: "success"
           });
         }
       } else {
