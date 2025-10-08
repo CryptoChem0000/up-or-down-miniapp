@@ -13,7 +13,8 @@ export async function POST(req: Request) {
       console.log("Auth establish request body:", body);
     } catch (bodyError) {
       console.log("No request body found:", bodyError);
-      return NextResponse.json({ ok: false, error: "no_body" }, { status: 400 });
+      // Return 401 instead of 400 for empty body - this is expected for some requests
+      return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
     }
 
     // Try Farcaster verification first (for signed requests with signature data)

@@ -192,10 +192,11 @@ export default function DailyOneTapPoll() {
   useResultToast();
 
   // Establish session cookie on page load (fire and forget)
-  React.useEffect(() => {
-    // This will set the HttpOnly cookie if the request is signed
-    fetch("/api/auth/establish", { method: "POST", cache: "no-store" }).catch(() => {});
-  }, []);
+  // Session establishment is now handled by FarcasterReady component
+  // React.useEffect(() => {
+  //   // This will set the HttpOnly cookie if the request is signed
+  //   fetch("/api/auth/establish", { method: "POST", cache: "no-store" }).catch(() => {});
+  // }, []);
 
 
   // Show dev links only in development
