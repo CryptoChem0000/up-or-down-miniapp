@@ -306,12 +306,63 @@ export default function DailyOneTapPoll() {
     // Trigger haptic feedback on vote selection
     await triggerSelection();
     
-    setSelectedVote(dir); setHasVoted(true);
+    setSelectedVote(dir);
     
-    // Trigger haptic feedback on successful vote
-    await triggerImpact('medium');
-    
-    toast({ title: `Voted ${dir.toUpperCase()}!`, description: "Your prediction has been recorded. Check back tomorrow for results!\nResults revealed daily at 12:01 AM UTC" });
+    try {
+      // Make the actual API call to record the vote
+      const response = await fetch("/api/vote", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ direction: dir }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        if (result.error === "already_voted") {
+          toast({ 
+            title: "Already Voted", 
+            description: "You've already made your prediction for today. Check back tomorrow!",
+            variant: "destructive"
+          });
+          return;
+        } else if (result.error === "voting_closed") {
+          toast({ 
+            title: "Voting Closed", 
+            description: "Vote resets at 12:01 AM UTC. Check back in tomorrow!",
+            variant: "destructive"
+          });
+          return;
+        } else {
+          throw new Error(result.error || "Vote failed");
+        }
+      }
+
+      // Vote was successful
+      setHasVoted(true);
+      
+      // Trigger haptic feedback on successful vote
+      await triggerImpact('medium');
+      
+      toast({ 
+        title: `Voted ${dir.toUpperCase()}!`, 
+        description: "Your prediction has been recorded. Check back tomorrow for results!\nResults revealed daily at 12:01 AM UTC" 
+      });
+
+    } catch (error) {
+      console.error("Vote error:", error);
+      
+      // Reset the selection on error
+      setSelectedVote(null);
+      
+      toast({ 
+        title: "Vote Failed", 
+        description: "Failed to record your vote. Please try again.",
+        variant: "destructive"
+      });
+    }
   }
 
   return (
