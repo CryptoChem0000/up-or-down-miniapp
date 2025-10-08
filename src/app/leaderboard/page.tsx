@@ -252,9 +252,6 @@ export default function LeaderboardPage({
 
                         <div className="flex flex-col">
                           <span className="font-medium text-white">{getDisplayName(u)}</span>
-                          {u.username && (
-                            <span className="text-xs text-gray-400">@{u.username}</span>
-                          )}
                         </div>
 
                         <div className="text-center">
@@ -325,9 +322,6 @@ export default function LeaderboardPage({
                           </div>
                           <div className="flex flex-col">
                             <span className="font-medium text-sm text-white">{getDisplayName(u)}</span>
-                            {u.username && (
-                              <span className="text-xs text-gray-400">@{u.username}</span>
-                            )}
                           </div>
                         </div>
 
@@ -393,9 +387,6 @@ export default function LeaderboardPage({
                     
                     <div className="flex flex-col">
                       <span className="font-medium text-white">{formatDisplayName(displayUser.name, false)}</span>
-                      <span className="text-xs text-gray-400 font-mono">
-                        {formatDisplayName(displayUser.address, false)}
-                      </span>
                     </div>
                     
                     <div className="text-center">
@@ -430,7 +421,6 @@ export default function LeaderboardPage({
                     </div>
                     <div className="flex flex-col">
                       <span className="font-medium text-sm text-white">{formatDisplayName(displayUser.name, true)}</span>
-                      <span className="text-xs text-gray-400 font-mono">{formatDisplayName(displayUser.address, true)}</span>
                     </div>
                   </div>
 
