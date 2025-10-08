@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ClientToaster } from "@/components/ClientToaster";
 import FarcasterReady from "@/components/FarcasterReady";
-import RuntimeDetection from "@/components/RuntimeDetection";
+// import RuntimeDetection from "@/components/RuntimeDetection"; // Disabled to fix React errors
 
 const baseUrl = process.env.APP_BASE_URL || "http://localhost:3010";
 
@@ -46,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <FarcasterReady />
         {children}
         <ClientToaster />
-        <RuntimeDetection />
+        {/* <RuntimeDetection /> Disabled to fix React errors */}
       </body>
     </html>
   );
