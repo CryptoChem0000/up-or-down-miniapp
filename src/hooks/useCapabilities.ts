@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { sdk } from "@farcaster/miniapp-sdk";
 
 interface Capabilities {
   chains: string[];
@@ -39,6 +38,20 @@ export function useCapabilities(): Capabilities {
     async function detectCapabilities() {
       try {
         console.log("🔍 useCapabilities: Starting detection...");
+        
+        // Check if we're in an iframe context first
+        if (typeof window === 'undefined' || window === window.parent) {
+          console.log("🔍 useCapabilities: Not in iframe, skipping SDK calls");
+          setState(prev => ({
+            ...prev,
+            isLoading: false,
+            error: "Not in iframe context",
+          }));
+          return;
+        }
+        
+        // Dynamically import SDK to avoid SSR issues
+        const { sdk } = await import("@farcaster/miniapp-sdk");
         
         // Get supported chains
         const chains = await sdk.getChains();
@@ -103,8 +116,9 @@ export function useHapticFeedback() {
   const { supportsHaptics, isLoading } = useCapabilities();
   
   const triggerImpact = async (intensity: 'light' | 'medium' | 'heavy' = 'medium') => {
-    if (supportsHaptics.impact && !isLoading) {
+    if (supportsHaptics.impact && !isLoading && typeof window !== 'undefined' && window !== window.parent) {
       try {
+        const { sdk } = await import("@farcaster/miniapp-sdk");
         await sdk.haptics.impactOccurred(intensity);
         console.log(`📳 Haptic feedback triggered: ${intensity}`);
       } catch (err) {
@@ -114,8 +128,9 @@ export function useHapticFeedback() {
   };
   
   const triggerNotification = async (type: 'success' | 'warning' | 'error' = 'success') => {
-    if (supportsHaptics.notification && !isLoading) {
+    if (supportsHaptics.notification && !isLoading && typeof window !== 'undefined' && window !== window.parent) {
       try {
+        const { sdk } = await import("@farcaster/miniapp-sdk");
         await sdk.haptics.notificationOccurred(type);
         console.log(`📳 Notification haptic triggered: ${type}`);
       } catch (err) {
@@ -125,8 +140,9 @@ export function useHapticFeedback() {
   };
   
   const triggerSelection = async () => {
-    if (supportsHaptics.selection && !isLoading) {
+    if (supportsHaptics.selection && !isLoading && typeof window !== 'undefined' && window !== window.parent) {
       try {
+        const { sdk } = await import("@farcaster/miniapp-sdk");
         await sdk.haptics.selectionChanged();
         console.log("📳 Selection haptic triggered");
       } catch (err) {
