@@ -331,13 +331,24 @@ export default function DailyOneTapPoll() {
       // Check if this might be an "already voted" scenario
       const errorMessage = error instanceof Error ? error.message : String(error);
       if (errorMessage.includes("unauthorized") || errorMessage.includes("401")) {
-        // Use the actual vote from the server instead of the button clicked
-        const actualVote = userStats.todayVote || dir;
-        toast({ 
-          title: "Already Voted", 
-          description: `You've already voted ${actualVote.toUpperCase()} today. Check back tomorrow to see the results!`,
-          variant: "default"
-        });
+        // Fetch the actual vote from the server to show correct direction
+        try {
+          const statsResponse = await fetch("/api/stats/me");
+          const statsData = await statsResponse.json();
+          const actualVote = statsData.ok && statsData.todayVote ? statsData.todayVote : dir;
+          toast({ 
+            title: "Already Voted", 
+            description: `You've already voted ${actualVote.toUpperCase()} today. Check back tomorrow to see the results!`,
+            variant: "default"
+          });
+        } catch (statsError) {
+          // Fallback to button direction if stats fetch fails
+          toast({ 
+            title: "Already Voted", 
+            description: `You've already voted ${dir.toUpperCase()} today. Check back tomorrow to see the results!`,
+            variant: "default"
+          });
+        }
       } else {
         toast({ 
           title: "Vote Failed", 
