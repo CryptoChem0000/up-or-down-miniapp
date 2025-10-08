@@ -56,5 +56,6 @@ export function useResultToast() {
     return () => {
       alive = false;
     };
-  }, [toast]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps - only run once on mount
 }

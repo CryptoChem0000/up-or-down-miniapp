@@ -7,21 +7,12 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { TrendingUp, TrendingDown, Flame, Users, Trophy, X, Crown } from "lucide-react";
 import Link from "next/link";
-import * as ToastPrimitives from "@radix-ui/react-toast";
 import HeroHeader from "@/components/HeroHeader";
 import { useMyStats } from "@/hooks/useMyStats";
 import { useResultToast } from "@/hooks/useResultToast";
 import { useToast } from "@/hooks/use-toast";
 import { useHapticFeedback } from "@/hooks/useCapabilities";
 import { isVotingOpen, getVotingWindowMessage } from "@/lib/vote-window";
-import { 
-  ToastProvider, 
-  ToastViewport, 
-  Toast, 
-  ToastTitle, 
-  ToastDescription, 
-  ToastClose 
-} from "@/components/ui/toast";
 
 /** utils */
 function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
@@ -71,8 +62,6 @@ function Badge({ className, variant, ...props }: React.HTMLAttributes<HTMLDivEle
   return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
 }
 
-/** Toast components */
-function Toaster(){ const { toasts } = useToast(); return (<ToastProvider>{toasts.map(({ id, title, description, ...props }) => (<Toast key={id} {...props}><div className="grid gap-1">{title && <ToastTitle>{title}</ToastTitle>}{description && <ToastDescription>{description}</ToastDescription>}</div><ToastClose/></Toast>))}<ToastViewport/></ToastProvider>); }
 
 /** UI bits */
 interface VoteButtonProps { direction: "up" | "down"; onClick: () => void; isSelected?: boolean; className?: string; }
@@ -424,8 +413,6 @@ export default function DailyOneTapPoll() {
           </div>
         </div>
       </div>
-
-      <Toaster />
     </>
   );
 }
