@@ -25,18 +25,18 @@ export default function FarcasterReady() {
             // Get user context and establish session
             try {
               console.log("🔐 FarcasterReady: Getting user context...");
-              const context = await sdk.context.getFid();
-              console.log("📋 FarcasterReady: User FID:", context);
+              const context = await sdk.context;
+              console.log("📋 FarcasterReady: User context:", context);
               
-              if (context) {
+              if (context && context.user && context.user.fid) {
                 // Establish session with the real FID
-                console.log("🔑 FarcasterReady: Establishing session with FID:", context);
+                console.log("🔑 FarcasterReady: Establishing session with FID:", context.user.fid);
                 const response = await fetch("/api/auth/establish", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
-                  body: JSON.stringify({ fid: context }),
+                  body: JSON.stringify({ fid: context.user.fid.toString() }),
                 });
                 
                 if (response.ok) {
