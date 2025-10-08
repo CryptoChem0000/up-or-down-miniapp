@@ -14,7 +14,6 @@
     "homeUrl": "https://up-or-down-miniapp.vercel.app",
     "imageUrl": "https://up-or-down-miniapp.vercel.app/api/results/today/image?v=1759871275",
     "buttonTitle": "Make Prediction",
-    "subtitle": "Build your streak. Compete with others.",
     "splashImageUrl": "https://up-or-down-miniapp.vercel.app/splash.png",
     "splashBackgroundColor": "#0b0b0b",
     "webhookUrl": "https://up-or-down-miniapp.vercel.app/api/webhook",
