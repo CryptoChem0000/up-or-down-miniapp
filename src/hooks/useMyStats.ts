@@ -71,7 +71,10 @@ export function useMyStats() {
           return;
         }
 
-        const r = await fetch("/api/stats/me", { cache: "no-store" });
+        const r = await fetch("/api/stats/me", { 
+          cache: "no-store",
+          credentials: "include", // Include session cookies
+        });
         const j: MeResp = await r.json();
         if (alive) setData(j);
       } catch (error) {

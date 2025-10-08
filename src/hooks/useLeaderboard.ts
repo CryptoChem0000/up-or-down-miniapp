@@ -10,7 +10,10 @@ export function useLeaderboard(limit = 50) {
     let alive = true;
     (async () => {
       try {
-        const r = await fetch(`/api/leaderboard?limit=${limit}`, { cache: "no-store" });
+        const r = await fetch(`/api/leaderboard?limit=${limit}`, { 
+          cache: "no-store",
+          credentials: "include", // Include session cookies
+        });
         const j = await r.json();
         if (alive && j?.ok) setRows(j.rows);
       } finally {

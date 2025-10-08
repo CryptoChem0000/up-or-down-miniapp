@@ -286,6 +286,7 @@ export default function DailyOneTapPoll() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", // Include session cookies
         body: JSON.stringify({ direction: dir }),
       });
 
@@ -333,7 +334,9 @@ export default function DailyOneTapPoll() {
       if (errorMessage.includes("unauthorized") || errorMessage.includes("401")) {
         // Fetch the actual vote from the server to show correct direction
         try {
-          const statsResponse = await fetch("/api/stats/me");
+          const statsResponse = await fetch("/api/stats/me", {
+            credentials: "include", // Include session cookies
+          });
           const statsData = await statsResponse.json();
           const actualVote = statsData.ok && statsData.todayVote ? statsData.todayVote : dir;
           toast({ 

@@ -23,7 +23,10 @@ export function useResultToast() {
 
     (async () => {
       try {
-        const r = await fetch("/api/results/me", { cache: "no-store" });
+        const r = await fetch("/api/results/me", { 
+          cache: "no-store",
+          credentials: "include", // Include session cookies
+        });
         if (!r.ok) return;
         const data: MeResult = await r.json();
         if (!alive || !data?.ok) return;

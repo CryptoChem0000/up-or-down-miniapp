@@ -13,7 +13,10 @@ export default function UserBadge() {
   useEffect(() => {
     (async () => {
       try {
-        const r = await fetch("/api/me", { cache: "no-store" });
+        const r = await fetch("/api/me", { 
+          cache: "no-store",
+          credentials: "include", // Include session cookies
+        });
         if (r.ok) {
           const data = await r.json();
           setMe(data);
