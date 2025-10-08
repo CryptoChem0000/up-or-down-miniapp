@@ -49,15 +49,8 @@ export async function POST(req: Request) {
       return res;
     }
 
-    // Rate limit votes by IP (5 per day)
-    const voteLimit = await limitVotesBy(req);
-    if (!voteLimit.success) {
-      const res = NextResponse.json({ error: "daily_vote_limit_exceeded" }, { status: 429 });
-      res.headers.set("Access-Control-Allow-Origin", "*");
-      res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Origin, Accept");
-      res.headers.set("Access-Control-Allow-Credentials", "true");
-      return res;
-    }
+    // Note: Removed IP-based vote limiting since we have FID-based limiting and single vote per day
+    // IP-based limits can be problematic in Mini App context where multiple users share IPs
 
     // Get session (handles both cookies and Farcaster verification)
     const session = await getSessionFromRequest(req);

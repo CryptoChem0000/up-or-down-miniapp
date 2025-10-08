@@ -14,7 +14,7 @@ export const rateLimit = new Ratelimit({
 
 export const voteRateLimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(5, "1 d"), // 5 votes per day per IP
+  limiter: Ratelimit.slidingWindow(20, "1 d"), // 20 votes per day per IP (more generous for testing)
 });
 
 export async function limitBy(req: Request) {
@@ -34,7 +34,7 @@ export async function limitVotesBy(req: Request) {
 export async function limitByFid(fid: string) {
   const fidRateLimit = new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(10, "1 d"), // 10 requests per day per FID
+    limiter: Ratelimit.slidingWindow(50, "1 d"), // 50 requests per day per FID (more generous)
   });
   return fidRateLimit.limit(`fid:${fid}`);
 }
