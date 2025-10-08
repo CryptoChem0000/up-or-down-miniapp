@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { VoteSchema, limitBy, limitVotesBy, limitByFid, ensureSingleVote, getClientIP, sanitizeInput } from "@/lib/guard";
 import { getServerPrice } from "@/lib/prices";
-import { verifyFarcaster } from "@/lib/verify";
+import { getSessionFromRequest } from "@/lib/session";
 import { redis, k } from "@/lib/redis";
 import { makeSessionCookie } from "@/lib/fc-session";
 import { isVotingOpen } from "@/lib/vote-window";
@@ -59,24 +59,23 @@ export async function POST(req: Request) {
       return res;
     }
 
-    // Verify Farcaster signature
-    const body = await req.json();
-    console.log("Request body:", JSON.stringify(body, null, 2));
-    
-    const sanitizedBody = sanitizeInput(body);
-    const verified = await verifyFarcaster(req, sanitizedBody);
-    
-    console.log("Verification result:", verified);
-    
-    if (!verified.ok) {
-      const res = NextResponse.json({ error: "unauthorized", details: verified.error }, { status: 401 });
+    // Get session (handles both cookies and Farcaster verification)
+    const session = await getSessionFromRequest(req);
+    if (!session) {
+      const res = NextResponse.json({ error: "unauthorized" }, { status: 401 });
       res.headers.set("Access-Control-Allow-Origin", "*");
       res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Origin, Accept");
       res.headers.set("Access-Control-Allow-Credentials", "true");
       return res;
     }
     
-    const fid = String((verified as any).fid);
+    const fid = session.fid;
+
+    // Validate input
+    const body = await req.json();
+    console.log("Request body:", JSON.stringify(body, null, 2));
+    
+    const sanitizedBody = sanitizeInput(body);
 
     // Rate limit by FID (10 requests per day)
     const fidLimit = await limitByFid(fid);
