@@ -11,6 +11,28 @@ import { twMerge } from "tailwind-merge";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
+// Custom Tooltip component for better mobile support
+const Tooltip = ({ children, content }: { children: React.ReactNode; content: string }) => {
+  const [isVisible, setIsVisible] = React.useState(false);
+
+  return (
+    <div 
+      className="relative inline-block"
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+      onTouchStart={() => setIsVisible(!isVisible)}
+    >
+      {children}
+      {isVisible && (
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-white bg-gray-800 rounded shadow-lg whitespace-nowrap z-50">
+          {content}
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Utility function for class merging
 function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
 
@@ -266,15 +288,21 @@ export default function LeaderboardPage({
                     <div>Name</div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="flex items-center justify-center" title="Streak">
-                      <Flame className="w-3 h-3 text-orange-400" />
-                    </div>
-                    <div className="flex items-center justify-center" title="Accuracy">
-                      <Users className="w-3 h-3 text-green-400" />
-                    </div>
-                    <div className="flex items-center justify-center" title="Points">
-                      <Trophy className="w-3 h-3 text-blue-400" />
-                    </div>
+                    <Tooltip content="Streak">
+                      <div className="flex items-center justify-center cursor-help">
+                        <Flame className="w-3 h-3 text-orange-400" />
+                      </div>
+                    </Tooltip>
+                    <Tooltip content="Accuracy">
+                      <div className="flex items-center justify-center cursor-help">
+                        <Users className="w-3 h-3 text-green-400" />
+                      </div>
+                    </Tooltip>
+                    <Tooltip content="Points">
+                      <div className="flex items-center justify-center cursor-help">
+                        <Trophy className="w-3 h-3 text-blue-400" />
+                      </div>
+                    </Tooltip>
                   </div>
                 </div>
                 
