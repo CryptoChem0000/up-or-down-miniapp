@@ -18,6 +18,10 @@ export default function FarcasterReady() {
           console.log("📱 FarcasterReady: In iframe:", inIframe);
           
           if (inIframe) {
+            // Wait for the main app content to be rendered before calling ready
+            // This prevents jitter and content reflows
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
             console.log("📱 FarcasterReady: Calling sdk.actions.ready()...");
             await sdk.actions.ready();
             console.log("✅ FarcasterReady: SDK ready() called successfully");
