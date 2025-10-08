@@ -327,11 +327,21 @@ export default function DailyOneTapPoll() {
       // Reset the selection on error
       setSelectedVote(null);
       
-      toast({ 
-        title: "Vote Failed", 
-        description: "Failed to record your vote. Please try again.",
-        variant: "destructive"
-      });
+      // Check if this might be an "already voted" scenario
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes("unauthorized") || errorMessage.includes("401")) {
+        toast({ 
+          title: "Already Voted", 
+          description: `You've already voted ${dir.toUpperCase()} today. Check back tomorrow to see the results!`,
+          variant: "destructive"
+        });
+      } else {
+        toast({ 
+          title: "Vote Failed", 
+          description: "Failed to record your vote. Please try again.",
+          variant: "destructive"
+        });
+      }
     }
   }
 
