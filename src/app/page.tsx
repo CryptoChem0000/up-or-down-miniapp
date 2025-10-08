@@ -262,7 +262,8 @@ export default function DailyOneTapPoll() {
     streak: myStats?.ok ? (myStats.stats?.currentStreak ?? 0) : (my?.streak ?? 0), 
     totalVotes: myStats?.ok ? (myStats.stats?.totalVotes ?? 0) : (my?.totalVotes ?? 0), 
     accuracy: myStats?.ok ? (myStats.accuracy ?? 0) : (my?.accuracy ?? 0),
-    points: myStats?.ok ? (myStats.stats?.totalPoints ?? 0) : (my?.points ?? 0)
+    points: myStats?.ok ? (myStats.stats?.totalPoints ?? 0) : (my?.points ?? 0),
+    todayVote: myStats?.ok ? myStats.todayVote : null
   };
 
   async function handleVote(dir: "up" | "down") {
@@ -330,9 +331,11 @@ export default function DailyOneTapPoll() {
       // Check if this might be an "already voted" scenario
       const errorMessage = error instanceof Error ? error.message : String(error);
       if (errorMessage.includes("unauthorized") || errorMessage.includes("401")) {
+        // Use the actual vote from the server instead of the button clicked
+        const actualVote = userStats.todayVote || dir;
         toast({ 
           title: "Already Voted", 
-          description: `You've already voted ${dir.toUpperCase()} today. Check back tomorrow to see the results!`,
+          description: `You've already voted ${actualVote.toUpperCase()} today. Check back tomorrow to see the results!`,
           variant: "default"
         });
       } else {

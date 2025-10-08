@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { redis } from "@/lib/redis";
+import { redis, k, todayUTC } from "@/lib/redis";
 import { getSessionFromRequest } from "@/lib/session";
 import { getProfiles } from "@/lib/profile-cache";
 import type { UserStats } from "@/lib/types";
@@ -32,6 +32,20 @@ export async function GET(req: Request) {
     const rankRaw = await redis.zrevrank("lb:points", sess.fid);
     const rank = typeof rankRaw === "number" ? rankRaw + 1 : null;
 
+    // Get today's vote (if any)
+    const today = todayUTC();
+    const todayVoteKey = k.votes(today);
+    const todayVoteRaw = await redis.hget(todayVoteKey, sess.fid);
+    let todayVote = null;
+    if (todayVoteRaw) {
+      try {
+        const voteData = JSON.parse(todayVoteRaw);
+        todayVote = voteData.direction; // "up" or "down"
+      } catch (parseError) {
+        console.error("Error parsing today's vote for FID", sess.fid, ":", parseError);
+      }
+    }
+
     // Fetch profile data for the current user with error handling
     let profile = null;
     try {
@@ -47,6 +61,7 @@ export async function GET(req: Request) {
       stats, 
       accuracy, 
       rank,
+      todayVote, // "up", "down", or null
       profile: {
         username: profile?.username ?? null,
         displayName: profile?.displayName ?? null,

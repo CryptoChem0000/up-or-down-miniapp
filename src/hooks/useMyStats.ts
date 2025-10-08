@@ -13,6 +13,7 @@ type MeResp = {
   };
   accuracy?: number;
   rank?: number | null;
+  todayVote?: "up" | "down" | null;
   profile?: {
     username: string | null;
     displayName: string | null;
