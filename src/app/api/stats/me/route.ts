@@ -37,7 +37,7 @@ export async function GET(req: Request) {
     const todayVoteKey = k.votes(today);
     const todayVoteRaw = await redis.hget(todayVoteKey, sess.fid);
     let todayVote = null;
-    if (todayVoteRaw) {
+    if (todayVoteRaw && typeof todayVoteRaw === 'string') {
       try {
         const voteData = JSON.parse(todayVoteRaw);
         todayVote = voteData.direction; // "up" or "down"
