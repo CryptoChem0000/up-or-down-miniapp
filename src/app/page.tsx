@@ -333,7 +333,7 @@ export default function DailyOneTapPoll() {
         toast({ 
           title: "Already Voted", 
           description: `You've already voted ${dir.toUpperCase()} today. Check back tomorrow to see the results!`,
-          variant: "destructive"
+          variant: "default"
         });
       } else {
         toast({ 
