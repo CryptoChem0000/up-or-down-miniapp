@@ -95,7 +95,8 @@ export async function GET(req: Request) {
     });
 
     console.log(`[${requestId}] Leaderboard API: Returning hydrated rows:`, hydratedRows.length);
-    return NextResponse.json({ ok: true, rows: hydratedRows });
+    console.log(`[${requestId}] Leaderboard API: Response timestamp:`, new Date().toISOString());
+    return NextResponse.json({ ok: true, rows: hydratedRows, debug: { requestId, timestamp: new Date().toISOString() } });
   } catch (error) {
     console.error("Leaderboard API error:", error);
     console.error("Leaderboard API error stack:", error instanceof Error ? error.stack : 'No stack trace');
