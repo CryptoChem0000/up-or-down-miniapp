@@ -311,21 +311,23 @@ export default function LeaderboardPage({
                     leaderboardData.map((u) => (
                       <div
                         key={u.fid}
-                        className={`flex items-center justify-between gap-2 rounded-lg border p-2 transition-colors hover:bg-gray-700/30 ${
+                        className={`grid grid-cols-[auto_1fr_auto] gap-2 items-center rounded-lg border p-2 transition-colors hover:bg-gray-700/30 ${
                           u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
                         }`}
                       >
-                        <div className="flex items-center gap-2 min-w-0 max-w-[55%] flex-1">
-                          <div className="flex items-center gap-1 min-w-[32px] flex-shrink-0">
-                            {getRankIcon(u.rank)}
-                            <span className="font-bold text-xs text-white">#{u.rank}</span>
-                          </div>
-                          <div className="flex flex-col min-w-0 flex-1">
-                            <span className="font-medium text-xs text-white truncate">{getDisplayName(u)}</span>
-                          </div>
+                        {/* Rank section */}
+                        <div className="flex items-center gap-1 w-8 flex-shrink-0">
+                          {getRankIcon(u.rank)}
+                          <span className="font-bold text-xs text-white">#{u.rank}</span>
                         </div>
 
-                        <div className="flex items-center gap-1 flex-shrink-0 min-w-0">
+                        {/* Username section */}
+                        <div className="min-w-0 overflow-hidden">
+                          <span className="font-medium text-xs text-white truncate block">{getDisplayName(u)}</span>
+                        </div>
+
+                        {/* Metrics section */}
+                        <div className="flex items-center gap-1 flex-shrink-0">
                           <Badge variant="secondary" className="font-bold text-[10px] px-1 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
                             {u.currentStreak || 0}
                           </Badge>
@@ -413,18 +415,20 @@ export default function LeaderboardPage({
                 </div>
               ) : (
                 /* ===== Compact layout ===== */
-                <div className="flex items-center justify-between gap-2 rounded-lg border p-2 bg-card/50 border-primary/30">
-                  <div className="flex items-center gap-2 min-w-0 max-w-[55%] flex-1">
-                    <div className="flex items-center gap-1 min-w-[32px] flex-shrink-0">
-                      {getRankIcon(displayUser.rank || 999)}
-                      <span className="font-bold text-xs text-white">#{displayUser.rank || "—"}</span>
-                    </div>
-                    <div className="flex flex-col min-w-0 flex-1">
-                      <span className="font-medium text-xs text-white truncate">{formatDisplayName(displayUser.name, true)}</span>
-                    </div>
+                <div className="grid grid-cols-[auto_1fr_auto] gap-2 items-center rounded-lg border p-2 bg-card/50 border-primary/30">
+                  {/* Rank section */}
+                  <div className="flex items-center gap-1 w-8 flex-shrink-0">
+                    {getRankIcon(displayUser.rank || 999)}
+                    <span className="font-bold text-xs text-white">#{displayUser.rank || "—"}</span>
                   </div>
 
-                  <div className="flex items-center gap-1 flex-shrink-0 min-w-0">
+                  {/* Username section */}
+                  <div className="min-w-0 overflow-hidden">
+                    <span className="font-medium text-xs text-white truncate block">{formatDisplayName(displayUser.name, true)}</span>
+                  </div>
+
+                  {/* Metrics section */}
+                  <div className="flex items-center gap-1 flex-shrink-0">
                     <Badge variant="secondary" className="font-bold text-[10px] px-1 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
                       {displayUser.currentStreak}
                     </Badge>
