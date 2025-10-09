@@ -1,9 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { createClient } from '@farcaster/frame-sdk';
-
-const sdk = createClient();
+import { sdk } from '@farcaster/miniapp-sdk';
 
 /**
  * Fires sdk.actions.ready() ASAP with retries and fallbacks.

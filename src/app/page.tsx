@@ -165,6 +165,18 @@ function composeWithEmbed(baseHref: string) {
 export default function DailyOneTapPoll() {
   const { sessionReady } = useSession();
   
+  // All hooks must be called at the top level, before any early returns
+  const [selectedVote, setSelectedVote] = useState<"up" | "down" | null>(null);
+  const [hasVoted, setHasVoted] = useState(false);
+  const [my, setMy] = useState<{streak:number; points:number; totalVotes?: number; accuracy?: number} | null>(null);
+  const [ethData, setEthData] = useState<{price: number; change24h: number; changePercent: number}>({ price: 0, change24h: 0, changePercent: 0 });
+  const { toast } = useToast();
+  const { triggerImpact, triggerSelection } = useHapticFeedback();
+  
+  // Hydration-safe: compute time-based UI in effect
+  const [votingOpen, setVotingOpen] = useState(false);
+  const [votingMessage, setVotingMessage] = useState("");
+  
   // Show loading screen while session initializes
   if (!sessionReady) {
     return (
@@ -177,17 +189,6 @@ export default function DailyOneTapPoll() {
       </div>
     );
   }
-  
-  const [selectedVote, setSelectedVote] = useState<"up" | "down" | null>(null);
-  const [hasVoted, setHasVoted] = useState(false);
-  const [my, setMy] = useState<{streak:number; points:number; totalVotes?: number; accuracy?: number} | null>(null);
-  const [ethData, setEthData] = useState<{price: number; change24h: number; changePercent: number}>({ price: 0, change24h: 0, changePercent: 0 });
-  const { toast } = useToast();
-  const { triggerImpact, triggerSelection } = useHapticFeedback();
-  
-  // Hydration-safe: compute time-based UI in effect
-  const [votingOpen, setVotingOpen] = useState(false);
-  const [votingMessage, setVotingMessage] = useState("");
   
   useEffect(() => {
     setVotingOpen(isVotingOpen());
