@@ -13,7 +13,7 @@ function num(x: unknown) {
 export async function GET(req: Request) {
   try {
     const requestId = Math.random().toString(36).substring(7);
-    console.log(`[${requestId}] Leaderboard API: Starting request`);
+    console.log(`[${requestId}] Leaderboard API: Starting request at ${new Date().toISOString()}`);
     
     // Optional: limit via search param ?limit=50
     const url = new URL(req.url);
