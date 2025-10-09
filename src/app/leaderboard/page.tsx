@@ -163,9 +163,10 @@ function getCurrentUserDisplayName(profile: { displayName?: string | null; usern
 }
 
 
-// Grid template for consistent column widths across all rows
-const COLS = "[grid-template-columns:72px_minmax(0,1fr)_88px_88px_64px]"; 
+// Grid template for consistent column widths across all rows - mobile optimized
+const COLS = "[grid-template-columns:50px_minmax(0,1fr)_60px_70px_50px]"; 
 // Rank | Name | Streak | Accuracy | Points
+// Reduced widths: 50px rank, flexible name, 60px streak, 70px accuracy, 50px points
 
 // Reusable row component with proper truncation and no overlap
 type RowProps = {
@@ -210,21 +211,21 @@ function LeaderboardRow({
 
       {/* Streak */}
       <div className="text-center">
-        <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 font-semibold shrink-0">
+        <span className="inline-flex items-center justify-center px-1 py-0.5 text-[10px] rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 font-semibold shrink-0">
           {streak}
         </span>
       </div>
 
       {/* Accuracy (never shrink) */}
       <div className="text-center">
-        <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs rounded-full bg-green-500/10 text-green-400 border border-green-500/30 font-semibold shrink-0 whitespace-nowrap">
+        <span className="inline-flex items-center justify-center px-1 py-0.5 text-[10px] rounded-full bg-green-500/10 text-green-400 border border-green-500/30 font-semibold shrink-0 whitespace-nowrap">
           {accuracyPct}%
         </span>
       </div>
 
       {/* Points (never shrink) */}
       <div className="text-center">
-        <span className="text-sm font-bold text-primary shrink-0 whitespace-nowrap">
+        <span className="text-xs font-bold text-primary shrink-0 whitespace-nowrap">
           {points.toLocaleString()}
         </span>
       </div>
@@ -241,6 +242,11 @@ export default function LeaderboardPage({
   
   // Force cache bust - this should trigger a fresh deployment
   console.log("LEADERBOARD CACHE BUST - PROPER GRID TEMPLATE", Date.now());
+  
+  // Debug name data
+  console.log("displayUser data:", displayUser);
+  console.log("displayUser.name:", displayUser.name);
+  console.log("formatDisplayName result:", formatDisplayName(displayUser.name, false));
   
   // Use real data hooks
   const { data: myStats, loading: myStatsLoading } = useMyStats();
@@ -277,8 +283,8 @@ export default function LeaderboardPage({
           </Button>
           <h1 className={compact ? "text-xl font-bold text-white" : "text-3xl font-bold text-white"}>Leaderboard</h1>
           {/* CACHE BUST INDICATOR */}
-          <div className="bg-purple-500 text-white px-2 py-1 rounded text-xs font-bold">
-            PROPER GRID v{Date.now()}
+          <div className="bg-orange-500 text-white px-2 py-1 rounded text-xs font-bold">
+            MOBILE GRID v{Date.now()}
           </div>
         </div>
 
@@ -432,7 +438,7 @@ export default function LeaderboardPage({
                         <span className="font-bold text-xs">#{displayUser.rank || "—"}</span>
                       </div>
                     }
-                    name={formatDisplayName(displayUser.name, false)}
+                    name={formatDisplayName(displayUser.name, false) || "Loading..."}
                     streak={displayUser.currentStreak}
                     accuracyPct={displayUser.accuracy}
                     points={displayUser.totalPoints}
