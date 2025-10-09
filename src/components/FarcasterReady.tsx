@@ -54,6 +54,11 @@ export default function FarcasterReady() {
                 
                 if (response.ok) {
                   console.log("✅ FarcasterReady: Session established successfully");
+                  // Dispatch event to signal session is ready
+                  if (typeof window !== "undefined") {
+                    window.dispatchEvent(new Event("fc:session-ready"));
+                    console.log("📡 FarcasterReady: Dispatched fc:session-ready event");
+                  }
                 } else {
                   console.error("❌ FarcasterReady: Failed to establish session:", response.status);
                 }

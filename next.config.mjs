@@ -30,7 +30,7 @@ const nextConfig = {
   },
   webpack: (config) => {
     config.experiments = {
-      ...config.experiments,
+      ...config.experiments, // ← fix: spread the existing properly
       topLevelAwait: true,
     };
     return config;

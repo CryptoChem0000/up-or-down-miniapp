@@ -28,8 +28,33 @@ export function useMyStats() {
 
   useEffect(() => {
     let alive = true;
-    (async () => {
+    
+    const start = async () => {
       try {
+        // If we're inside Farcaster iframe, wait for session to be ready
+        if (typeof window !== "undefined" && window !== window.parent) {
+          console.log("🔐 useMyStats: Waiting for session ready event...");
+          await new Promise<void>((resolve) => {
+            // If session already established, resolve immediately
+            setTimeout(resolve, 0);
+            const onReady = () => { 
+              window.removeEventListener("fc:session-ready", onReady); 
+              console.log("✅ useMyStats: Session ready event received");
+              resolve(); 
+            };
+            window.addEventListener("fc:session-ready", onReady, { once: true });
+            
+            // Fallback timeout to prevent infinite waiting
+            setTimeout(() => {
+              window.removeEventListener("fc:session-ready", onReady);
+              console.warn("⚠️ useMyStats: Session ready timeout, proceeding anyway");
+              resolve();
+            }, 5000);
+          });
+        }
+        
+        if (!alive) return;
+        
         // Check if we're in staging mode with mock data
         const isStagingWithMock = process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true";
         // Also check if we're on a staging/preview deployment
@@ -82,7 +107,9 @@ export function useMyStats() {
       } finally {
         if (alive) setLoading(false);
       }
-    })();
+    };
+    
+    start();
     return () => { alive = false; };
   }, []);
 

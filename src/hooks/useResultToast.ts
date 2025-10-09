@@ -21,8 +21,32 @@ export function useResultToast() {
   useEffect(() => {
     let alive = true;
 
-    (async () => {
+    const start = async () => {
       try {
+        // If we're inside Farcaster iframe, wait for session to be ready
+        if (typeof window !== "undefined" && window !== window.parent) {
+          console.log("🔐 useResultToast: Waiting for session ready event...");
+          await new Promise<void>((resolve) => {
+            // If session already established, resolve immediately
+            setTimeout(resolve, 0);
+            const onReady = () => { 
+              window.removeEventListener("fc:session-ready", onReady); 
+              console.log("✅ useResultToast: Session ready event received");
+              resolve(); 
+            };
+            window.addEventListener("fc:session-ready", onReady, { once: true });
+            
+            // Fallback timeout to prevent infinite waiting
+            setTimeout(() => {
+              window.removeEventListener("fc:session-ready", onReady);
+              console.warn("⚠️ useResultToast: Session ready timeout, proceeding anyway");
+              resolve();
+            }, 5000);
+          });
+        }
+        
+        if (!alive) return;
+        
         const r = await fetch("/api/results/me", { 
           cache: "no-store",
           credentials: "include", // Include session cookies
@@ -51,7 +75,9 @@ export function useResultToast() {
       } catch {
         // ignore errors
       }
-    })();
+    };
+
+    start();
 
     return () => {
       alive = false;
