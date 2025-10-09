@@ -202,7 +202,7 @@ function LeaderboardRow({
 
       {/* Name (truncates) */}
       <div className="min-w-0">
-        <div className="truncate font-medium text-white text-[11px]">{name}</div>
+        <div className="truncate font-medium text-white text-[12px]">{name}</div>
         {subline ? (
           <div className="truncate text-[9px] text-gray-400 font-mono">
             {subline}
@@ -212,21 +212,21 @@ function LeaderboardRow({
 
       {/* Streak */}
       <div className="text-center">
-        <span className="inline-flex items-center justify-center px-0.5 py-0.5 text-[9px] rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 font-semibold shrink-0">
+        <span className="inline-flex items-center justify-center px-0.5 py-0.5 text-[10px] rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 font-semibold shrink-0">
           {streak}
         </span>
       </div>
 
       {/* Accuracy (never shrink) */}
       <div className="text-center">
-        <span className="inline-flex items-center justify-center px-0.5 py-0.5 text-[8px] rounded-full bg-green-500/10 text-green-400 border border-green-500/30 font-semibold shrink-0 whitespace-nowrap">
+        <span className="inline-flex items-center justify-center px-0.5 py-0.5 text-[9px] rounded-full bg-green-500/10 text-green-400 border border-green-500/30 font-semibold shrink-0 whitespace-nowrap">
           {accuracyPct}%
         </span>
       </div>
 
       {/* Points (never shrink) */}
       <div className="text-center">
-        <span className="inline-flex items-center justify-center px-0.5 py-0.5 text-[8px] rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30 font-semibold shrink-0 whitespace-nowrap">
+        <span className="inline-flex items-center justify-center px-0.5 py-0.5 text-[9px] rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30 font-semibold shrink-0 whitespace-nowrap">
           {points.toLocaleString()}
         </span>
       </div>
