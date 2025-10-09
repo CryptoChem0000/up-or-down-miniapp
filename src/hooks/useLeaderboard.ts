@@ -32,7 +32,8 @@ export function useLeaderboard(limit = 50) {
               displayName: "CryptoWhale",
               currentStreak: 15,
               accuracy: 94,
-              points: 28450
+              points: 28450,
+              totalVotes: 47
             },
             {
               fid: "2",
@@ -41,7 +42,8 @@ export function useLeaderboard(limit = 50) {
               displayName: "Trading Master",
               currentStreak: 12,
               accuracy: 91,
-              points: 26780
+              points: 26780,
+              totalVotes: 42
             },
             {
               fid: "3",
@@ -50,7 +52,8 @@ export function useLeaderboard(limit = 50) {
               displayName: "ETH Predictor",
               currentStreak: 9,
               accuracy: 89,
-              points: 24560
+              points: 24560,
+              totalVotes: 38
             },
             {
               fid: "4",
@@ -59,7 +62,8 @@ export function useLeaderboard(limit = 50) {
               displayName: "DeFi Trader",
               currentStreak: 8,
               accuracy: 87,
-              points: 22340
+              points: 22340,
+              totalVotes: 35
             },
             {
               fid: "5",
@@ -68,7 +72,8 @@ export function useLeaderboard(limit = 50) {
               displayName: "Blockchain Analyst",
               currentStreak: 7,
               accuracy: 85,
-              points: 20120
+              points: 20120,
+              totalVotes: 32
             },
             {
               fid: "6",
@@ -77,7 +82,8 @@ export function useLeaderboard(limit = 50) {
               displayName: "Crypto Ninja",
               currentStreak: 6,
               accuracy: 83,
-              points: 18900
+              points: 18900,
+              totalVotes: 29
             },
             {
               fid: "7",
@@ -86,7 +92,8 @@ export function useLeaderboard(limit = 50) {
               displayName: "ETH Enthusiast",
               currentStreak: 5,
               accuracy: 81,
-              points: 17680
+              points: 17680,
+              totalVotes: 26
             },
             {
               fid: "8",
@@ -95,7 +102,8 @@ export function useLeaderboard(limit = 50) {
               displayName: "Trading Pro",
               currentStreak: 4,
               accuracy: 79,
-              points: 16460
+              points: 16460,
+              totalVotes: 23
             },
             {
               fid: "9",
@@ -104,7 +112,8 @@ export function useLeaderboard(limit = 50) {
               displayName: "Crypto Insider",
               currentStreak: 3,
               accuracy: 77,
-              points: 15240
+              points: 15240,
+              totalVotes: 20
             },
             {
               fid: "10",
@@ -113,7 +122,8 @@ export function useLeaderboard(limit = 50) {
               displayName: "Market Watcher",
               currentStreak: 2,
               accuracy: 75,
-              points: 14020
+              points: 14020,
+              totalVotes: 17
             }
           ];
           
