@@ -35,6 +35,7 @@ export function useMyStats() {
     }
     
     let alive = true;
+    const abortController = new AbortController();
     
     const start = async () => {
       try {
@@ -87,18 +88,30 @@ export function useMyStats() {
         const r = await fetch("/api/stats/me", { 
           cache: "no-store",
           credentials: "include", // Include session cookies
+          signal: abortController.signal
         });
         const j: MeResp = await r.json();
         if (alive) setData(j);
       } catch (error) {
-        if (alive) setData({ ok: false, error: "fetch_failed" });
+        if (alive) {
+          if (error instanceof Error && error.name === 'AbortError') {
+            console.log("🔐 useMyStats: Request aborted");
+            // Don't set error state for aborted requests
+          } else {
+            console.error("🔐 useMyStats: Fetch error:", error);
+            setData({ ok: false, error: "fetch_failed" });
+          }
+        }
       } finally {
         if (alive) setLoading(false);
       }
     };
     
     start();
-    return () => { alive = false; };
+    return () => { 
+      alive = false;
+      abortController.abort();
+    };
   }, [sessionReady]);
 
   return { data, loading };

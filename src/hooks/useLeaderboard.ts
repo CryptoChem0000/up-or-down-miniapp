@@ -10,6 +10,8 @@ export function useLeaderboard(limit = 50) {
 
   useEffect(() => {
     let alive = true;
+    const abortController = new AbortController();
+    
     (async () => {
       try {
         // Check if we're in staging mode with mock data or preview deployment
@@ -142,6 +144,7 @@ export function useLeaderboard(limit = 50) {
         const r = await fetch(`/api/leaderboard?limit=${limit}`, { 
           cache: "no-store",
           credentials: "include", // Include session cookies
+          signal: abortController.signal
         });
         const j = await r.json();
         if (alive && j?.ok) {
@@ -151,13 +154,21 @@ export function useLeaderboard(limit = 50) {
           setRows([]); // Set empty array on error, no mock data
         }
       } catch (error) {
-        console.error("Leaderboard fetch error:", error);
-        setRows([]); // Set empty array on error, no mock data
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.log("Leaderboard: Request aborted");
+          // Don't set error state for aborted requests
+        } else {
+          console.error("Leaderboard fetch error:", error);
+          setRows([]); // Set empty array on error, no mock data
+        }
       } finally {
         if (alive) setLoading(false);
       }
     })();
-    return () => { alive = false; };
+    return () => { 
+      alive = false;
+      abortController.abort();
+    };
   }, [limit]);
 
   return { rows, loading };

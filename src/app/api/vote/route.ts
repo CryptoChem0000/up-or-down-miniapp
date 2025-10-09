@@ -88,7 +88,25 @@ export async function POST(req: Request) {
     const day = isoDayUTC();
     const single = await ensureSingleVote(fid, day);
     if (!single) {
-      const res = NextResponse.json({ error: "already_voted" }, { status: 409 });
+      // User has already voted - fetch their existing vote to return the actual direction
+      const existingVoteRaw = await redis.hget(k.votes(day), fid);
+      let existingVote = null;
+      if (existingVoteRaw && typeof existingVoteRaw === 'string') {
+        try {
+          existingVote = JSON.parse(existingVoteRaw);
+        } catch (parseError) {
+          console.error("Error parsing existing vote for FID", fid, ":", parseError);
+        }
+      }
+      
+      // Return 200 with existing vote data instead of 409
+      const res = NextResponse.json({ 
+        ok: true,
+        alreadyVoted: true,
+        vote: existingVote?.direction || direction, // fallback to requested direction if parsing failed
+        votedAt: existingVote?.votedAt,
+        priceAtVote: existingVote?.priceUsdAtVote
+      });
       res.headers.set("Access-Control-Allow-Origin", "*");
       res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Origin, Accept");
       res.headers.set("Access-Control-Allow-Credentials", "true");
@@ -117,8 +135,10 @@ export async function POST(req: Request) {
 
     // Create response and set session cookie
     const res = NextResponse.json({ 
-      ok: true, 
-      direction,
+      ok: true,
+      alreadyVoted: false,
+      vote: direction,
+      votedAt: Date.now(),
       priceAtVote: price.price,
       timestamp: price.ts 
     });

@@ -183,6 +183,27 @@ export default function DailyOneTapPoll() {
   // Show result toast for yesterday's outcome - only after session is ready
   useResultToast();
 
+  // Helper functions for vote caching
+  const cacheTodayVote = (dir: "up" | "down") => {
+    try {
+      const key = new Date().toISOString().slice(0, 10); // YYYY-MM-DD UTC
+      localStorage.setItem(`vote:${key}`, dir);
+    } catch (error) {
+      // Ignore localStorage errors (e.g., in private browsing)
+      console.log("Could not cache vote:", error);
+    }
+  };
+
+  const getCachedTodayVote = (): "up" | "down" | null => {
+    try {
+      const key = new Date().toISOString().slice(0, 10); // YYYY-MM-DD UTC
+      const cached = localStorage.getItem(`vote:${key}`);
+      return cached as "up" | "down" | null;
+    } catch (error) {
+      return null;
+    }
+  };
+
   // Get FID for leaderboard link
   const [fidParam, setFidParam] = React.useState("");
   
@@ -301,20 +322,7 @@ export default function DailyOneTapPoll() {
       console.log("Vote response body:", result);
 
       if (!response.ok) {
-        if (result.error === "already_voted" || response.status === 409) {
-          console.log("Already voted detected, using existing vote data...");
-          
-          // Use the existing todayVote from userStats instead of making another API call
-          const actualVote = userStats.todayVote || dir;
-          console.log("Actual vote to display:", actualVote);
-          
-          toast({ 
-            title: "Already Voted", 
-            description: `You've already voted ${actualVote.toUpperCase()} today. Check back tomorrow to see the results!`,
-            variant: "success"
-          });
-          return;
-        } else if (result.error === "voting_closed") {
+        if (result.error === "voting_closed") {
           toast({ 
             title: "Voting Closed", 
             description: "Vote resets at 12:01 AM UTC. Check back in tomorrow!",
@@ -326,14 +334,34 @@ export default function DailyOneTapPoll() {
         }
       }
 
-      // Vote was successful
+      // Handle both successful new vote and already voted scenarios
+      if (result.alreadyVoted) {
+        // User has already voted - use server-confirmed direction
+        console.log("Already voted detected, using server-confirmed vote:", result.vote);
+        
+        // Cache the server-confirmed vote
+        cacheTodayVote(result.vote);
+        
+        toast({ 
+          title: "Already Voted", 
+          description: `You've already voted ${result.vote.toUpperCase()} today. Check back tomorrow to see the results!`,
+          variant: "success"
+        });
+        return;
+      }
+
+      // Vote was successful (new vote)
       setHasVoted(true);
+      
+      // Cache the server-confirmed vote
+      cacheTodayVote(result.vote);
       
       // Trigger haptic feedback on successful vote
       await triggerImpact('medium');
       
+      // Use server-confirmed direction for consistency
       toast({ 
-        title: `Voted ${dir.toUpperCase()}!`, 
+        title: `Voted ${result.vote.toUpperCase()}!`, 
         description: "Your prediction has been recorded. Check back tomorrow for results!\nResults revealed daily at 12:01 AM UTC" 
       });
 
@@ -346,26 +374,34 @@ export default function DailyOneTapPoll() {
       // Check if this might be an "already voted" scenario
       const errorMessage = error instanceof Error ? error.message : String(error);
       if (errorMessage.includes("unauthorized") || errorMessage.includes("401")) {
-        // Fetch the actual vote from the server to show correct direction
-        try {
-          const statsResponse = await fetch("/api/stats/me", {
-            credentials: "include", // Include session cookies
-          });
-          const statsData = await statsResponse.json();
-          const actualVote = statsData.ok && statsData.todayVote ? statsData.todayVote : dir;
-          toast({ 
-            title: "Already Voted", 
-            description: `You've already voted ${actualVote.toUpperCase()} today. Check back tomorrow to see the results!`,
-            variant: "success"
-          });
-        } catch (statsError) {
-          // Fallback to button direction if stats fetch fails
-          toast({ 
-            title: "Already Voted", 
-            description: `You've already voted ${dir.toUpperCase()} today. Check back tomorrow to see the results!`,
-            variant: "success"
-          });
+        // Try multiple fallback sources for the actual vote direction
+        let actualVote: "up" | "down" = dir; // Default fallback
+        
+        // 1. Try cached vote first (fastest)
+        const cachedVote = getCachedTodayVote();
+        if (cachedVote) {
+          actualVote = cachedVote;
+        } else {
+          // 2. Try fetching from stats API
+          try {
+            const statsResponse = await fetch("/api/stats/me", {
+              credentials: "include", // Include session cookies
+            });
+            const statsData = await statsResponse.json();
+            if (statsData.ok && statsData.todayVote) {
+              actualVote = statsData.todayVote;
+            }
+          } catch (statsError) {
+            // 3. Use button direction as final fallback
+            console.log("Could not fetch actual vote, using button direction:", dir);
+          }
         }
+        
+        toast({ 
+          title: "Already Voted", 
+          description: `You've already voted ${actualVote.toUpperCase()} today. Check back tomorrow to see the results!`,
+          variant: "success"
+        });
       } else {
         toast({ 
           title: "Vote Failed", 
