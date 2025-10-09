@@ -34,8 +34,9 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: true, rows: [] });
     }
 
-    // Reverse to get highest scores first (descending order)
-    const reversedFlat = flat.reverse();
+    // Redis zrange with -N, -1 already returns highest scores first (descending order)
+    // No need to reverse - just use flat directly
+    const reversedFlat = flat;
 
     // batch hgetall to pull per-user stats for accuracy/streak
     console.log("Leaderboard API: Building pipeline for stats");
