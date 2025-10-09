@@ -6,13 +6,17 @@ export const runtime = "edge";
 
 export async function POST(req: Request) {
   try {
+    console.log("🔐 Auth establish: Request headers:", Object.fromEntries(req.headers.entries()));
+    console.log("🔐 Auth establish: Request method:", req.method);
+    console.log("🔐 Auth establish: Request URL:", req.url);
+    
     // Read request body first
     let body;
     try {
       body = await req.json();
-      console.log("Auth establish request body:", body);
+      console.log("🔐 Auth establish: Request body:", body);
     } catch (bodyError) {
-      console.log("No request body found:", bodyError);
+      console.log("🔐 Auth establish: No request body found:", bodyError);
       // Return 401 instead of 400 for empty body - this is expected for some requests
       return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
     }

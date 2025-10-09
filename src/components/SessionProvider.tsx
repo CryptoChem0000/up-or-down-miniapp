@@ -36,33 +36,46 @@ export default function SessionProvider({ children }: { children: React.ReactNod
         // Initialize Farcaster SDK if in iframe (without calling ready() - handled by FarcasterReadyBridge)
         if (typeof window !== "undefined" && window !== window.parent) {
           console.log("📱 SessionProvider: In iframe, getting user context...");
+          console.log("📱 SessionProvider: User agent:", navigator.userAgent);
+          console.log("📱 SessionProvider: Window location:", window.location.href);
           
           // Get user context (ready() is handled by FarcasterReadyBridge)
           try {
             const { sdk } = await import("@farcaster/miniapp-sdk");
+            console.log("📱 SessionProvider: SDK imported successfully");
             const context = await sdk.context;
             console.log("📋 SessionProvider: User context:", context);
+            console.log("📋 SessionProvider: Context FID:", context?.user?.fid);
+            console.log("📋 SessionProvider: Context username:", context?.user?.username);
             
             if (context && context.user && context.user.fid) {
               // Establish session with the FID
               console.log("🔑 SessionProvider: Establishing session with FID:", context.user.fid);
+              const requestBody = { fid: context.user.fid.toString() };
+              console.log("🔑 SessionProvider: Request body:", requestBody);
+              
               const response = await fetch("/api/auth/establish", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
                 },
                 credentials: "include",
-                body: JSON.stringify({ fid: context.user.fid.toString() }),
+                body: JSON.stringify(requestBody),
               });
               
+              console.log("🔑 SessionProvider: Response status:", response.status);
+              console.log("🔑 SessionProvider: Response headers:", Object.fromEntries(response.headers.entries()));
+              
               if (response.ok) {
-                console.log("✅ SessionProvider: Session established successfully");
+                const responseData = await response.json();
+                console.log("✅ SessionProvider: Session established successfully, response:", responseData);
                 if (!cancelled) {
                   setFid(context.user.fid);
                   setUsername(context.user.username || null);
                 }
               } else {
-                console.error("❌ SessionProvider: Failed to establish session:", response.status);
+                const errorData = await response.text();
+                console.error("❌ SessionProvider: Failed to establish session:", response.status, errorData);
               }
             }
           } catch (contextError) {
