@@ -124,10 +124,10 @@ const currentUser = {
 
 function getRankIcon(rank: number) {
   switch (rank) {
-    case 1: return <Crown className="w-5 h-5 text-yellow-500" />;
-    case 2: return <Medal className="w-5 h-5 text-gray-400" />;
-    case 3: return <Award className="w-5 h-5 text-amber-600" />;
-    default: return <Trophy className="w-4 h-4 text-muted-foreground" />;
+    case 1: return <Crown className="w-3 h-3 text-yellow-500" />;
+    case 2: return <Medal className="w-3 h-3 text-gray-400" />;
+    case 3: return <Award className="w-3 h-3 text-amber-600" />;
+    default: return <Trophy className="w-3 h-3 text-muted-foreground" />;
   }
 }
 
@@ -311,28 +311,28 @@ export default function LeaderboardPage({
                     leaderboardData.map((u) => (
                       <div
                         key={u.fid}
-                        className={`flex items-center justify-between gap-3 rounded-lg border p-3 transition-colors hover:bg-gray-700/30 ${
+                        className={`flex items-center justify-between gap-2 rounded-lg border p-2 transition-colors hover:bg-gray-700/30 ${
                           u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
                         }`}
                       >
-                        <div className="flex items-center gap-3 min-w-0 max-w-[60%] flex-1">
-                          <div className="flex items-center gap-1 min-w-[44px] flex-shrink-0">
+                        <div className="flex items-center gap-2 min-w-0 max-w-[55%] flex-1">
+                          <div className="flex items-center gap-1 min-w-[32px] flex-shrink-0">
                             {getRankIcon(u.rank)}
-                            <span className="font-bold text-sm text-white">#{u.rank}</span>
+                            <span className="font-bold text-xs text-white">#{u.rank}</span>
                           </div>
                           <div className="flex flex-col min-w-0 flex-1">
-                            <span className="font-medium text-sm text-white truncate">{getDisplayName(u)}</span>
+                            <span className="font-medium text-xs text-white truncate">{getDisplayName(u)}</span>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-1 flex-shrink-0 min-w-0">
-                          <Badge variant="secondary" className="font-bold text-xs px-1.5 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
+                          <Badge variant="secondary" className="font-bold text-[10px] px-1 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
                             {u.currentStreak || 0}
                           </Badge>
-                          <Badge variant="outline" className="font-bold text-xs px-1.5 py-0.5 border-green-500/30 text-green-400 bg-green-500/10">
+                          <Badge variant="outline" className="font-bold text-[10px] px-1 py-0.5 border-green-500/30 text-green-400 bg-green-500/10">
                             {u.accuracy || 0}%
                           </Badge>
-                          <span className="text-primary font-bold text-sm tabular-nums">
+                          <span className="text-primary font-bold text-xs tabular-nums">
                             {u.points.toLocaleString()}
                           </span>
                         </div>
@@ -413,28 +413,28 @@ export default function LeaderboardPage({
                 </div>
               ) : (
                 /* ===== Compact layout ===== */
-                <div className="flex items-center justify-between gap-3 rounded-lg border p-3 bg-card/50 border-primary/30">
-                  <div className="flex items-center gap-3 min-w-0 max-w-[60%] flex-1">
-                    <div className="flex items-center gap-1 min-w-[44px] flex-shrink-0">
+                <div className="flex items-center justify-between gap-2 rounded-lg border p-2 bg-card/50 border-primary/30">
+                  <div className="flex items-center gap-2 min-w-0 max-w-[55%] flex-1">
+                    <div className="flex items-center gap-1 min-w-[32px] flex-shrink-0">
                       {getRankIcon(displayUser.rank || 999)}
-                      <span className="font-bold text-sm text-white">#{displayUser.rank || "—"}</span>
+                      <span className="font-bold text-xs text-white">#{displayUser.rank || "—"}</span>
                     </div>
                     <div className="flex flex-col min-w-0 flex-1">
-                      <span className="font-medium text-sm text-white truncate">{formatDisplayName(displayUser.name, true)}</span>
+                      <span className="font-medium text-xs text-white truncate">{formatDisplayName(displayUser.name, true)}</span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-1 flex-shrink-0 min-w-0">
-                    <Badge variant="secondary" className="font-bold text-xs px-1.5 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
+                    <Badge variant="secondary" className="font-bold text-[10px] px-1 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
                       {displayUser.currentStreak}
                     </Badge>
                     <Badge 
                       variant={displayUser.accuracy >= 90 ? "default" : "outline"}
-                      className="font-bold text-xs px-1.5 py-0.5 border-green-500/30 text-green-400 bg-green-500/10"
+                      className="font-bold text-[10px] px-1 py-0.5 border-green-500/30 text-green-400 bg-green-500/10"
                     >
                       {displayUser.accuracy}%
                     </Badge>
-                    <span className="text-primary font-bold text-sm tabular-nums">
+                    <span className="text-primary font-bold text-xs tabular-nums">
                       {displayUser.totalPoints.toLocaleString()}
                     </span>
                   </div>
