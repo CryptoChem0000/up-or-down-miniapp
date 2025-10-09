@@ -25,6 +25,12 @@ export async function GET(req: Request) {
     const flat = await redis.zrange<string[]>("lb:points", -N, -1, { withScores: true });
     console.log("Leaderboard API: Raw leaderboard data:", flat);
 
+    // Check if leaderboard is empty
+    if (!flat || flat.length === 0) {
+      console.log("Leaderboard API: No leaderboard data found, returning empty result");
+      return NextResponse.json({ ok: true, rows: [] });
+    }
+
     // Reverse to get highest scores first (descending order)
     const reversedFlat = flat.reverse();
 
@@ -34,7 +40,9 @@ export async function GET(req: Request) {
     for (let i = 0; i < reversedFlat.length; i += 2) {
       pipe.hgetall(`stats:${reversedFlat[i]}`);
     }
-    const statsArr = await pipe.exec<Record<string, string>[]>();
+    
+    // Only execute pipeline if it has commands
+    const statsArr = pipe.length > 0 ? await pipe.exec<Record<string, string>[]>() : [];
     console.log("Leaderboard API: Stats data:", statsArr);
 
     const rows: LeaderboardRow[] = [];
