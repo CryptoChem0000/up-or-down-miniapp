@@ -5,6 +5,8 @@ import type { LeaderboardRow } from "@/lib/types";
 export function useLeaderboard(limit = 50) {
   const [rows, setRows] = useState<LeaderboardRow[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Force fresh deployment - no mock data in production
 
   useEffect(() => {
     let alive = true;
