@@ -283,12 +283,27 @@ export default function DailyOneTapPoll() {
       const result = await response.json();
 
       if (!response.ok) {
-        if (result.error === "already_voted") {
-          toast({ 
-            title: "Already Voted", 
-            description: "You've already made your prediction for today. Check back tomorrow!",
-            variant: "destructive"
-          });
+        if (result.error === "already_voted" || response.status === 409) {
+          // Fetch the actual vote to show the correct direction
+          try {
+            const statsResponse = await fetch("/api/stats/me", {
+              credentials: "include",
+            });
+            const statsData = await statsResponse.json();
+            const actualVote = statsData.ok && statsData.todayVote ? statsData.todayVote : dir;
+            toast({ 
+              title: "Already Voted", 
+              description: `You've already voted ${actualVote.toUpperCase()} today. Check back tomorrow to see the results!`,
+              variant: "success"
+            });
+          } catch (statsError) {
+            // Fallback if stats fetch fails
+            toast({ 
+              title: "Already Voted", 
+              description: "You've already made your prediction for today. Check back tomorrow!",
+              variant: "success"
+            });
+          }
           return;
         } else if (result.error === "voting_closed") {
           toast({ 
