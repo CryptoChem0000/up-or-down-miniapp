@@ -208,8 +208,8 @@ export default function LeaderboardPage({
           </Button>
           <h1 className={compact ? "text-xl font-bold text-white" : "text-3xl font-bold text-white"}>Leaderboard</h1>
           {/* CACHE BUST INDICATOR */}
-          <div className="bg-green-500 text-white px-2 py-1 rounded text-xs font-bold">
-            NEW LAYOUT v{Date.now()}
+          <div className="bg-blue-500 text-white px-2 py-1 rounded text-xs font-bold">
+            GRID LAYOUT v{Date.now()}
           </div>
         </div>
 
@@ -318,23 +318,23 @@ export default function LeaderboardPage({
                     leaderboardData.map((u) => (
                       <div
                         key={u.fid}
-                        className={`relative rounded-lg border p-2 transition-colors hover:bg-gray-700/30 ${
+                        className={`grid grid-cols-[60px_1fr_120px] gap-2 items-center rounded-lg border p-2 transition-colors hover:bg-gray-700/30 ${
                           u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
                         }`}
                       >
-                        {/* Rank section - absolute left */}
-                        <div className="absolute left-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1 w-8">
+                        {/* Rank section - fixed 60px width */}
+                        <div className="flex items-center gap-1 justify-start">
                           {getRankIcon(u.rank)}
                           <span className="font-bold text-xs text-white">#{u.rank}</span>
                         </div>
 
-                        {/* Username section - centered with margins */}
-                        <div className="mx-10 text-center">
+                        {/* Username section - flexible width with truncation */}
+                        <div className="min-w-0 overflow-hidden">
                           <span className="font-medium text-xs text-white truncate block">{getDisplayName(u)}</span>
                         </div>
 
-                        {/* Metrics section - absolute right */}
-                        <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+                        {/* Metrics section - fixed 120px width */}
+                        <div className="flex items-center gap-1 justify-end">
                           <div className="bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-full px-1 py-0.5 text-[10px] font-bold">
                             {u.currentStreak || 0}
                           </div>
@@ -388,33 +388,27 @@ export default function LeaderboardPage({
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-5 gap-4 py-4 px-4 rounded-lg border bg-card/50 border-primary/30">
-                    <div className="flex items-center gap-2">
+                  <div className="grid grid-cols-[60px_1fr_120px] gap-2 items-center py-4 px-4 rounded-lg border bg-card/50 border-primary/30">
+                    {/* Rank section - fixed 60px width */}
+                    <div className="flex items-center gap-1 justify-start">
                       {getRankIcon(displayUser.rank || 999)}
-                      <span className="font-bold text-white">#{displayUser.rank || "—"}</span>
+                      <span className="font-bold text-xs text-white">#{displayUser.rank || "—"}</span>
                     </div>
                     
-                    <div className="flex flex-col">
-                      <span className="font-medium text-white">{formatDisplayName(displayUser.name, false)}</span>
+                    {/* Username section - flexible width with truncation */}
+                    <div className="min-w-0 overflow-hidden">
+                      <span className="font-medium text-xs text-white truncate block">{formatDisplayName(displayUser.name, false)}</span>
                     </div>
                     
-                    <div className="text-center">
-                      <Badge variant="secondary" className="font-bold bg-orange-500/20 text-orange-400 border-orange-500/30">
+                    {/* Metrics section - fixed 120px width */}
+                    <div className="flex items-center gap-1 justify-end">
+                      <div className="bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-full px-1 py-0.5 text-[10px] font-bold">
                         {displayUser.currentStreak}
-                      </Badge>
-                    </div>
-                    
-                    <div className="text-center">
-                      <Badge 
-                        variant={displayUser.accuracy >= 90 ? "default" : "outline"}
-                        className="font-bold border-green-500/30 text-green-400 bg-green-500/10"
-                      >
+                      </div>
+                      <div className="border border-green-500/30 text-green-400 bg-green-500/10 rounded-full px-1 py-0.5 text-[10px] font-bold">
                         {displayUser.accuracy}%
-                      </Badge>
-                    </div>
-                    
-                    <div className="text-center">
-                      <span className="text-lg font-bold text-primary">
+                      </div>
+                      <span className="text-primary font-bold text-xs tabular-nums">
                         {displayUser.totalPoints.toLocaleString()}
                       </span>
                     </div>
