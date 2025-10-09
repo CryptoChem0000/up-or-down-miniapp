@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import clsx, { type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Slot } from "@radix-ui/react-slot";
@@ -8,6 +8,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { TrendingUp, TrendingDown, Flame, Users, Trophy, X, Crown } from "lucide-react";
 import Link from "next/link";
 import HeroHeader from "@/components/HeroHeader";
+import { useSession } from "@/components/SessionProvider";
 import { useMyStats } from "@/hooks/useMyStats";
 import { useResultToast } from "@/hooks/useResultToast";
 import { useToast } from "@/hooks/use-toast";
@@ -162,9 +163,7 @@ function composeWithEmbed(baseHref: string) {
 
 /** Page */
 export default function DailyOneTapPoll() {
-  // Hydration-safe: ready flag to prevent mismatches
-  const [ready, setReady] = useState(false);
-  const [sessionReady, setSessionReady] = useState(false);
+  const { sessionReady } = useSession();
   
   const [selectedVote, setSelectedVote] = useState<"up" | "down" | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
@@ -173,53 +172,20 @@ export default function DailyOneTapPoll() {
   const { toast } = useToast();
   const { triggerImpact, triggerSelection } = useHapticFeedback();
   
-  // Check voting window status (safe to call on server/client)
-  const votingOpen = isVotingOpen();
-  const votingMessage = getVotingWindowMessage();
+  // Hydration-safe: compute time-based UI in effect
+  const [votingOpen, setVotingOpen] = useState(false);
+  const [votingMessage, setVotingMessage] = useState("");
   
-  // Wait for session to be ready (established by FarcasterReady component in layout)
-  React.useEffect(() => {
-    let cancelled = false;
-    
-    const waitForSession = async () => {
-      // Wait for session-ready event from FarcasterReady
-      await new Promise<void>((resolve) => {
-        if (typeof window !== "undefined" && window !== window.parent) {
-          console.log("📱 Page: Waiting for fc:session-ready event...");
-          const onReady = () => {
-            window.removeEventListener("fc:session-ready", onReady);
-            console.log("✅ Page: Session ready event received");
-            resolve();
-          };
-          window.addEventListener("fc:session-ready", onReady, { once: true });
-          // Timeout fallback
-          setTimeout(() => {
-            window.removeEventListener("fc:session-ready", onReady);
-            console.warn("⚠️ Page: Session ready timeout, proceeding anyway");
-            resolve();
-          }, 5000);
-        } else {
-          // Not in iframe, proceed immediately
-          resolve();
-        }
-      });
-      
-      if (!cancelled) {
-        setSessionReady(true);
-        setReady(true);
-      }
-    };
-    
-    waitForSession();
-    
-    return () => { cancelled = true; };
+  useEffect(() => {
+    setVotingOpen(isVotingOpen());
+    setVotingMessage(getVotingWindowMessage());
   }, []);
   
   // Get real user stats - only after session is ready
-  const { data: myStats, loading: myStatsLoading } = useMyStats(sessionReady);
+  const { data: myStats, loading: myStatsLoading } = useMyStats();
 
   // Show result toast for yesterday's outcome - only after session is ready
-  useResultToast(sessionReady);
+  useResultToast();
 
   // Establish session cookie on page load (fire and forget)
   // Session establishment is now handled by FarcasterReady component

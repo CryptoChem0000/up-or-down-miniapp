@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useSession } from "@/components/SessionProvider";
 
 type MeResult = {
   ok: boolean;
@@ -15,7 +16,8 @@ type MeResult = {
   streakAfter: number;
 };
 
-export function useResultToast(sessionReady: boolean = true) {
+export function useResultToast() {
+  const { sessionReady } = useSession();
   const { toast } = useToast();
 
   useEffect(() => {

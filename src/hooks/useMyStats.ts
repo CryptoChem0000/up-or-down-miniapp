@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useSession } from "@/components/SessionProvider";
 
 type MeResp = {
   ok: boolean;
@@ -22,7 +23,8 @@ type MeResp = {
   error?: string;
 };
 
-export function useMyStats(sessionReady: boolean = true) {
+export function useMyStats() {
+  const { sessionReady } = useSession();
   const [data, setData] = useState<MeResp | null>(null);
   const [loading, setLoading] = useState(true);
 

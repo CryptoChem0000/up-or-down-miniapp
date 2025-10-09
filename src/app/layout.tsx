@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import dynamic from "next/dynamic";
 import ClientOnly from "@/components/ClientOnly";
 import { ClientToaster } from "@/components/ClientToaster";
-import FarcasterReady from "@/components/FarcasterReady";
+
+const SessionProvider = dynamic(() => import("@/components/SessionProvider"), { ssr: false });
 
 const baseUrl = process.env.APP_BASE_URL || "http://localhost:3010";
 
@@ -44,8 +46,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <ClientOnly>
-          <FarcasterReady />
-          {children}
+          <SessionProvider>
+            {children}
+          </SessionProvider>
           <ClientToaster />
         </ClientOnly>
       </body>
