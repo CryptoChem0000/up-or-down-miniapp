@@ -29,10 +29,21 @@ export async function settleDay(date: string, open: number, close: number) {
   for (const [fid, voteRaw] of Object.entries(votesRaw)) {
     console.log(`[Settlement ${date}] Processing FID ${fid}, raw data:`, voteRaw);
     
-    // Parse the vote JSON to get the direction
+    // Parse the vote data to get the direction
+    // Note: Upstash Redis may auto-deserialize JSON, so handle both string and object
     let vote: "UP" | "DOWN";
     try {
-      const voteData = JSON.parse(voteRaw);
+      let voteData: any;
+      if (typeof voteRaw === 'string') {
+        // It's a JSON string, parse it
+        voteData = JSON.parse(voteRaw);
+      } else if (typeof voteRaw === 'object' && voteRaw !== null) {
+        // It's already an object (Upstash auto-deserialized)
+        voteData = voteRaw;
+      } else {
+        throw new Error(`Unexpected vote data type: ${typeof voteRaw}`);
+      }
+      
       vote = voteData.direction.toUpperCase() as "UP" | "DOWN";
       console.log(`[Settlement ${date}] FID ${fid} voted ${vote}`);
     } catch (parseError) {
