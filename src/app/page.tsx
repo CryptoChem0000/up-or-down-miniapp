@@ -177,42 +177,20 @@ export default function DailyOneTapPoll() {
   const [votingOpen, setVotingOpen] = useState(false);
   const [votingMessage, setVotingMessage] = useState("");
   
-  // Show loading screen while session initializes
-  if (!sessionReady) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 mx-auto border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-          <div className="text-white text-lg font-medium">Loading...</div>
-          <div className="text-gray-400 text-sm">Initializing Farcaster connection</div>
-        </div>
-      </div>
-    );
-  }
-  
-  useEffect(() => {
-    setVotingOpen(isVotingOpen());
-    setVotingMessage(getVotingWindowMessage());
-  }, []);
-  
   // Get real user stats - only after session is ready
   const { data: myStats, loading: myStatsLoading } = useMyStats();
 
   // Show result toast for yesterday's outcome - only after session is ready
   useResultToast();
 
-  // Establish session cookie on page load (fire and forget)
-  // Session establishment is now handled by FarcasterReady component
-  // React.useEffect(() => {
-  //   // This will set the HttpOnly cookie if the request is signed
-  //   fetch("/api/auth/establish", { method: "POST", cache: "no-store" }).catch(() => {});
-  // }, []);
-
-
-  // Show dev links only in development
-  const SHOW_DEV_LINKS = 
-    process.env.NEXT_PUBLIC_SHOW_DEV_LINKS === "true" &&
-    process.env.NODE_ENV !== "production";
+  // Get FID for leaderboard link
+  const [fidParam, setFidParam] = React.useState("");
+  
+  // All useEffect hooks must be at the top level
+  useEffect(() => {
+    setVotingOpen(isVotingOpen());
+    setVotingMessage(getVotingWindowMessage());
+  }, []);
 
   // Load personal stats if fid is in URL (legacy support)
   React.useEffect(() => {
@@ -221,8 +199,6 @@ export default function DailyOneTapPoll() {
     fetch(`/api/user/${fid}`).then(r => r.json()).then(setMy).catch(() => {});
   }, []);
 
-  // Get FID for leaderboard link
-  const [fidParam, setFidParam] = React.useState("");
   React.useEffect(() => {
     if (typeof window !== "undefined") {
       const fid = new URL(window.location.href).searchParams.get("fid") || "";
@@ -268,6 +244,19 @@ export default function DailyOneTapPoll() {
       clearInterval(intervalId);
     };
   }, []);
+
+  // Show loading screen while session initializes
+  if (!sessionReady) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 mx-auto border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-white text-lg font-medium">Loading...</div>
+          <div className="text-gray-400 text-sm">Initializing Farcaster connection</div>
+        </div>
+      </div>
+    );
+  }
 
   const userStats = { 
     streak: myStats?.ok ? (myStats.stats?.currentStreak ?? 0) : (my?.streak ?? 0), 
