@@ -170,6 +170,9 @@ export default function LeaderboardPage({
 }) {
   const compact = searchParams?.compact === "1";
   
+  // Force cache bust - this should trigger a fresh deployment
+  console.log("LEADERBOARD CACHE BUST - NEW LAYOUT TEST", Date.now());
+  
   // Use real data hooks
   const { data: myStats, loading: myStatsLoading } = useMyStats();
   const { rows: leaderboardData, loading: leaderboardLoading } = useLeaderboard(50);
@@ -204,6 +207,10 @@ export default function LeaderboardPage({
             </Link>
           </Button>
           <h1 className={compact ? "text-xl font-bold text-white" : "text-3xl font-bold text-white"}>Leaderboard</h1>
+          {/* CACHE BUST INDICATOR */}
+          <div className="bg-green-500 text-white px-2 py-1 rounded text-xs font-bold">
+            NEW LAYOUT v{Date.now()}
+          </div>
         </div>
 
         <Card className="bg-gray-800 border-gray-700">
