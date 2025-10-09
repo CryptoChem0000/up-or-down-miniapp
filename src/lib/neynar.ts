@@ -5,13 +5,32 @@ type NeynarUser = {
   pfp_url?: string;
 };
 
-export async function fetchProfilesFromNeynar(fids: string[]) {
-  const apiKey = process.env.NEYNAR_API_KEY!;
-  const url = `https://api.neynar.com/v2/farcaster/user/bulk?fids=${fids.join(",")}`;
-  const r = await fetch(url, { headers: { "api_key": apiKey, "accept": "application/json" }, cache: "no-store" });
-  if (!r.ok) throw new Error("neynar fetch failed");
-  const j = (await r.json()) as { users: NeynarUser[] };
-  return j.users;
+export async function fetchProfilesFromNeynar(fids: string[]): Promise<NeynarUser[]> {
+  const apiKey = process.env.NEYNAR_API_KEY;
+  
+  if (!apiKey) {
+    console.error("NEYNAR_API_KEY not configured");
+    return [];
+  }
+  
+  try {
+    const url = `https://api.neynar.com/v2/farcaster/user/bulk?fids=${fids.join(",")}`;
+    const r = await fetch(url, { 
+      headers: { "api_key": apiKey, "accept": "application/json" }, 
+      cache: "no-store" 
+    });
+    
+    if (!r.ok) {
+      console.error(`Neynar fetch failed: ${r.status} ${r.statusText}`);
+      return [];
+    }
+    
+    const j = (await r.json()) as { users: NeynarUser[] };
+    return j.users || [];
+  } catch (error) {
+    console.error("Error fetching profiles from Neynar:", error);
+    return [];
+  }
 }
 
 export async function validateNeynar(messageBytes: string, apiKey: string): Promise<{ valid: boolean; fid?: string }> {
