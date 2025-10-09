@@ -315,17 +315,17 @@ export default function LeaderboardPage({
                           u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
                         }`}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-1 min-w-[44px]">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <div className="flex items-center gap-1 min-w-[44px] flex-shrink-0">
                             {getRankIcon(u.rank)}
                             <span className="font-bold text-sm text-white">#{u.rank}</span>
                           </div>
-                          <div className="flex flex-col">
-                            <span className="font-medium text-sm text-white">{getDisplayName(u)}</span>
+                          <div className="flex flex-col min-w-0 flex-1">
+                            <span className="font-medium text-sm text-white truncate">{getDisplayName(u)}</span>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-shrink-0">
                           <Badge variant="secondary" className="font-bold text-xs px-2 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
                             {u.currentStreak || 0}
                           </Badge>
@@ -414,17 +414,17 @@ export default function LeaderboardPage({
               ) : (
                 /* ===== Compact layout ===== */
                 <div className="flex items-center justify-between gap-3 rounded-lg border p-3 bg-card/50 border-primary/30">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1 min-w-[44px]">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="flex items-center gap-1 min-w-[44px] flex-shrink-0">
                       {getRankIcon(displayUser.rank || 999)}
                       <span className="font-bold text-sm text-white">#{displayUser.rank || "—"}</span>
                     </div>
-                    <div className="flex flex-col">
-                      <span className="font-medium text-sm text-white">{formatDisplayName(displayUser.name, true)}</span>
+                    <div className="flex flex-col min-w-0 flex-1">
+                      <span className="font-medium text-sm text-white truncate">{formatDisplayName(displayUser.name, true)}</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-shrink-0">
                     <Badge variant="secondary" className="font-bold text-xs px-2 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
                       {displayUser.currentStreak}
                     </Badge>
