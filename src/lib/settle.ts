@@ -16,20 +16,27 @@ export async function settleDay(date: string, open: number, close: number) {
   });
 
   const votesRaw = await redis.hgetall<Record<string, string>>(k.votes(date));
+  console.log(`[Settlement ${date}] Retrieved votes:`, votesRaw);
+  console.log(`[Settlement ${date}] Vote count:`, votesRaw ? Object.keys(votesRaw).length : 0);
+  
   if (!votesRaw || Object.keys(votesRaw).length === 0) {
+    console.log(`[Settlement ${date}] No votes found, marking as settled`);
     await redis.set(k.settled(date), 1);
     return { result, settledCount: 0 };
   }
 
   let settledCount = 0;
   for (const [fid, voteRaw] of Object.entries(votesRaw)) {
+    console.log(`[Settlement ${date}] Processing FID ${fid}, raw data:`, voteRaw);
+    
     // Parse the vote JSON to get the direction
     let vote: "UP" | "DOWN";
     try {
       const voteData = JSON.parse(voteRaw);
       vote = voteData.direction.toUpperCase() as "UP" | "DOWN";
+      console.log(`[Settlement ${date}] FID ${fid} voted ${vote}`);
     } catch (parseError) {
-      console.error(`Error parsing vote for FID ${fid} on ${date}:`, parseError);
+      console.error(`[Settlement ${date}] Error parsing vote for FID ${fid}:`, parseError, "Raw:", voteRaw);
       continue; // Skip this vote if we can't parse it
     }
     // Get current stats
