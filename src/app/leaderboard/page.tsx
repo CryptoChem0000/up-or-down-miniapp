@@ -226,7 +226,7 @@ function LeaderboardRow({
 
       {/* Points (never shrink) */}
       <div className="text-center">
-        <span className="text-[8px] font-bold text-primary shrink-0 whitespace-nowrap">
+        <span className="inline-flex items-center justify-center px-0.5 py-0.5 text-[8px] rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30 font-semibold shrink-0 whitespace-nowrap">
           {points.toLocaleString()}
         </span>
       </div>
