@@ -69,5 +69,5 @@ export function useResultToast() {
     return () => {
       alive = false;
     };
-  }, [sessionReady]); // Re-run when session becomes ready
+  }, [sessionReady, toast]); // Re-run when session becomes ready or toast changes
 }

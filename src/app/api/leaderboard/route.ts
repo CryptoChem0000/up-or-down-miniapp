@@ -42,7 +42,7 @@ export async function GET(req: Request) {
     }
     
     // Only execute pipeline if it has commands
-    const statsArr = pipe.length > 0 ? await pipe.exec<Record<string, string>[]>() : [];
+    const statsArr = await pipe.exec<Record<string, string>[]>();
     console.log("Leaderboard API: Stats data:", statsArr);
 
     const rows: LeaderboardRow[] = [];
