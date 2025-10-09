@@ -202,7 +202,7 @@ function LeaderboardRow({
 
       {/* Name (truncates) */}
       <div className="min-w-0">
-        <div className="truncate font-medium text-white text-[10px]">{name}</div>
+        <div className="truncate font-medium text-white text-[11px]">{name}</div>
         {subline ? (
           <div className="truncate text-[9px] text-gray-400 font-mono">
             {subline}
