@@ -52,20 +52,23 @@ export async function GET(req: Request) {
     for (let i = 0, r = 0; i < reversedFlat.length; i += 2, r++) {
       const fid = reversedFlat[i]!;
       const points = Number(reversedFlat[i + 1]!);
+      console.log(`[${requestId}] Leaderboard API: Processing row ${r}, i=${i}, fid=${fid}, points=${points}`);
       const raw = statsArr[r] ?? {};
       const totalVotes = num(raw?.totalVotes);
       const correctCount = num(raw?.correctCount);
       const currentStreak = num(raw?.currentStreak);
       const accuracy = totalVotes ? Math.round((correctCount / totalVotes) * 100) : 0;
 
-      rows.push({
+      const row = {
         rank: r + 1,
         fid,
         points,
         totalVotes,
         currentStreak,
         accuracy,
-      });
+      };
+      console.log(`[${requestId}] Leaderboard API: Created row:`, row);
+      rows.push(row);
     }
 
     // Get all unique FIDs for bulk profile lookup
