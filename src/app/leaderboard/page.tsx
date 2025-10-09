@@ -285,10 +285,6 @@ export default function LeaderboardPage({
             </Link>
           </Button>
           <h1 className={compact ? "text-xl font-bold text-white" : "text-3xl font-bold text-white"}>Leaderboard</h1>
-          {/* CACHE BUST INDICATOR */}
-          <div className="bg-green-500 text-white px-2 py-1 rounded text-xs font-bold">
-            OPTIMIZED v{Date.now()}
-          </div>
         </div>
 
         <Card className="bg-gray-800 border-gray-700">
