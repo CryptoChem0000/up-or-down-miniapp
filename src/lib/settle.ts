@@ -15,14 +15,23 @@ export async function settleDay(date: string, open: number, close: number) {
     close: close.toString(),
   });
 
-  const votes = await redis.hgetall<Record<string, "UP" | "DOWN">>(k.votes(date));
-  if (!votes || Object.keys(votes).length === 0) {
+  const votesRaw = await redis.hgetall<Record<string, string>>(k.votes(date));
+  if (!votesRaw || Object.keys(votesRaw).length === 0) {
     await redis.set(k.settled(date), 1);
     return { result, settledCount: 0 };
   }
 
   let settledCount = 0;
-  for (const [fid, vote] of Object.entries(votes)) {
+  for (const [fid, voteRaw] of Object.entries(votesRaw)) {
+    // Parse the vote JSON to get the direction
+    let vote: "UP" | "DOWN";
+    try {
+      const voteData = JSON.parse(voteRaw);
+      vote = voteData.direction.toUpperCase() as "UP" | "DOWN";
+    } catch (parseError) {
+      console.error(`Error parsing vote for FID ${fid} on ${date}:`, parseError);
+      continue; // Skip this vote if we can't parse it
+    }
     // Get current stats
     const statsKey = `stats:${fid}`;
     const currentStats = await redis.hgetall<Record<string, string>>(statsKey);
