@@ -163,10 +163,11 @@ function getCurrentUserDisplayName(profile: { displayName?: string | null; usern
 }
 
 
-// Grid template for consistent column widths across all rows - mobile optimized
-const COLS = "[grid-template-columns:50px_minmax(0,1fr)_60px_70px_50px]"; 
+// Grid template for consistent column widths across all rows - ultra compact for mobile
+const COLS = "[grid-template-columns:40px_minmax(0,1fr)_45px_55px_40px]"; 
 // Rank | Name | Streak | Accuracy | Points
-// Reduced widths: 50px rank, flexible name, 60px streak, 70px accuracy, 50px points
+// Ultra compact: 40px rank, flexible name, 45px streak, 55px accuracy, 40px points
+// Total: ~180px + name column (fits on smallest mobile screens)
 
 // Reusable row component with proper truncation and no overlap
 type RowProps = {
@@ -190,12 +191,12 @@ function LeaderboardRow({
 }: RowProps) {
   return (
     <div
-      className={`grid ${COLS} items-center gap-x-3 py-3 px-4 rounded-lg border ${
+      className={`grid ${COLS} items-center gap-x-1 py-2 px-2 rounded-lg border ${
         highlight ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
       }`}
     >
       {/* Rank */}
-      <div className="flex items-center gap-2 min-w-0">
+      <div className="flex items-center gap-1 min-w-0">
         <span className="shrink-0">{rankLabel}</span>
       </div>
 
@@ -211,21 +212,21 @@ function LeaderboardRow({
 
       {/* Streak */}
       <div className="text-center">
-        <span className="inline-flex items-center justify-center px-1 py-0.5 text-[10px] rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 font-semibold shrink-0">
+        <span className="inline-flex items-center justify-center px-0.5 py-0.5 text-[9px] rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 font-semibold shrink-0">
           {streak}
         </span>
       </div>
 
       {/* Accuracy (never shrink) */}
       <div className="text-center">
-        <span className="inline-flex items-center justify-center px-1 py-0.5 text-[10px] rounded-full bg-green-500/10 text-green-400 border border-green-500/30 font-semibold shrink-0 whitespace-nowrap">
+        <span className="inline-flex items-center justify-center px-0.5 py-0.5 text-[9px] rounded-full bg-green-500/10 text-green-400 border border-green-500/30 font-semibold shrink-0 whitespace-nowrap">
           {accuracyPct}%
         </span>
       </div>
 
       {/* Points (never shrink) */}
       <div className="text-center">
-        <span className="text-xs font-bold text-primary shrink-0 whitespace-nowrap">
+        <span className="text-[9px] font-bold text-primary shrink-0 whitespace-nowrap">
           {points.toLocaleString()}
         </span>
       </div>
@@ -285,8 +286,8 @@ export default function LeaderboardPage({
           </Button>
           <h1 className={compact ? "text-xl font-bold text-white" : "text-3xl font-bold text-white"}>Leaderboard</h1>
           {/* CACHE BUST INDICATOR */}
-          <div className="bg-orange-500 text-white px-2 py-1 rounded text-xs font-bold">
-            MOBILE GRID v{Date.now()}
+          <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
+            ULTRA COMPACT v{Date.now()}
           </div>
         </div>
 
@@ -301,12 +302,24 @@ export default function LeaderboardPage({
             {!compact ? (
               /* ===== Desktop/table layout ===== */
               <>
-                  <div className={`grid ${COLS} items-center gap-x-3 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 text-xs font-semibold`}>
-                    <div className="text-gray-300">Rank</div>
-                    <div className="text-gray-300">Name</div>
-                    <div className="text-center text-gray-300">Streak</div>
-                    <div className="text-center text-gray-300">Accuracy</div>
-                    <div className="text-center text-gray-300">Points</div>
+                  <div className={`grid ${COLS} items-center gap-x-1 py-2 px-2 bg-gray-700/50 rounded-lg mb-4`}>
+                    <div className="text-gray-300 text-[9px] font-semibold">Rank</div>
+                    <div className="text-gray-300 text-[9px] font-semibold">Name</div>
+                    <div className="text-center">
+                      <Tooltip content="Streak - Consecutive correct predictions">
+                        <Flame className="w-4 h-4 text-orange-400 mx-auto cursor-help" />
+                      </Tooltip>
+                    </div>
+                    <div className="text-center">
+                      <Tooltip content="Accuracy - Percentage of correct predictions">
+                        <Users className="w-4 h-4 text-green-400 mx-auto cursor-help" />
+                      </Tooltip>
+                    </div>
+                    <div className="text-center">
+                      <Tooltip content="Points - Total points earned">
+                        <Trophy className="w-4 h-4 text-blue-400 mx-auto cursor-help" />
+                      </Tooltip>
+                    </div>
                   </div>
 
                 <div className="space-y-2">
@@ -424,12 +437,24 @@ export default function LeaderboardPage({
                 /* ===== Desktop layout ===== */
                 <div className="overflow-x-auto">
                   {/* Header - same grid as leaderboard */}
-                  <div className={`grid ${COLS} items-center gap-x-3 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 text-xs font-semibold`}>
-                    <div className="text-gray-300">Rank</div>
-                    <div className="text-gray-300">Name</div>
-                    <div className="text-center text-gray-300">Streak</div>
-                    <div className="text-center text-gray-300">Accuracy</div>
-                    <div className="text-center text-gray-300">Points</div>
+                  <div className={`grid ${COLS} items-center gap-x-1 py-2 px-2 bg-gray-700/50 rounded-lg mb-4`}>
+                    <div className="text-gray-300 text-[9px] font-semibold">Rank</div>
+                    <div className="text-gray-300 text-[9px] font-semibold">Name</div>
+                    <div className="text-center">
+                      <Tooltip content="Streak - Consecutive correct predictions">
+                        <Flame className="w-4 h-4 text-orange-400 mx-auto cursor-help" />
+                      </Tooltip>
+                    </div>
+                    <div className="text-center">
+                      <Tooltip content="Accuracy - Percentage of correct predictions">
+                        <Users className="w-4 h-4 text-green-400 mx-auto cursor-help" />
+                      </Tooltip>
+                    </div>
+                    <div className="text-center">
+                      <Tooltip content="Points - Total points earned">
+                        <Trophy className="w-4 h-4 text-blue-400 mx-auto cursor-help" />
+                      </Tooltip>
+                    </div>
                   </div>
                   
                   {/* Your Stats row using the same component */}
