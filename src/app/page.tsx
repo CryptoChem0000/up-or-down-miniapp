@@ -302,13 +302,19 @@ export default function DailyOneTapPoll() {
               credentials: "include",
             });
             const statsData = await statsResponse.json();
+            console.log("Stats data:", statsData);
+            console.log("Today's vote from stats:", statsData.todayVote);
+            
             const actualVote = statsData.ok && statsData.todayVote ? statsData.todayVote : dir;
+            console.log("Actual vote to display:", actualVote);
+            
             toast({ 
               title: "Already Voted", 
               description: `You've already voted ${actualVote.toUpperCase()} today. Check back tomorrow to see the results!`,
               variant: "success"
             });
           } catch (statsError) {
+            console.error("Error fetching stats for vote direction:", statsError);
             // Fallback if stats fetch fails
             toast({ 
               title: "Already Voted", 
