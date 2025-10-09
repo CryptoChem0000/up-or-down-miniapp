@@ -163,11 +163,11 @@ function getCurrentUserDisplayName(profile: { displayName?: string | null; usern
 }
 
 
-// Grid template for consistent column widths across all rows - ultra compact for mobile
-const COLS = "[grid-template-columns:40px_minmax(0,1fr)_45px_55px_40px]"; 
+// Grid template for consistent column widths across all rows - optimized for 3-digit max
+const COLS = "[grid-template-columns:40px_minmax(0,1fr)_45px_35px_35px]"; 
 // Rank | Name | Streak | Accuracy | Points
-// Ultra compact: 40px rank, flexible name, 45px streak, 55px accuracy, 40px points
-// Total: ~180px + name column (fits on smallest mobile screens)
+// Optimized: 40px rank, flexible name, 45px streak, 35px accuracy, 35px points
+// Total: ~155px + name column (fits on smallest mobile screens)
 
 // Reusable row component with proper truncation and no overlap
 type RowProps = {
@@ -202,9 +202,9 @@ function LeaderboardRow({
 
       {/* Name (truncates) */}
       <div className="min-w-0">
-        <div className="truncate font-medium text-white">{name}</div>
+        <div className="truncate font-medium text-white text-[10px]">{name}</div>
         {subline ? (
-          <div className="truncate text-[10px] text-gray-400 font-mono">
+          <div className="truncate text-[9px] text-gray-400 font-mono">
             {subline}
           </div>
         ) : null}
@@ -219,14 +219,14 @@ function LeaderboardRow({
 
       {/* Accuracy (never shrink) */}
       <div className="text-center">
-        <span className="inline-flex items-center justify-center px-0.5 py-0.5 text-[9px] rounded-full bg-green-500/10 text-green-400 border border-green-500/30 font-semibold shrink-0 whitespace-nowrap">
+        <span className="inline-flex items-center justify-center px-0.5 py-0.5 text-[8px] rounded-full bg-green-500/10 text-green-400 border border-green-500/30 font-semibold shrink-0 whitespace-nowrap">
           {accuracyPct}%
         </span>
       </div>
 
       {/* Points (never shrink) */}
       <div className="text-center">
-        <span className="text-[9px] font-bold text-primary shrink-0 whitespace-nowrap">
+        <span className="text-[8px] font-bold text-primary shrink-0 whitespace-nowrap">
           {points.toLocaleString()}
         </span>
       </div>
@@ -286,8 +286,8 @@ export default function LeaderboardPage({
           </Button>
           <h1 className={compact ? "text-xl font-bold text-white" : "text-3xl font-bold text-white"}>Leaderboard</h1>
           {/* CACHE BUST INDICATOR */}
-          <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
-            ULTRA COMPACT v{Date.now()}
+          <div className="bg-green-500 text-white px-2 py-1 rounded text-xs font-bold">
+            OPTIMIZED v{Date.now()}
           </div>
         </div>
 
