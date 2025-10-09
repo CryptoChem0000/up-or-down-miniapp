@@ -22,36 +22,21 @@ type MeResp = {
   error?: string;
 };
 
-export function useMyStats() {
+export function useMyStats(sessionReady: boolean = true) {
   const [data, setData] = useState<MeResp | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!sessionReady) {
+      console.log("🔐 useMyStats: Waiting for session to be ready...");
+      return; // Don't fetch until session is ready
+    }
+    
     let alive = true;
     
     const start = async () => {
       try {
-        // If we're inside Farcaster iframe, wait for session to be ready
-        if (typeof window !== "undefined" && window !== window.parent) {
-          console.log("🔐 useMyStats: Waiting for session ready event...");
-          await new Promise<void>((resolve) => {
-            // If session already established, resolve immediately
-            setTimeout(resolve, 0);
-            const onReady = () => { 
-              window.removeEventListener("fc:session-ready", onReady); 
-              console.log("✅ useMyStats: Session ready event received");
-              resolve(); 
-            };
-            window.addEventListener("fc:session-ready", onReady, { once: true });
-            
-            // Fallback timeout to prevent infinite waiting
-            setTimeout(() => {
-              window.removeEventListener("fc:session-ready", onReady);
-              console.warn("⚠️ useMyStats: Session ready timeout, proceeding anyway");
-              resolve();
-            }, 5000);
-          });
-        }
+        console.log("🔐 useMyStats: Session ready, fetching stats...");
         
         if (!alive) return;
         
@@ -111,7 +96,7 @@ export function useMyStats() {
     
     start();
     return () => { alive = false; };
-  }, []);
+  }, [sessionReady]);
 
   return { data, loading };
 }

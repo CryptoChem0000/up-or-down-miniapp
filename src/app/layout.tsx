@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import ClientOnly from "@/components/ClientOnly";
 import { ClientToaster } from "@/components/ClientToaster";
 import FarcasterReady from "@/components/FarcasterReady";
-// import RuntimeDetection from "@/components/RuntimeDetection"; // Disabled to fix React errors
 
 const baseUrl = process.env.APP_BASE_URL || "http://localhost:3010";
 
@@ -43,12 +43,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <FarcasterReady />
-        {children}
-        <ClientToaster />
-        {/* <RuntimeDetection /> Disabled to fix React errors */}
+        <ClientOnly>
+          <FarcasterReady />
+          {children}
+          <ClientToaster />
+        </ClientOnly>
       </body>
     </html>
   );
 }
-// Force deployment - cache bust v2

@@ -95,15 +95,15 @@ const ETHPriceDisplay = ({ price, change24h, changePercent }: ETHPriceDisplayPro
     <Card className="p-4 bg-gray-800 border-gray-700">
       <div className="text-center space-y-2">
         <div className="text-xs text-gray-400 font-medium">Current ETH Price</div>
-        <div className="text-2xl font-bold text-white">${price.toLocaleString()}</div>
+        <div className="text-2xl font-bold text-white" suppressHydrationWarning>${price.toLocaleString()}</div>
         <div className="flex items-center justify-center gap-2">
           <Badge variant="outline" className={cn("px-2 py-0.5 text-xs font-medium border-2", positive ? "border-green-500 text-green-400 bg-green-500/10" : "border-red-500 text-red-400 bg-red-500/10")}>
             <div className="flex items-center gap-1">
               {positive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-              <span>{positive ? "+" : ""}{changePercent.toFixed(2)}%</span>
+              <span suppressHydrationWarning>{positive ? "+" : ""}{changePercent.toFixed(2)}%</span>
             </div>
           </Badge>
-          <span className={cn("text-xs font-medium", positive ? "text-green-400" : "text-red-400")}>
+          <span className={cn("text-xs font-medium", positive ? "text-green-400" : "text-red-400")} suppressHydrationWarning>
             {positive ? "+" : ""}${change24h.toFixed(2)}
           </span>
         </div>
@@ -120,21 +120,21 @@ const StatsCard = ({ streak, totalVotes, accuracy, points, fidParam = "" }: Stat
       <div className="space-y-1">
         <div className="flex items-center justify-center gap-1">
           <Flame className="w-4 h-4 text-orange-400" />
-          <span className="text-lg font-bold text-orange-400">{streak}</span>
+          <span className="text-lg font-bold text-orange-400" suppressHydrationWarning>{streak}</span>
         </div>
         <div className="text-xs text-gray-400">Streak</div>
       </div>
       <div className="space-y-1">
         <div className="flex items-center justify-center gap-1">
           <Users className="w-4 h-4 text-blue-400" />
-          <span className="text-lg font-bold text-blue-400">{accuracy}%</span>
+          <span className="text-lg font-bold text-blue-400" suppressHydrationWarning>{accuracy}%</span>
         </div>
         <div className="text-xs text-gray-400">Accuracy</div>
       </div>
       <div className="space-y-1">
         <div className="flex items-center justify-center gap-1">
           <Trophy className="w-4 h-4 text-green-400" />
-          <span className="text-lg font-bold text-green-400">{points ? points.toLocaleString() : '0'}</span>
+          <span className="text-lg font-bold text-green-400" suppressHydrationWarning>{points ? points.toLocaleString() : '0'}</span>
         </div>
         <div className="text-xs text-gray-400">Points</div>
       </div>
@@ -162,7 +162,10 @@ function composeWithEmbed(baseHref: string) {
 
 /** Page */
 export default function DailyOneTapPoll() {
-  // FORCE DEPLOYMENT - ETHEREUM TITLE FIX - $(date)
+  // Hydration-safe: ready flag to prevent mismatches
+  const [ready, setReady] = useState(false);
+  const [sessionReady, setSessionReady] = useState(false);
+  
   const [selectedVote, setSelectedVote] = useState<"up" | "down" | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [my, setMy] = useState<{streak:number; points:number; totalVotes?: number; accuracy?: number} | null>(null);
@@ -170,15 +173,53 @@ export default function DailyOneTapPoll() {
   const { toast } = useToast();
   const { triggerImpact, triggerSelection } = useHapticFeedback();
   
-  // Check voting window status
+  // Check voting window status (safe to call on server/client)
   const votingOpen = isVotingOpen();
   const votingMessage = getVotingWindowMessage();
   
-  // Get real user stats
-  const { data: myStats, loading: myStatsLoading } = useMyStats();
+  // Wait for session to be ready (established by FarcasterReady component in layout)
+  React.useEffect(() => {
+    let cancelled = false;
+    
+    const waitForSession = async () => {
+      // Wait for session-ready event from FarcasterReady
+      await new Promise<void>((resolve) => {
+        if (typeof window !== "undefined" && window !== window.parent) {
+          console.log("📱 Page: Waiting for fc:session-ready event...");
+          const onReady = () => {
+            window.removeEventListener("fc:session-ready", onReady);
+            console.log("✅ Page: Session ready event received");
+            resolve();
+          };
+          window.addEventListener("fc:session-ready", onReady, { once: true });
+          // Timeout fallback
+          setTimeout(() => {
+            window.removeEventListener("fc:session-ready", onReady);
+            console.warn("⚠️ Page: Session ready timeout, proceeding anyway");
+            resolve();
+          }, 5000);
+        } else {
+          // Not in iframe, proceed immediately
+          resolve();
+        }
+      });
+      
+      if (!cancelled) {
+        setSessionReady(true);
+        setReady(true);
+      }
+    };
+    
+    waitForSession();
+    
+    return () => { cancelled = true; };
+  }, []);
+  
+  // Get real user stats - only after session is ready
+  const { data: myStats, loading: myStatsLoading } = useMyStats(sessionReady);
 
-  // Show result toast for yesterday's outcome
-  useResultToast();
+  // Show result toast for yesterday's outcome - only after session is ready
+  useResultToast(sessionReady);
 
   // Establish session cookie on page load (fire and forget)
   // Session establishment is now handled by FarcasterReady component

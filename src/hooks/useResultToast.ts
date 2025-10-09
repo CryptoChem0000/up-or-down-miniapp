@@ -15,35 +15,20 @@ type MeResult = {
   streakAfter: number;
 };
 
-export function useResultToast() {
+export function useResultToast(sessionReady: boolean = true) {
   const { toast } = useToast();
 
   useEffect(() => {
+    if (!sessionReady) {
+      console.log("🔐 useResultToast: Waiting for session to be ready...");
+      return; // Don't fetch until session is ready
+    }
+    
     let alive = true;
 
     const start = async () => {
       try {
-        // If we're inside Farcaster iframe, wait for session to be ready
-        if (typeof window !== "undefined" && window !== window.parent) {
-          console.log("🔐 useResultToast: Waiting for session ready event...");
-          await new Promise<void>((resolve) => {
-            // If session already established, resolve immediately
-            setTimeout(resolve, 0);
-            const onReady = () => { 
-              window.removeEventListener("fc:session-ready", onReady); 
-              console.log("✅ useResultToast: Session ready event received");
-              resolve(); 
-            };
-            window.addEventListener("fc:session-ready", onReady, { once: true });
-            
-            // Fallback timeout to prevent infinite waiting
-            setTimeout(() => {
-              window.removeEventListener("fc:session-ready", onReady);
-              console.warn("⚠️ useResultToast: Session ready timeout, proceeding anyway");
-              resolve();
-            }, 5000);
-          });
-        }
+        console.log("🔐 useResultToast: Session ready, fetching results...");
         
         if (!alive) return;
         
@@ -82,6 +67,5 @@ export function useResultToast() {
     return () => {
       alive = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty deps - only run once on mount
+  }, [sessionReady]); // Re-run when session becomes ready
 }
