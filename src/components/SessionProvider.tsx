@@ -27,30 +27,19 @@ export default function SessionProvider({ children }: { children: React.ReactNod
         console.log("🔍 SessionProvider: In iframe:", typeof window !== "undefined" && window !== window.parent);
         console.log("🔍 SessionProvider: Window parent:", typeof window !== "undefined" ? window.parent : "undefined");
         
-        // Initialize Farcaster SDK if in iframe
+        // Check if we're in iOS WebView (Farcaster iOS app)
+        const isIOSWebView = typeof window !== "undefined" && 
+          window.navigator.userAgent.includes("iPhone") && 
+          window !== window.parent;
+        console.log("🍎 SessionProvider: iOS WebView detected:", isIOSWebView);
+        
+        // Initialize Farcaster SDK if in iframe (without calling ready() - handled by FarcasterReadyBridge)
         if (typeof window !== "undefined" && window !== window.parent) {
-          console.log("📱 SessionProvider: In iframe, initializing SDK...");
+          console.log("📱 SessionProvider: In iframe, getting user context...");
           
-          // Import SDK dynamically
-          console.log("📦 SessionProvider: Importing Farcaster SDK...");
-          const { sdk } = await import("@farcaster/miniapp-sdk");
-          console.log("📦 SessionProvider: SDK imported successfully:", !!sdk);
-          
-          // Wait for DOM to be ready before calling ready()
-          console.log("⏳ SessionProvider: Waiting for DOM ready...");
-          await new Promise(resolve => setTimeout(resolve, 100));
-          
-          console.log("📱 SessionProvider: Calling sdk.actions.ready()...");
+          // Get user context (ready() is handled by FarcasterReadyBridge)
           try {
-            await sdk.actions.ready();
-            console.log("✅ SessionProvider: SDK ready() called successfully");
-          } catch (readyError) {
-            console.error("❌ SessionProvider: SDK ready() failed:", readyError);
-            throw readyError;
-          }
-          
-          // Get user context
-          try {
+            const { sdk } = await import("@farcaster/miniapp-sdk");
             const context = await sdk.context;
             console.log("📋 SessionProvider: User context:", context);
             
@@ -95,9 +84,20 @@ export default function SessionProvider({ children }: { children: React.ReactNod
         }
       } catch (error) {
         console.error("❌ SessionProvider: Error:", error);
-        // Set ready anyway to not block the app
-        if (!cancelled) setSessionReady(true);
+        // Set ready anyway to not block the app - especially important for iOS WebView
+        if (!cancelled) {
+          console.log("🔄 SessionProvider: Setting sessionReady=true despite error for iOS WebView compatibility");
+          setSessionReady(true);
+        }
       }
+      
+      // Fallback timeout - ensure sessionReady is set within 10 seconds
+      setTimeout(() => {
+        if (!cancelled) {
+          console.log("⏰ SessionProvider: Fallback timeout - forcing sessionReady=true");
+          setSessionReady(true);
+        }
+      }, 10000);
     })();
 
     return () => { cancelled = true; };

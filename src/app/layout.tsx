@@ -3,6 +3,7 @@ import "./globals.css";
 import dynamic from "next/dynamic";
 import ClientOnly from "@/components/ClientOnly";
 import { ClientToaster } from "@/components/ClientToaster";
+import FarcasterReadyBridge from "@/components/FarcasterReadyBridge";
 
 const SessionProvider = dynamic(() => import("@/components/SessionProvider"), { ssr: false });
 
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        <FarcasterReadyBridge />
         <ClientOnly>
           <SessionProvider>
             {children}
