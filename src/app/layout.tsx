@@ -51,6 +51,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             console.log('📄 HTML: Layout rendering...');
             console.log('📄 HTML: User agent:', navigator.userAgent);
             console.log('📄 HTML: In iframe:', window !== window.parent);
+            
+            // Try to establish session immediately if in iframe
+            if (window !== window.parent) {
+              console.log('📄 HTML: In iframe, attempting immediate session establishment...');
+              try {
+                fetch('/api/auth/establish', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  credentials: 'include',
+                  body: JSON.stringify({ fid: '13840' }) // Temporary hardcoded FID for testing
+                }).then(response => {
+                  console.log('📄 HTML: Immediate session response:', response.status);
+                  return response.text();
+                }).then(text => {
+                  console.log('📄 HTML: Immediate session response body:', text);
+                }).catch(error => {
+                  console.log('📄 HTML: Immediate session error:', error);
+                });
+              } catch (error) {
+                console.log('📄 HTML: Immediate session fetch failed:', error);
+              }
+            }
           `
         }} />
         <FarcasterReadyBridge />
