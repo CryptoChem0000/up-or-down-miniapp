@@ -163,7 +163,9 @@ function composeWithEmbed(baseHref: string) {
 
 /** Page */
 export default function DailyOneTapPoll() {
+  console.log("🏠 DailyOneTapPoll: Component rendering...");
   const { sessionReady } = useSession();
+  console.log("🏠 DailyOneTapPoll: Session ready:", sessionReady);
   
   // All hooks must be called at the top level, before any early returns
   const [selectedVote, setSelectedVote] = useState<"up" | "down" | null>(null);

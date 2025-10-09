@@ -11,6 +11,9 @@ export default function FarcasterReadyBridge() {
   const done = useRef(false);
 
   useEffect(() => {
+    console.log("🌉 FarcasterReadyBridge: Starting initialization...");
+    console.log("🌉 FarcasterReadyBridge: User agent:", navigator.userAgent);
+    console.log("🌉 FarcasterReadyBridge: In iframe:", window !== window.parent);
     let retryId: number | null = null;
     let watchdogId: number | null = null;
 
