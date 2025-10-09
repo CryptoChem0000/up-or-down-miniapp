@@ -46,6 +46,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            console.log('📄 HTML: Layout rendering...');
+            console.log('📄 HTML: User agent:', navigator.userAgent);
+            console.log('📄 HTML: In iframe:', window !== window.parent);
+          `
+        }} />
         <FarcasterReadyBridge />
         <ClientOnly>
           <SessionProvider>

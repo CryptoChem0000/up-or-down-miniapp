@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { sdk } from '@farcaster/miniapp-sdk';
 
 /**
  * Fires sdk.actions.ready() ASAP with retries and fallbacks.
@@ -14,6 +13,7 @@ export default function FarcasterReadyBridge() {
     console.log("🌉 FarcasterReadyBridge: Starting initialization...");
     console.log("🌉 FarcasterReadyBridge: User agent:", navigator.userAgent);
     console.log("🌉 FarcasterReadyBridge: In iframe:", window !== window.parent);
+    
     let retryId: number | null = null;
     let watchdogId: number | null = null;
 
@@ -22,23 +22,34 @@ export default function FarcasterReadyBridge() {
         // Legacy / raw fallbacks some clients understand
         window.parent?.postMessage({ type: 'launch_frame_ready' }, '*');
         window.parent?.postMessage({ type: 'miniapp.ready' }, '*');
-      } catch {}
+        console.log('🌉 FarcasterReadyBridge: Sent fallback postMessage');
+      } catch (e) {
+        console.log('🌉 FarcasterReadyBridge: PostMessage failed:', e);
+      }
       try {
         // Some iOS bridges expose webkit handlers
         (window as any)?.webkit?.messageHandlers?.frame?.postMessage?.({ type: 'ready' });
-      } catch {}
+        console.log('🌉 FarcasterReadyBridge: Sent webkit message');
+      } catch (e) {
+        console.log('🌉 FarcasterReadyBridge: Webkit message failed:', e);
+      }
     };
 
     const tryReady = async () => {
       if (done.current) return;
       try {
+        console.log("🌉 FarcasterReadyBridge: Attempting to import SDK...");
+        const { sdk } = await import('@farcaster/miniapp-sdk');
+        console.log("🌉 FarcasterReadyBridge: SDK imported successfully");
+        
         await sdk.actions.ready();     // ✅ preferred path
         done.current = true;
         if (retryId) window.clearInterval(retryId);
         if (watchdogId) window.clearTimeout(watchdogId);
         // optional: log to verify on device
         console.log('✅ Farcaster ready() OK');
-      } catch {
+      } catch (error) {
+        console.log('🌉 FarcasterReadyBridge: SDK ready() failed:', error);
         // keep trying in iOS WebView
         pingParentFallback();
       }
