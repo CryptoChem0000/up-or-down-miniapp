@@ -375,7 +375,7 @@ export default function DailyOneTapPoll() {
       const errorMessage = error instanceof Error ? error.message : String(error);
       if (errorMessage.includes("unauthorized") || errorMessage.includes("401")) {
         // Try multiple fallback sources for the actual vote direction
-        let actualVote: "up" | "down" = dir; // Default fallback
+        let actualVote: "up" | "down" | null = null;
         
         // 1. Try cached vote first (fastest)
         const cachedVote = getCachedTodayVote();
@@ -392,14 +392,19 @@ export default function DailyOneTapPoll() {
               actualVote = statsData.todayVote;
             }
           } catch (statsError) {
-            // 3. Use button direction as final fallback
-            console.log("Could not fetch actual vote, using button direction:", dir);
+            // If we can't confirm, don't show direction
+            console.log("Could not fetch actual vote, showing generic message");
           }
         }
         
+        // Show direction only if we have confirmed data
+        const description = actualVote 
+          ? `You've already voted ${actualVote.toUpperCase()} today. Check back tomorrow to see the results!`
+          : "You've already voted today. Check back tomorrow to see the results!";
+        
         toast({ 
           title: "Already Voted", 
-          description: `You've already voted ${actualVote.toUpperCase()} today. Check back tomorrow to see the results!`,
+          description,
           variant: "success"
         });
       } else {
