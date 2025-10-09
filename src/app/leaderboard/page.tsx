@@ -323,37 +323,20 @@ export default function LeaderboardPage({
                     <div className="text-center py-8 text-gray-400">Loading leaderboard...</div>
                   ) : leaderboardData.length > 0 ? (
                     leaderboardData.map((u) => (
-                      <div
+                      <LeaderboardRow
                         key={u.fid}
-                        className={`grid grid-cols-5 gap-4 py-4 px-4 rounded-lg border transition-colors hover:bg-gray-700/30 ${
-                          u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          {getRankIcon(u.rank)}
-                          <span className="font-bold text-white">#{u.rank}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="font-medium text-white">{getDisplayName(u)}</span>
-                        </div>
-
-                        <div className="text-center">
-                          <Badge variant="secondary" className="font-bold bg-orange-500/20 text-orange-400 border-orange-500/30">
-                            {u.currentStreak || 0}
-                          </Badge>
-                        </div>
-
-                        <div className="text-center">
-                          <Badge variant="outline" className="font-bold border-green-500/30 text-green-400 bg-green-500/10">
-                            {u.accuracy || 0}%
-                          </Badge>
-                        </div>
-
-                        <div className="text-center">
-                          <span className="text-lg font-bold text-primary">{u.points.toLocaleString()}</span>
-                        </div>
-                      </div>
+                        rankLabel={
+                          <div className="flex items-center gap-1">
+                            {getRankIcon(u.rank)}
+                            <span className="font-bold text-xs">#{u.rank}</span>
+                          </div>
+                        }
+                        name={getDisplayName(u)}
+                        streak={u.currentStreak || 0}
+                        accuracyPct={u.accuracy || 0}
+                        points={u.points}
+                        highlight={u.rank <= 3}
+                      />
                     ))
                   ) : (
                     <div className="text-center py-8 text-gray-400">No leaderboard data available</div>
