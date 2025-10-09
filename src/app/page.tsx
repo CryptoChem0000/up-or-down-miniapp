@@ -302,34 +302,17 @@ export default function DailyOneTapPoll() {
 
       if (!response.ok) {
         if (result.error === "already_voted" || response.status === 409) {
-          console.log("Already voted detected, fetching actual vote direction...");
-
-          // Fetch the actual vote to show the correct direction
-          try {
-            const statsResponse = await fetch("/api/stats/me", {
-              credentials: "include",
-            });
-            const statsData = await statsResponse.json();
-            console.log("Stats data:", statsData);
-            console.log("Today's vote from stats:", statsData.todayVote);
-            
-            const actualVote = statsData.ok && statsData.todayVote ? statsData.todayVote : dir;
-            console.log("Actual vote to display:", actualVote);
-            
-            toast({ 
-              title: "Already Voted", 
-              description: `You've already voted ${actualVote.toUpperCase()} today. Check back tomorrow to see the results!`,
-              variant: "success"
-            });
-          } catch (statsError) {
-            console.error("Error fetching stats for vote direction:", statsError);
-            // Fallback if stats fetch fails
-            toast({ 
-              title: "Already Voted", 
-              description: "You've already made your prediction for today. Check back tomorrow!",
-              variant: "success"
-            });
-          }
+          console.log("Already voted detected, using existing vote data...");
+          
+          // Use the existing todayVote from userStats instead of making another API call
+          const actualVote = userStats.todayVote || dir;
+          console.log("Actual vote to display:", actualVote);
+          
+          toast({ 
+            title: "Already Voted", 
+            description: `You've already voted ${actualVote.toUpperCase()} today. Check back tomorrow to see the results!`,
+            variant: "success"
+          });
           return;
         } else if (result.error === "voting_closed") {
           toast({ 

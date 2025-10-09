@@ -66,6 +66,7 @@ export function useMyStats() {
             },
             accuracy: 78,
             rank: 15,
+            todayVote: "up", // Mock today's vote for testing
             profile: {
               username: "alice.eth",
               displayName: "Alice",
