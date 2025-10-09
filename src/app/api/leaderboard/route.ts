@@ -12,23 +12,30 @@ function num(x: unknown) {
 
 export async function GET(req: Request) {
   try {
+    console.log("Leaderboard API: Starting request");
+    
     // Optional: limit via search param ?limit=50
     const url = new URL(req.url);
     const limit = Number(url.searchParams.get("limit") ?? "50");
     const N = Number.isFinite(limit) && limit > 0 ? Math.min(limit, 200) : 50;
+    
+    console.log("Leaderboard API: Fetching leaderboard data with limit:", N);
 
     // Upstash returns flat array: [member, score, member, score, ...]
     const flat = await redis.zrange<string[]>("lb:points", -N, -1, { withScores: true });
+    console.log("Leaderboard API: Raw leaderboard data:", flat);
 
     // Reverse to get highest scores first (descending order)
     const reversedFlat = flat.reverse();
 
     // batch hgetall to pull per-user stats for accuracy/streak
+    console.log("Leaderboard API: Building pipeline for stats");
     const pipe = redis.pipeline();
     for (let i = 0; i < reversedFlat.length; i += 2) {
       pipe.hgetall(`stats:${reversedFlat[i]}`);
     }
     const statsArr = await pipe.exec<Record<string, string>[]>();
+    console.log("Leaderboard API: Stats data:", statsArr);
 
     const rows: LeaderboardRow[] = [];
     for (let i = 0, r = 0; i < reversedFlat.length; i += 2, r++) {
@@ -52,13 +59,16 @@ export async function GET(req: Request) {
 
     // Get all unique FIDs for bulk profile lookup
     const allFids = rows.map(row => row.fid);
+    console.log("Leaderboard API: FIDs for profile lookup:", allFids);
     
     // Wrap profile fetching in try-catch to prevent crashes
     let profiles: Record<string, any> = {};
     try {
+      console.log("Leaderboard API: Fetching profiles...");
       profiles = await getProfiles(allFids);
+      console.log("Leaderboard API: Profiles fetched:", profiles);
     } catch (error) {
-      console.error("Error fetching profiles:", error);
+      console.error("Leaderboard API: Error fetching profiles:", error);
       // Continue without profiles rather than crashing
     }
 
@@ -73,11 +83,13 @@ export async function GET(req: Request) {
       };
     });
 
+    console.log("Leaderboard API: Returning hydrated rows:", hydratedRows.length);
     return NextResponse.json({ ok: true, rows: hydratedRows });
   } catch (error) {
     console.error("Leaderboard API error:", error);
+    console.error("Leaderboard API error stack:", error instanceof Error ? error.stack : 'No stack trace');
     return NextResponse.json(
-      { ok: false, error: "Failed to fetch leaderboard" },
+      { ok: false, error: "Failed to fetch leaderboard", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }
