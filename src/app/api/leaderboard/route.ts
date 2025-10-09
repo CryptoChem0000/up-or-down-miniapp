@@ -69,8 +69,9 @@ export async function GET(req: Request) {
     }
 
     // Get all unique FIDs for bulk profile lookup
+    console.log(`[${requestId}] Leaderboard API: Rows before profile lookup:`, rows);
     const allFids = rows.map(row => row.fid);
-    console.log("Leaderboard API: FIDs for profile lookup:", allFids);
+    console.log(`[${requestId}] Leaderboard API: FIDs for profile lookup:`, allFids);
     
     // Wrap profile fetching in try-catch to prevent crashes
     let profiles: Record<string, any> = {};
