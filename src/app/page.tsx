@@ -287,10 +287,15 @@ export default function DailyOneTapPoll() {
         body: JSON.stringify({ direction: dir }),
       });
 
+      console.log("Vote response status:", response.status);
+
       const result = await response.json();
+      console.log("Vote response body:", result);
 
       if (!response.ok) {
         if (result.error === "already_voted" || response.status === 409) {
+          console.log("Already voted detected, fetching actual vote direction...");
+
           // Fetch the actual vote to show the correct direction
           try {
             const statsResponse = await fetch("/api/stats/me", {
