@@ -24,6 +24,8 @@ export async function GET(req: Request) {
     // Upstash returns flat array: [member, score, member, score, ...]
     const flat = await redis.zrange<string[]>("lb:points", -N, -1, { withScores: true });
     console.log("Leaderboard API: Raw leaderboard data:", flat);
+    console.log("Leaderboard API: Redis URL:", process.env.UPSTASH_REDIS_REST_URL);
+    console.log("Leaderboard API: Redis token prefix:", process.env.UPSTASH_REDIS_REST_TOKEN?.substring(0, 10));
 
     // Check if leaderboard is empty
     if (!flat || flat.length === 0) {
