@@ -243,11 +243,6 @@ export default function LeaderboardPage({
   // Force cache bust - this should trigger a fresh deployment
   console.log("LEADERBOARD CACHE BUST - PROPER GRID TEMPLATE", Date.now());
   
-  // Debug name data
-  console.log("displayUser data:", displayUser);
-  console.log("displayUser.name:", displayUser.name);
-  console.log("formatDisplayName result:", formatDisplayName(displayUser.name, false));
-  
   // Use real data hooks
   const { data: myStats, loading: myStatsLoading } = useMyStats();
   const { rows: leaderboardData, loading: leaderboardLoading } = useLeaderboard(50);
@@ -270,6 +265,13 @@ export default function LeaderboardPage({
     totalPoints: hasValidSession ? (myStats.stats?.totalPoints ?? 0) : 0,
     rank: hasValidSession ? (myStats.rank ?? null) : null,
   };
+
+  // Debug name data
+  console.log("displayUser data:", displayUser);
+  console.log("displayUser.name:", displayUser.name);
+  console.log("formatDisplayName result:", formatDisplayName(displayUser.name, false));
+  console.log("hasValidSession:", hasValidSession);
+  console.log("myStats:", myStats);
 
   return (
     <div className="min-h-screen bg-gray-900 p-4">
