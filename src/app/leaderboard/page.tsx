@@ -302,17 +302,17 @@ export default function LeaderboardPage({
                     <div className="text-gray-300 text-[9px] font-semibold">Rank</div>
                     <div className="text-gray-300 text-[9px] font-semibold">Name</div>
                     <div className="text-center">
-                      <Tooltip content="Streak - Consecutive correct predictions">
+                      <Tooltip content="Streak">
                         <Flame className="w-4 h-4 text-orange-400 mx-auto cursor-help" />
                       </Tooltip>
                     </div>
                     <div className="text-center">
-                      <Tooltip content="Accuracy - Percentage of correct predictions">
+                      <Tooltip content="Accuracy %">
                         <Users className="w-4 h-4 text-green-400 mx-auto cursor-help" />
                       </Tooltip>
                     </div>
                     <div className="text-center">
-                      <Tooltip content="Points - Total points earned">
+                      <Tooltip content="Points">
                         <Trophy className="w-4 h-4 text-blue-400 mx-auto cursor-help" />
                       </Tooltip>
                     </div>
@@ -420,19 +420,13 @@ export default function LeaderboardPage({
                     <div className="text-gray-300 text-[9px] font-semibold">Rank</div>
                     <div className="text-gray-300 text-[9px] font-semibold">Name</div>
                     <div className="text-center">
-                      <Tooltip content="Streak - Consecutive correct predictions">
-                        <Flame className="w-4 h-4 text-orange-400 mx-auto cursor-help" />
-                      </Tooltip>
+                      <Flame className="w-4 h-4 text-orange-400 mx-auto" />
                     </div>
                     <div className="text-center">
-                      <Tooltip content="Accuracy - Percentage of correct predictions">
-                        <Users className="w-4 h-4 text-green-400 mx-auto cursor-help" />
-                      </Tooltip>
+                      <Users className="w-4 h-4 text-green-400 mx-auto" />
                     </div>
                     <div className="text-center">
-                      <Tooltip content="Points - Total points earned">
-                        <Trophy className="w-4 h-4 text-blue-400 mx-auto cursor-help" />
-                      </Tooltip>
+                      <Trophy className="w-4 h-4 text-blue-400 mx-auto" />
                     </div>
                   </div>
                   
