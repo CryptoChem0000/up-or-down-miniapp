@@ -26,7 +26,7 @@ export function useLeaderboard(limit = 50) {
           // Mock leaderboard data to test UI improvements
           const mockLeaderboardData: LeaderboardRow[] = [
             {
-              fid: 1,
+              fid: "1",
               rank: 1,
               username: "cryptowhale.eth",
               displayName: "CryptoWhale",
@@ -35,7 +35,7 @@ export function useLeaderboard(limit = 50) {
               points: 28450
             },
             {
-              fid: 2,
+              fid: "2",
               rank: 2,
               username: "tradingmaster",
               displayName: "Trading Master",
@@ -44,7 +44,7 @@ export function useLeaderboard(limit = 50) {
               points: 26780
             },
             {
-              fid: 3,
+              fid: "3",
               rank: 3,
               username: "ethpredictor",
               displayName: "ETH Predictor",
@@ -53,7 +53,7 @@ export function useLeaderboard(limit = 50) {
               points: 24560
             },
             {
-              fid: 4,
+              fid: "4",
               rank: 4,
               username: "defi_trader",
               displayName: "DeFi Trader",
@@ -62,7 +62,7 @@ export function useLeaderboard(limit = 50) {
               points: 22340
             },
             {
-              fid: 5,
+              fid: "5",
               rank: 5,
               username: "blockchain_analyst",
               displayName: "Blockchain Analyst",
@@ -71,7 +71,7 @@ export function useLeaderboard(limit = 50) {
               points: 20120
             },
             {
-              fid: 6,
+              fid: "6",
               rank: 6,
               username: "crypto_ninja",
               displayName: "Crypto Ninja",
@@ -80,7 +80,7 @@ export function useLeaderboard(limit = 50) {
               points: 18900
             },
             {
-              fid: 7,
+              fid: "7",
               rank: 7,
               username: "eth_enthusiast",
               displayName: "ETH Enthusiast",
@@ -89,7 +89,7 @@ export function useLeaderboard(limit = 50) {
               points: 17680
             },
             {
-              fid: 8,
+              fid: "8",
               rank: 8,
               username: "trading_pro",
               displayName: "Trading Pro",
@@ -98,7 +98,7 @@ export function useLeaderboard(limit = 50) {
               points: 16460
             },
             {
-              fid: 9,
+              fid: "9",
               rank: 9,
               username: "crypto_insider",
               displayName: "Crypto Insider",
@@ -107,7 +107,7 @@ export function useLeaderboard(limit = 50) {
               points: 15240
             },
             {
-              fid: 10,
+              fid: "10",
               rank: 10,
               username: "market_watcher",
               displayName: "Market Watcher",
