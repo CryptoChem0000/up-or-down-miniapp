@@ -315,7 +315,7 @@ export default function LeaderboardPage({
                           u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
                         }`}
                       >
-                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <div className="flex items-center gap-3 min-w-0 max-w-[60%] flex-1">
                           <div className="flex items-center gap-1 min-w-[44px] flex-shrink-0">
                             {getRankIcon(u.rank)}
                             <span className="font-bold text-sm text-white">#{u.rank}</span>
@@ -325,11 +325,11 @@ export default function LeaderboardPage({
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          <Badge variant="secondary" className="font-bold text-xs px-2 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
+                        <div className="flex items-center gap-1 flex-shrink-0 min-w-0">
+                          <Badge variant="secondary" className="font-bold text-xs px-1.5 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
                             {u.currentStreak || 0}
                           </Badge>
-                          <Badge variant="outline" className="font-bold text-xs px-2 py-0.5 border-green-500/30 text-green-400 bg-green-500/10">
+                          <Badge variant="outline" className="font-bold text-xs px-1.5 py-0.5 border-green-500/30 text-green-400 bg-green-500/10">
                             {u.accuracy || 0}%
                           </Badge>
                           <span className="text-primary font-bold text-sm tabular-nums">
@@ -414,7 +414,7 @@ export default function LeaderboardPage({
               ) : (
                 /* ===== Compact layout ===== */
                 <div className="flex items-center justify-between gap-3 rounded-lg border p-3 bg-card/50 border-primary/30">
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className="flex items-center gap-3 min-w-0 max-w-[60%] flex-1">
                     <div className="flex items-center gap-1 min-w-[44px] flex-shrink-0">
                       {getRankIcon(displayUser.rank || 999)}
                       <span className="font-bold text-sm text-white">#{displayUser.rank || "—"}</span>
@@ -424,13 +424,13 @@ export default function LeaderboardPage({
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <Badge variant="secondary" className="font-bold text-xs px-2 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
+                  <div className="flex items-center gap-1 flex-shrink-0 min-w-0">
+                    <Badge variant="secondary" className="font-bold text-xs px-1.5 py-0.5 bg-orange-500/20 text-orange-400 border-orange-500/30">
                       {displayUser.currentStreak}
                     </Badge>
                     <Badge 
                       variant={displayUser.accuracy >= 90 ? "default" : "outline"}
-                      className="font-bold text-xs px-2 py-0.5 border-green-500/30 text-green-400 bg-green-500/10"
+                      className="font-bold text-xs px-1.5 py-0.5 border-green-500/30 text-green-400 bg-green-500/10"
                     >
                       {displayUser.accuracy}%
                     </Badge>
