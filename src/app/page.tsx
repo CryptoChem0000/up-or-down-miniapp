@@ -258,6 +258,11 @@ export default function DailyOneTapPoll() {
     );
   }
 
+  // Show dev links only in development
+  const SHOW_DEV_LINKS = 
+    process.env.NEXT_PUBLIC_SHOW_DEV_LINKS === "true" &&
+    process.env.NODE_ENV !== "production";
+
   const userStats = { 
     streak: myStats?.ok ? (myStats.stats?.currentStreak ?? 0) : (my?.streak ?? 0), 
     totalVotes: myStats?.ok ? (myStats.stats?.totalVotes ?? 0) : (my?.totalVotes ?? 0), 
