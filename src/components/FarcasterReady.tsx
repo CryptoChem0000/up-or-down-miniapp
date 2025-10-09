@@ -5,12 +5,17 @@ export default function FarcasterReady() {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
+    
     const initializeSDK = async () => {
       try {
         console.log("🚀 FarcasterReady: Initializing SDK...");
         
         // Import SDK dynamically to avoid SSR issues
         const { sdk } = await import("@farcaster/miniapp-sdk");
+        
+        // Check if component is still mounted
+        if (!mounted) return;
         
         // Check if we're in a Farcaster context
         if (typeof window !== "undefined") {
@@ -22,6 +27,8 @@ export default function FarcasterReady() {
             // This prevents jitter and content reflows
             await new Promise(resolve => setTimeout(resolve, 100));
             
+            if (!mounted) return;
+            
             console.log("📱 FarcasterReady: Calling sdk.actions.ready()...");
             await sdk.actions.ready();
             console.log("✅ FarcasterReady: SDK ready() called successfully");
@@ -31,6 +38,8 @@ export default function FarcasterReady() {
               console.log("🔐 FarcasterReady: Getting user context...");
               const context = await sdk.context;
               console.log("📋 FarcasterReady: User context:", context);
+              
+              if (!mounted) return;
               
               if (context && context.user && context.user.fid) {
                 // Establish session with the real FID
@@ -55,28 +64,32 @@ export default function FarcasterReady() {
               console.error("❌ FarcasterReady: Error getting user context:", contextError);
             }
 
-            setIsReady(true);
+            if (mounted) {
+              setIsReady(true);
+            }
           } else {
             console.log("ℹ️ FarcasterReady: Not in iframe, skipping ready() call");
-            setIsReady(true);
+            if (mounted) {
+              setIsReady(true);
+            }
           }
         }
       } catch (error) {
         console.error("❌ FarcasterReady: Error initializing SDK:", error);
         // Still set ready to true to avoid blocking the app
-        setIsReady(true);
+        if (mounted) {
+          setIsReady(true);
+        }
       }
     };
 
-    // Wait for DOM to be ready and then initialize
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initializeSDK);
-      return () => {
-        document.removeEventListener("DOMContentLoaded", initializeSDK);
-      };
-    } else {
-      initializeSDK();
-    }
+    // Initialize immediately (DOM is always ready in useEffect)
+    initializeSDK();
+    
+    // Cleanup function
+    return () => {
+      mounted = false;
+    };
   }, []);
   
   return null;
