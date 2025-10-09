@@ -163,6 +163,75 @@ function getCurrentUserDisplayName(profile: { displayName?: string | null; usern
 }
 
 
+// Grid template for consistent column widths across all rows
+const COLS = "[grid-template-columns:72px_minmax(0,1fr)_88px_88px_64px]"; 
+// Rank | Name | Streak | Accuracy | Points
+
+// Reusable row component with proper truncation and no overlap
+type RowProps = {
+  rankLabel: React.ReactNode;   // e.g. "#1" or an icon+#
+  name: string;                 // ENS or username
+  subline?: string;             // shortened address
+  streak: number;               // e.g. 25
+  accuracyPct: number;          // e.g. 94
+  points: number;               // e.g. 2850
+  highlight?: boolean;          // for top 3 or "Your Stats"
+};
+
+function LeaderboardRow({
+  rankLabel,
+  name,
+  subline,
+  streak,
+  accuracyPct,
+  points,
+  highlight,
+}: RowProps) {
+  return (
+    <div
+      className={`grid ${COLS} items-center gap-x-3 py-3 px-4 rounded-lg border ${
+        highlight ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
+      }`}
+    >
+      {/* Rank */}
+      <div className="flex items-center gap-2 min-w-0">
+        <span className="shrink-0">{rankLabel}</span>
+      </div>
+
+      {/* Name (truncates) */}
+      <div className="min-w-0">
+        <div className="truncate font-medium text-white">{name}</div>
+        {subline ? (
+          <div className="truncate text-[10px] text-gray-400 font-mono">
+            {subline}
+          </div>
+        ) : null}
+      </div>
+
+      {/* Streak */}
+      <div className="text-center">
+        <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 font-semibold shrink-0">
+          {streak}
+        </span>
+      </div>
+
+      {/* Accuracy (never shrink) */}
+      <div className="text-center">
+        <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs rounded-full bg-green-500/10 text-green-400 border border-green-500/30 font-semibold shrink-0 whitespace-nowrap">
+          {accuracyPct}%
+        </span>
+      </div>
+
+      {/* Points (never shrink) */}
+      <div className="text-center">
+        <span className="text-sm font-bold text-primary shrink-0 whitespace-nowrap">
+          {points.toLocaleString()}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function LeaderboardPage({
   searchParams,
 }: {
@@ -171,7 +240,7 @@ export default function LeaderboardPage({
   const compact = searchParams?.compact === "1";
   
   // Force cache bust - this should trigger a fresh deployment
-  console.log("LEADERBOARD CACHE BUST - NEW LAYOUT TEST", Date.now());
+  console.log("LEADERBOARD CACHE BUST - PROPER GRID TEMPLATE", Date.now());
   
   // Use real data hooks
   const { data: myStats, loading: myStatsLoading } = useMyStats();
@@ -208,8 +277,8 @@ export default function LeaderboardPage({
           </Button>
           <h1 className={compact ? "text-xl font-bold text-white" : "text-3xl font-bold text-white"}>Leaderboard</h1>
           {/* CACHE BUST INDICATOR */}
-          <div className="bg-blue-500 text-white px-2 py-1 rounded text-xs font-bold">
-            GRID LAYOUT v{Date.now()}
+          <div className="bg-purple-500 text-white px-2 py-1 rounded text-xs font-bold">
+            PROPER GRID v{Date.now()}
           </div>
         </div>
 
@@ -224,21 +293,12 @@ export default function LeaderboardPage({
             {!compact ? (
               /* ===== Desktop/table layout ===== */
               <>
-                  <div className="grid grid-cols-5 gap-4 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 font-semibold text-sm">
+                  <div className={`grid ${COLS} items-center gap-x-3 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 text-xs font-semibold`}>
                     <div className="text-gray-300">Rank</div>
                     <div className="text-gray-300">Name</div>
-                    <div className="text-center flex items-center justify-center gap-1">
-                      <Flame className="w-4 h-4 text-orange-400" />
-                      <span className="text-gray-300 text-xs">Streak</span>
-                    </div>
-                    <div className="text-center flex items-center justify-center gap-1">
-                      <Users className="w-4 h-4 text-green-400" />
-                      <span className="text-gray-300 text-xs">Accuracy</span>
-                    </div>
-                    <div className="text-center flex items-center justify-center gap-1">
-                      <Trophy className="w-4 h-4 text-blue-400" />
-                      <span className="text-gray-300 text-xs">Points</span>
-                    </div>
+                    <div className="text-center text-gray-300">Streak</div>
+                    <div className="text-center text-gray-300">Accuracy</div>
+                    <div className="text-center text-gray-300">Points</div>
                   </div>
 
                 <div className="space-y-2">
@@ -316,36 +376,20 @@ export default function LeaderboardPage({
                     <div className="text-center py-8 text-gray-400 text-sm">Loading...</div>
                   ) : leaderboardData.length > 0 ? (
                     leaderboardData.map((u) => (
-                      <div
+                      <LeaderboardRow
                         key={u.fid}
-                        className={`grid grid-cols-[60px_1fr_120px] gap-2 items-center rounded-lg border p-2 transition-colors hover:bg-gray-700/30 ${
-                          u.rank <= 3 ? "bg-primary/5 border-primary/20" : "bg-gray-800 border-gray-700"
-                        }`}
-                      >
-                        {/* Rank section - fixed 60px width */}
-                        <div className="flex items-center gap-1 justify-start">
-                          {getRankIcon(u.rank)}
-                          <span className="font-bold text-xs text-white">#{u.rank}</span>
-                        </div>
-
-                        {/* Username section - flexible width with truncation */}
-                        <div className="min-w-0 overflow-hidden">
-                          <span className="font-medium text-xs text-white truncate block">{getDisplayName(u)}</span>
-                        </div>
-
-                        {/* Metrics section - fixed 120px width */}
-                        <div className="flex items-center gap-1 justify-end">
-                          <div className="bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-full px-1 py-0.5 text-[10px] font-bold">
-                            {u.currentStreak || 0}
+                        rankLabel={
+                          <div className="flex items-center gap-1">
+                            {getRankIcon(u.rank)}
+                            <span className="font-bold text-xs">#{u.rank}</span>
                           </div>
-                          <div className="border border-green-500/30 text-green-400 bg-green-500/10 rounded-full px-1 py-0.5 text-[10px] font-bold">
-                            {u.accuracy || 0}%
-                          </div>
-                          <span className="text-primary font-bold text-xs tabular-nums">
-                            {u.points.toLocaleString()}
-                          </span>
-                        </div>
-                      </div>
+                        }
+                        name={getDisplayName(u)}
+                        streak={u.currentStreak || 0}
+                        accuracyPct={u.accuracy || 0}
+                        points={u.points}
+                        highlight={u.rank <= 3}
+                      />
                     ))
                   ) : (
                     <div className="text-center py-8 text-gray-400 text-sm">No data available</div>
@@ -371,48 +415,29 @@ export default function LeaderboardPage({
               {!compact ? (
                 /* ===== Desktop layout ===== */
                 <div className="overflow-x-auto">
-                  <div className="grid grid-cols-5 gap-4 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 font-semibold text-sm text-gray-300">
-                    <div>Rank</div>
-                    <div>Name</div>
-                    <div className="text-center flex items-center justify-center gap-1">
-                      <Flame className="w-4 h-4 text-orange-400" />
-                      <span className="text-xs">Streak</span>
-                    </div>
-                    <div className="text-center flex items-center justify-center gap-1">
-                      <Users className="w-4 h-4 text-green-400" />
-                      <span className="text-xs">Accuracy</span>
-                    </div>
-                    <div className="text-center flex items-center justify-center gap-1">
-                      <Trophy className="w-4 h-4 text-blue-400" />
-                      <span className="text-xs">Points</span>
-                    </div>
+                  {/* Header - same grid as leaderboard */}
+                  <div className={`grid ${COLS} items-center gap-x-3 py-3 px-4 bg-gray-700/50 rounded-lg mb-4 text-xs font-semibold`}>
+                    <div className="text-gray-300">Rank</div>
+                    <div className="text-gray-300">Name</div>
+                    <div className="text-center text-gray-300">Streak</div>
+                    <div className="text-center text-gray-300">Accuracy</div>
+                    <div className="text-center text-gray-300">Points</div>
                   </div>
                   
-                  <div className="grid grid-cols-[60px_1fr_120px] gap-2 items-center py-4 px-4 rounded-lg border bg-card/50 border-primary/30">
-                    {/* Rank section - fixed 60px width */}
-                    <div className="flex items-center gap-1 justify-start">
-                      {getRankIcon(displayUser.rank || 999)}
-                      <span className="font-bold text-xs text-white">#{displayUser.rank || "—"}</span>
-                    </div>
-                    
-                    {/* Username section - flexible width with truncation */}
-                    <div className="min-w-0 overflow-hidden">
-                      <span className="font-medium text-xs text-white truncate block">{formatDisplayName(displayUser.name, false)}</span>
-                    </div>
-                    
-                    {/* Metrics section - fixed 120px width */}
-                    <div className="flex items-center gap-1 justify-end">
-                      <div className="bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-full px-1 py-0.5 text-[10px] font-bold">
-                        {displayUser.currentStreak}
+                  {/* Your Stats row using the same component */}
+                  <LeaderboardRow
+                    rankLabel={
+                      <div className="flex items-center gap-1">
+                        {getRankIcon(displayUser.rank || 999)}
+                        <span className="font-bold text-xs">#{displayUser.rank || "—"}</span>
                       </div>
-                      <div className="border border-green-500/30 text-green-400 bg-green-500/10 rounded-full px-1 py-0.5 text-[10px] font-bold">
-                        {displayUser.accuracy}%
-                      </div>
-                      <span className="text-primary font-bold text-xs tabular-nums">
-                        {displayUser.totalPoints.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
+                    }
+                    name={formatDisplayName(displayUser.name, false)}
+                    streak={displayUser.currentStreak}
+                    accuracyPct={displayUser.accuracy}
+                    points={displayUser.totalPoints}
+                    highlight
+                  />
                 </div>
               ) : (
                 /* ===== Compact layout ===== */
