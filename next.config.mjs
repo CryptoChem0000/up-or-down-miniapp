@@ -4,7 +4,7 @@ const nextConfig = {
     serverActions: { allowedOrigins: ['*'] }
   },
   transpilePackages: ['frames.js'],
-  productionBrowserSourceMaps: true, // Temporarily enabled for debugging
+  // productionBrowserSourceMaps: true, // Disabled for faster builds
   async headers() {
     return [
       {
