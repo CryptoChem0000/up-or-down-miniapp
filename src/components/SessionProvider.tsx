@@ -23,20 +23,31 @@ export default function SessionProvider({ children }: { children: React.ReactNod
     (async () => {
       try {
         console.log("🚀 SessionProvider: Initializing...");
+        console.log("🔍 SessionProvider: User Agent:", typeof window !== "undefined" ? window.navigator.userAgent : "server");
+        console.log("🔍 SessionProvider: In iframe:", typeof window !== "undefined" && window !== window.parent);
+        console.log("🔍 SessionProvider: Window parent:", typeof window !== "undefined" ? window.parent : "undefined");
         
         // Initialize Farcaster SDK if in iframe
         if (typeof window !== "undefined" && window !== window.parent) {
           console.log("📱 SessionProvider: In iframe, initializing SDK...");
           
           // Import SDK dynamically
+          console.log("📦 SessionProvider: Importing Farcaster SDK...");
           const { sdk } = await import("@farcaster/miniapp-sdk");
+          console.log("📦 SessionProvider: SDK imported successfully:", !!sdk);
           
           // Wait for DOM to be ready before calling ready()
+          console.log("⏳ SessionProvider: Waiting for DOM ready...");
           await new Promise(resolve => setTimeout(resolve, 100));
           
           console.log("📱 SessionProvider: Calling sdk.actions.ready()...");
-          await sdk.actions.ready();
-          console.log("✅ SessionProvider: SDK ready() called successfully");
+          try {
+            await sdk.actions.ready();
+            console.log("✅ SessionProvider: SDK ready() called successfully");
+          } catch (readyError) {
+            console.error("❌ SessionProvider: SDK ready() failed:", readyError);
+            throw readyError;
+          }
           
           // Get user context
           try {

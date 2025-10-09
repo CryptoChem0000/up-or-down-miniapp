@@ -165,6 +165,19 @@ function composeWithEmbed(baseHref: string) {
 export default function DailyOneTapPoll() {
   const { sessionReady } = useSession();
   
+  // Show loading screen while session initializes
+  if (!sessionReady) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 mx-auto border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-white text-lg font-medium">Loading...</div>
+          <div className="text-gray-400 text-sm">Initializing Farcaster connection</div>
+        </div>
+      </div>
+    );
+  }
+  
   const [selectedVote, setSelectedVote] = useState<"up" | "down" | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [my, setMy] = useState<{streak:number; points:number; totalVotes?: number; accuracy?: number} | null>(null);
