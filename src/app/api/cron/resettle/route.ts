@@ -38,6 +38,12 @@ export async function GET(req: Request) {
   const open = Number(openRaw);
   const close = Number(closeRaw);
 
+  // Debug: Check what votes exist before settlement
+  const votesCheck = await redis.hgetall(k.votes(date));
+  console.log(`[Resettle ${date}] Checking votes before settlement:`, votesCheck);
+  console.log(`[Resettle ${date}] Vote keys:`, votesCheck ? Object.keys(votesCheck) : 'null');
+  console.log(`[Resettle ${date}] Vote count:`, votesCheck ? Object.keys(votesCheck).length : 0);
+
   // Clear settlement lock and flag to allow re-settlement
   await redis.del(k.lockSettle(date));
   await redis.del(k.settled(date));
