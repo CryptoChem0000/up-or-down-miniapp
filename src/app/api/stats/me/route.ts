@@ -39,9 +39,10 @@ export async function GET(req: Request) {
     const todayVoteRaw = await redis.hget(todayVoteKey, sess.fid);
     console.log(`🔍 Stats API: Raw vote data for FID ${sess.fid}:`, todayVoteRaw);
     let todayVote = null;
-    if (todayVoteRaw && typeof todayVoteRaw === 'string') {
+    if (todayVoteRaw) {
       try {
-        const voteData = JSON.parse(todayVoteRaw);
+        // Handle both string and object cases (Redis auto-deserialization)
+        const voteData = typeof todayVoteRaw === 'string' ? JSON.parse(todayVoteRaw) : todayVoteRaw;
         todayVote = voteData.direction; // "up" or "down"
         console.log(`🔍 Stats API: Parsed vote direction for FID ${sess.fid}:`, todayVote);
       } catch (parseError) {
