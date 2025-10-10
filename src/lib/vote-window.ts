@@ -57,3 +57,25 @@ export function getVotingWindowMessage(): string {
     return "Voting is closed. Opens tomorrow at 12:01 AM UTC";
   }
 }
+
+export function getResultsRevealMessage(): string {
+  const now = new Date();
+  
+  // Calculate time until results reveal (12:01 AM UTC tomorrow)
+  const revealTime = new Date(now);
+  revealTime.setUTCDate(revealTime.getUTCDate() + 1);
+  revealTime.setUTCHours(0, 1, 0, 0); // 12:01 AM UTC
+  
+  const msUntilReveal = revealTime.getTime() - now.getTime();
+  const hoursUntilReveal = Math.floor(msUntilReveal / (1000 * 60 * 60));
+  const minutesUntilReveal = Math.floor((msUntilReveal % (1000 * 60 * 60)) / (1000 * 60));
+  
+  let timeUntilReveal = "";
+  if (hoursUntilReveal > 0) {
+    timeUntilReveal = `${hoursUntilReveal}h ${minutesUntilReveal}m`;
+  } else {
+    timeUntilReveal = `${minutesUntilReveal}m`;
+  }
+  
+  return `Vote results will be revealed at 12:01 AM UTC (${timeUntilReveal} remaining)`;
+}

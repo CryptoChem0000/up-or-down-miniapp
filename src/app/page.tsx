@@ -13,7 +13,7 @@ import { useMyStats } from "@/hooks/useMyStats";
 import { useResultToast } from "@/hooks/useResultToast";
 import { useToast } from "@/hooks/use-toast";
 import { useHapticFeedback } from "@/hooks/useCapabilities";
-import { isVotingOpen, getVotingWindowMessage } from "@/lib/vote-window";
+import { isVotingOpen, getVotingWindowMessage, getResultsRevealMessage } from "@/lib/vote-window";
 
 /** utils */
 function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
@@ -178,6 +178,7 @@ export default function DailyOneTapPoll() {
   // Hydration-safe: compute time-based UI in effect
   const [votingOpen, setVotingOpen] = useState(false);
   const [votingMessage, setVotingMessage] = useState("");
+  const [resultsMessage, setResultsMessage] = useState("");
   
   // Get real user stats - only after session is ready
   const { data: myStats, loading: myStatsLoading } = useMyStats();
@@ -224,8 +225,19 @@ export default function DailyOneTapPoll() {
   
   // All useEffect hooks must be at the top level
   useEffect(() => {
-    setVotingOpen(isVotingOpen());
-    setVotingMessage(getVotingWindowMessage());
+    const updateMessages = () => {
+      setVotingOpen(isVotingOpen());
+      setVotingMessage(getVotingWindowMessage());
+      setResultsMessage(getResultsRevealMessage());
+    };
+    
+    // Update immediately
+    updateMessages();
+    
+    // Update every minute
+    const interval = setInterval(updateMessages, 60000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   // Load personal stats if fid is in URL (legacy support)
@@ -482,6 +494,11 @@ export default function DailyOneTapPoll() {
                   {!userStats.todayVote && (
                     <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                       {votingMessage}
+                    </div>
+                  )}
+                  {userStats.todayVote && (
+                    <div className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-400">
+                      {resultsMessage}
                     </div>
                   )}
 
