@@ -35,15 +35,20 @@ export async function GET(req: Request) {
     // Get today's vote (if any)
     const today = todayUTC();
     const todayVoteKey = k.votes(today);
+    console.log(`🔍 Stats API: Looking for vote for FID ${sess.fid} on ${today} in key ${todayVoteKey}`);
     const todayVoteRaw = await redis.hget(todayVoteKey, sess.fid);
+    console.log(`🔍 Stats API: Raw vote data for FID ${sess.fid}:`, todayVoteRaw);
     let todayVote = null;
     if (todayVoteRaw && typeof todayVoteRaw === 'string') {
       try {
         const voteData = JSON.parse(todayVoteRaw);
         todayVote = voteData.direction; // "up" or "down"
+        console.log(`🔍 Stats API: Parsed vote direction for FID ${sess.fid}:`, todayVote);
       } catch (parseError) {
         console.error("Error parsing today's vote for FID", sess.fid, ":", parseError);
       }
+    } else {
+      console.log(`🔍 Stats API: No vote found for FID ${sess.fid} today`);
     }
 
     // Fetch profile data for the current user with error handling

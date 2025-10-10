@@ -294,6 +294,10 @@ export default function DailyOneTapPoll() {
     todayVote: myStats?.ok ? myStats.todayVote : null
   };
 
+  // Debug logging for vote indicator
+  console.log("🔍 Page: myStats data:", myStats);
+  console.log("🔍 Page: userStats.todayVote:", userStats.todayVote);
+
   async function handleVote(dir: "up" | "down") {
     if (userStats.todayVote) return;
     
