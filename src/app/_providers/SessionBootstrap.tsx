@@ -30,12 +30,12 @@ export default function SessionBootstrap() {
         // 2) Get context (FID)
         let ctx: any = null;
         try {
-          ctx = await sdk.context.getCurrentContext();
+          ctx = await sdk.context;
           console.log("🔑 SB: getCurrentContext success:", ctx);
         } catch (e) {
           console.warn("⚠️ SB: getCurrentContext errored, retry once", e);
           await wait(200);
-          ctx = await sdk.context.getCurrentContext().catch(() => null);
+          ctx = await sdk.context.catch(() => null);
           console.log("🔑 SB: getCurrentContext retry result:", ctx);
         }
 
