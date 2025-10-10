@@ -46,14 +46,15 @@ export async function POST(req: Request) {
 
     // Try to get FID from request body (from Mini App SDK)
     const fid = body?.fid;
-    if (!fid || typeof fid !== 'string' || fid.length === 0) {
-      console.log("❌ Auth establish: Missing or invalid FID");
+    if (!fid || (typeof fid !== 'string' && typeof fid !== 'number') || String(fid).length === 0) {
+      console.log("❌ Auth establish: Missing or invalid FID:", fid, typeof fid);
       return NextResponse.json({ ok: false, error: "missing_fid" }, { status: 400 });
     }
 
-    console.log("✅ Auth establish: Using FID from request body:", fid);
-    const cookie = await makeSessionCookie(fid);
-    const res = NextResponse.json({ ok: true, fid });
+    const fidString = String(fid);
+    console.log("✅ Auth establish: Using FID from request body:", fidString);
+    const cookie = await makeSessionCookie(fidString);
+    const res = NextResponse.json({ ok: true, fid: fidString });
     res.headers.append(
       "Set-Cookie",
       `${cookie.name}=${encodeURIComponent(cookie.value)}; Path=/; Max-Age=${cookie.maxAge}; HttpOnly; Secure; SameSite=None`
