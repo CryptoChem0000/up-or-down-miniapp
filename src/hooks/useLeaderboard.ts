@@ -14,6 +14,17 @@ export function useLeaderboard(limit = 50) {
     
     (async () => {
       try {
+        // Wait until SessionBootstrap reports ready (or timeout after 3s)
+        const started = Date.now();
+        while (!(window as any).__sessionReady && Date.now() - started < 3000) {
+          await new Promise(r => setTimeout(r, 50));
+        }
+        
+        if (!(window as any).__sessionReady) {
+          console.log("🔍 useLeaderboard: Session bootstrap timeout, proceeding anyway...");
+        } else {
+          console.log("🔍 useLeaderboard: Session ready, fetching leaderboard...");
+        }
         // Check if we're in staging mode with mock data or preview deployment
         const isStagingWithMock = process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true";
         const isPreviewDeployment = typeof window !== 'undefined' && 

@@ -6,6 +6,15 @@ export const runtime = "edge";
 
 export async function POST(req: Request) {
   try {
+    const ua = req.headers.get("user-agent") || "";
+    console.log("🔐 Auth establish: User agent:", ua);
+    
+    // Ignore preview/screenshot bots
+    if (ua.includes("vercel-screenshot") || ua.includes("Slackbot")) {
+      console.log("🔐 Auth establish: Ignoring screenshot/preview bot request");
+      return new NextResponse(null, { status: 204 });
+    }
+
     console.log("🔐 Auth establish: Request headers:", Object.fromEntries(req.headers.entries()));
     console.log("🔐 Auth establish: Request method:", req.method);
     console.log("🔐 Auth establish: Request URL:", req.url);
@@ -17,8 +26,7 @@ export async function POST(req: Request) {
       console.log("🔐 Auth establish: Request body:", body);
     } catch (bodyError) {
       console.log("🔐 Auth establish: No request body found:", bodyError);
-      // Return 401 instead of 400 for empty body - this is expected for some requests
-      return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+      return NextResponse.json({ ok: false, error: "missing_body" }, { status: 400 });
     }
 
     // Try Farcaster verification first (for signed requests with signature data)
@@ -37,20 +45,20 @@ export async function POST(req: Request) {
     }
 
     // Try to get FID from request body (from Mini App SDK)
-    if (body && typeof body.fid === 'string' && body.fid.length > 0) {
-      console.log("Using FID from request body:", body.fid);
-      const cookie = await makeSessionCookie(body.fid);
-      const res = NextResponse.json({ ok: true, fid: body.fid });
-      res.headers.append(
-        "Set-Cookie",
-        `${cookie.name}=${encodeURIComponent(cookie.value)}; Path=/; Max-Age=${cookie.maxAge}; HttpOnly; Secure; SameSite=None`
-      );
-      return res;
+    const fid = body?.fid;
+    if (!fid || typeof fid !== 'string' || fid.length === 0) {
+      console.log("❌ Auth establish: Missing or invalid FID");
+      return NextResponse.json({ ok: false, error: "missing_fid" }, { status: 400 });
     }
 
-    // No valid authentication found
-    console.log("No valid Farcaster authentication found");
-    return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+    console.log("✅ Auth establish: Using FID from request body:", fid);
+    const cookie = await makeSessionCookie(fid);
+    const res = NextResponse.json({ ok: true, fid });
+    res.headers.append(
+      "Set-Cookie",
+      `${cookie.name}=${encodeURIComponent(cookie.value)}; Path=/; Max-Age=${cookie.maxAge}; HttpOnly; Secure; SameSite=None`
+    );
+    return res;
 
   } catch (error) {
     console.error("Error in /api/auth/establish:", error);

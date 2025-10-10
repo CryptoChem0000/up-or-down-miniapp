@@ -29,17 +29,22 @@ export function useMyStats() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!sessionReady) {
-      console.log("🔐 useMyStats: Waiting for session to be ready...");
-      return; // Don't fetch until session is ready
-    }
-    
     let alive = true;
     const abortController = new AbortController();
     
     const start = async () => {
       try {
-        console.log("🔐 useMyStats: Session ready, fetching stats...");
+        // Wait until SessionBootstrap reports ready (or timeout after 3s)
+        const started = Date.now();
+        while (!(window as any).__sessionReady && Date.now() - started < 3000) {
+          await new Promise(r => setTimeout(r, 50));
+        }
+        
+        if (!(window as any).__sessionReady) {
+          console.log("🔐 useMyStats: Session bootstrap timeout, proceeding anyway...");
+        } else {
+          console.log("🔐 useMyStats: Session ready, fetching stats...");
+        }
         
         if (!alive) return;
         
@@ -112,7 +117,7 @@ export function useMyStats() {
       alive = false;
       abortController.abort();
     };
-  }, [sessionReady]);
+        }, []);
 
   return { data, loading };
 }

@@ -3,7 +3,7 @@ import "./globals.css";
 import dynamic from "next/dynamic";
 import ClientOnly from "@/components/ClientOnly";
 import { ClientToaster } from "@/components/ClientToaster";
-import FarcasterReadyBridge from "@/components/FarcasterReadyBridge";
+import SessionBootstrap from "@/app/_providers/SessionBootstrap";
 
 const SessionProvider = dynamic(() => import("@/components/SessionProvider"), { ssr: false });
 
@@ -46,36 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            console.log('📄 HTML: Layout rendering...');
-            console.log('📄 HTML: User agent:', navigator.userAgent);
-            console.log('📄 HTML: In iframe:', window !== window.parent);
-            
-            // Try to establish session immediately if in iframe
-            if (window !== window.parent) {
-              console.log('📄 HTML: In iframe, attempting immediate session establishment...');
-              try {
-                fetch('/api/auth/establish', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  credentials: 'include',
-                  body: JSON.stringify({ fid: '13840' }) // Temporary hardcoded FID for testing
-                }).then(response => {
-                  console.log('📄 HTML: Immediate session response:', response.status);
-                  return response.text();
-                }).then(text => {
-                  console.log('📄 HTML: Immediate session response body:', text);
-                }).catch(error => {
-                  console.log('📄 HTML: Immediate session error:', error);
-                });
-              } catch (error) {
-                console.log('📄 HTML: Immediate session fetch failed:', error);
-              }
-            }
-          `
-        }} />
-        <FarcasterReadyBridge />
+        <SessionBootstrap />
         <ClientOnly>
           <SessionProvider>
             {children}
