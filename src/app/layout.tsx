@@ -21,10 +21,28 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/icon-256.png" }],
   },
+  openGraph: {
+    title: "Ethereum",
+    description: "Predict ETH daily. Win streak multipliers.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Up or Down - Ethereum Price Prediction Game",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ethereum",
+    description: "Predict ETH daily. Win streak multipliers.",
+    images: ["/og-image.png"],
+  },
   other: {
     "fc:miniapp": JSON.stringify({
       version: "1",
-      imageUrl: `${baseUrl}/api/results/today/image?v=1759871275`,
+      imageUrl: `${baseUrl}/og-image.png`,
       button: {
         title: "🚀 Start",
         action: {
@@ -38,7 +56,7 @@ export const metadata: Metadata = {
     }),
     "og:title": "Ethereum",
     "og:description": "Predict ETH daily. Win streak multipliers.",
-    "og:image": `${baseUrl}/api/results/today/image?v=1759871275`,
+    "og:image": `${baseUrl}/og-image.png`,
   },
 };
 
