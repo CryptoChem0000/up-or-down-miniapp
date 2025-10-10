@@ -295,7 +295,7 @@ export default function DailyOneTapPoll() {
   };
 
   async function handleVote(dir: "up" | "down") {
-    if (hasVoted) return;
+    if (userStats.todayVote) return;
     
     if (!votingOpen) {
       toast({ title: "Vote is Closed", description: "Vote resets at 12:01 AM UTC. Check back in tomorrow to log your vote!" });
@@ -435,12 +435,22 @@ export default function DailyOneTapPoll() {
             <div className="space-y-4">
               <div className="text-center">
                 <h2 className="text-base font-semibold mb-2 text-white">Make Your Prediction</h2>
-                {hasVoted && <Badge variant="outline" className="border-green-500 text-green-400">Voted {selectedVote?.toUpperCase()} ✓</Badge>}
-                {!hasVoted && !votingOpen && <Badge variant="outline" className="border-red-500 text-red-400">Vote is Closed</Badge>}
+                {userStats.todayVote && <Badge variant="outline" className="border-green-500 text-green-400">Voted {userStats.todayVote.toUpperCase()} ✓</Badge>}
+                {!userStats.todayVote && !votingOpen && <Badge variant="outline" className="border-red-500 text-red-400">Vote is Closed</Badge>}
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <VoteButton direction="up" onClick={() => handleVote("up")} isSelected={selectedVote === "up"} className={hasVoted && selectedVote !== "up" ? "opacity-50" : !votingOpen ? "opacity-50 cursor-not-allowed" : ""} />
-                <VoteButton direction="down" onClick={() => handleVote("down")} isSelected={selectedVote === "down"} className={hasVoted && selectedVote !== "down" ? "opacity-50" : !votingOpen ? "opacity-50 cursor-not-allowed" : ""} />
+                <VoteButton 
+                  direction="up" 
+                  onClick={() => handleVote("up")} 
+                  isSelected={userStats.todayVote === "up" || selectedVote === "up"} 
+                  className={userStats.todayVote ? "opacity-50 cursor-not-allowed" : !votingOpen ? "opacity-50 cursor-not-allowed" : ""} 
+                />
+                <VoteButton 
+                  direction="down" 
+                  onClick={() => handleVote("down")} 
+                  isSelected={userStats.todayVote === "down" || selectedVote === "down"} 
+                  className={userStats.todayVote ? "opacity-50 cursor-not-allowed" : !votingOpen ? "opacity-50 cursor-not-allowed" : ""} 
+                />
               </div>
             </div>
 
@@ -450,7 +460,7 @@ export default function DailyOneTapPoll() {
               <Card className="p-3 bg-gray-800 border-gray-700">
                 <div className="text-xs text-gray-400 text-center space-y-2">
                   <div>Build your streak • Compete with others</div>
-                  {!hasVoted && (
+                  {!userStats.todayVote && (
                     <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                       {votingMessage}
                     </div>
