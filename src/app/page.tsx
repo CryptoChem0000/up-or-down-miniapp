@@ -185,10 +185,23 @@ export default function DailyOneTapPoll() {
   // Show result toast for yesterday's outcome - only after session is ready
   useResultToast();
 
-  // Helper functions for vote caching
+  // Helper functions for vote caching - use server date to avoid timezone issues
+  const [serverDate, setServerDate] = useState<string | null>(null);
+  
+  // Fetch server date on component mount
+  useEffect(() => {
+    fetch("/api/date")
+      .then(r => r.json())
+      .then(data => setServerDate(data.date))
+      .catch(() => {
+        // Fallback to client date if server fails
+        setServerDate(new Date().toISOString().slice(0, 10));
+      });
+  }, []);
+
   const cacheTodayVote = (dir: "up" | "down") => {
     try {
-      const key = new Date().toISOString().slice(0, 10); // YYYY-MM-DD UTC
+      const key = serverDate || new Date().toISOString().slice(0, 10);
       localStorage.setItem(`vote:${key}`, dir);
     } catch (error) {
       // Ignore localStorage errors (e.g., in private browsing)
@@ -198,7 +211,7 @@ export default function DailyOneTapPoll() {
 
   const getCachedTodayVote = (): "up" | "down" | null => {
     try {
-      const key = new Date().toISOString().slice(0, 10); // YYYY-MM-DD UTC
+      const key = serverDate || new Date().toISOString().slice(0, 10);
       const cached = localStorage.getItem(`vote:${key}`);
       return cached as "up" | "down" | null;
     } catch (error) {
