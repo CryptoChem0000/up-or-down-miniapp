@@ -1,12 +1,16 @@
-import webpush from 'web-push';
 import { redis } from './redis';
 
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
 const VAPID_SUBJECT = process.env.VAPID_SUBJECT || 'mailto:admin@up-or-down-miniapp.vercel.app';
 
-if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
-  webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+// Dynamic import for web-push to avoid Edge Runtime issues
+async function getWebPush() {
+  const webpush = await import('web-push');
+  if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
+    webpush.default.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+  }
+  return webpush.default;
 }
 
 export async function sendPushNotification(fid: string, payload: { title: string; body: string; url?: string }): Promise<void> {
@@ -19,6 +23,8 @@ export async function sendPushNotification(fid: string, payload: { title: string
     }
     return;
   }
+
+  const webpush = await getWebPush();
 
   const results = await Promise.allSettled(
     subscriptions.map(async (subscriptionStr) => {

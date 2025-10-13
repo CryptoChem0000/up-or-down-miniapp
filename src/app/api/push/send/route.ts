@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendPushNotification } from "@/lib/webpush";
 
-export const runtime = "edge";
-
 export async function POST(req: Request) {
   try {
     // Admin endpoint - check for admin token

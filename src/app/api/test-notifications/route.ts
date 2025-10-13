@@ -3,8 +3,6 @@ import { getSessionFromRequest } from "@/lib/session";
 import { postMentionCast } from "@/lib/farcaster";
 import { sendPushNotification } from "@/lib/webpush";
 
-export const runtime = "edge";
-
 export async function POST(req: Request) {
   try {
     // Check for admin token

@@ -4,8 +4,6 @@ import { getMultipleUsernames, postMentionCast } from "@/lib/farcaster";
 import { sendPushNotification } from "@/lib/webpush";
 import { sleep } from "@/lib/utils";
 
-export const runtime = "edge";
-
 export async function POST(req: Request) {
   try {
     // Check for admin token or Vercel cron
