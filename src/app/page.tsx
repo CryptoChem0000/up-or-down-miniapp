@@ -14,6 +14,7 @@ import { useResultToast } from "@/hooks/useResultToast";
 import { useToast } from "@/hooks/use-toast";
 import { useHapticFeedback } from "@/hooks/useCapabilities";
 import { isVotingOpen, getVotingWindowMessage, getResultsRevealMessage } from "@/lib/vote-window";
+import { NotificationSettings } from "@/components/NotificationSettings";
 
 /** utils */
 function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
@@ -501,6 +502,8 @@ export default function DailyOneTapPoll() {
                       {resultsMessage}
                     </div>
                   )}
+
+                  <NotificationSettings />
 
                   {SHOW_DEV_LINKS && (
                     <div className="pt-2 grid grid-cols-2 gap-2">
