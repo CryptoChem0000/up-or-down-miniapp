@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { redis, k, todayUTC } from "@/lib/redis";
 import { getMultipleUsernames, postMentionCast } from "@/lib/farcaster";
 import { sendPushNotification } from "@/lib/webpush";
+import { sendFarcasterNotification } from "@/lib/farcaster-notifications";
 import { sleep } from "@/lib/utils";
 
 export async function POST(req: Request) {
@@ -81,18 +82,27 @@ export async function POST(req: Request) {
           }
         }
 
-        // Send Web Push if enabled
-        if (consent.webpush) {
-          try {
+        // Try Farcaster native notifications first (mobile)
+        try {
+          const farcasterSent = await sendFarcasterNotification(fid, {
+            title: "⏰ Daily ETH Vote Reminder",
+            body: "Don't forget to vote UP or DOWN on ETH today!",
+            targetUrl: `${baseUrl}/launch`
+          });
+
+          if (farcasterSent) {
+            pushCount++;
+          } else if (consent.webpush) {
+            // Fallback to web push for desktop users
             await sendPushNotification(fid, {
               title: "⏰ Daily ETH Vote Reminder",
               body: "Don't forget to vote UP or DOWN on ETH today!",
               url: `${baseUrl}/launch`
             });
             pushCount++;
-          } catch (error) {
-            console.error(`Failed to send push to FID ${fid}:`, error);
           }
+        } catch (error) {
+          console.error(`Failed to send push to FID ${fid}:`, error);
         }
 
         // Mark as reminded for today

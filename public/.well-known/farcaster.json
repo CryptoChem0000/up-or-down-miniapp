@@ -1,30 +1,9 @@
 {
-  "accountAssociation": {
-    "header": "eyJmaWQiOjEzODQwLCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4NjM2ODRCNjY3N0JBYTU1RjUyZDQ4MWE2NTlkOEZBOTJhMDM2NjU1MCJ9",
-    "payload": "eyJkb21haW4iOiJ1cC1vci1kb3duLW1pbmlhcHAudmVyY2VsLmFwcCJ9",
-    "signature": "MHgyNTY2Y2ViOTRjNmI0N2E1YjkxMDY0OTU4YTI4M2Y3Nzg0Yjg3ZjVhYjAzMWQxY2Q3ZjU0YmQ0M2Q2YmQ0YmJkNDA5NTIyNDAwYjQwMDJjNmRiYThlNjM1MWNjNzI2YTZjNmQwYzI5YmY2ZjMxZGVlNTMzOWJkODEzNWNmOTBkMDFi"
-  },
-  "baseBuilder": {
-    "allowedAddresses": ["0x225f5539435ccFE4A7759dd1cED3AE26D72e40D2"]
-  },
   "miniapp": {
     "version": "1",
-    "name": "Up or Down",
-    "iconUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
-    "homeUrl": "https://up-or-down-miniapp.vercel.app",
-    "imageUrl": "https://up-or-down-miniapp.vercel.app/api/results/today/image?v=1759871275",
-    "buttonTitle": "Make Prediction",
-    "splashImageUrl": "https://up-or-down-miniapp.vercel.app/splash.png",
-    "splashBackgroundColor": "#0b0b0b",
-    "webhookUrl": "https://up-or-down-miniapp.vercel.app/api/webhook",
-    "description": "Make a daily prediction on whether the price of ETH will go up or down. Earn points and build your streak to gain multipliers.",
-    "primaryCategory": "games",
-    "screenshotUrls": ["https://up-or-down-miniapp.vercel.app/up-or-down.png"],
-    "tags": ["prediction", "eth", "ethereum", "leaderboard", "rewards"],
-    "tagline": "Build your streak and compete.",
-    "ogDescription": "Predict ETH price movement, build your streak, earn points.",
-    "ogImageUrl": "https://up-or-down-miniapp.vercel.app/icon-1024.png",
-    "requiredChains": ["eip155:1", "eip155:8453"],
-    "requiredCapabilities": ["actions.ready"]
+    "name": "Ethereum Daily Poll",
+    "iconUrl": "https://up-or-down-miniapp.vercel.app/icon-256.png",
+    "homeUrl": "https://up-or-down-miniapp.vercel.app/",
+    "webhookUrl": "https://up-or-down-miniapp.vercel.app/api/farcaster/webhook"
   }
 }

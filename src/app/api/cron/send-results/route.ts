@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { redis, k, todayUTC } from "@/lib/redis";
 import { getMultipleUsernames, postMentionCast } from "@/lib/farcaster";
 import { sendPushNotification } from "@/lib/webpush";
+import { sendFarcasterNotification } from "@/lib/farcaster-notifications";
 import { sleep } from "@/lib/utils";
 
 export async function POST(req: Request) {
@@ -113,23 +114,32 @@ export async function POST(req: Request) {
           }
         }
 
-        // Send Web Push if enabled
-        if (consent.webpush) {
-          try {
-            const pushTitle = `🎯 ${isCorrect ? 'Great Job!' : 'Yikes!'} ETH went ${result.toUpperCase()}`;
-            const pushBody = isCorrect 
-              ? `Your vote was CORRECT! 🎉 Check your updated stats.`
-              : `Your vote was WRONG. 😬 ETH went ${result.toUpperCase()}.`;
-            
+        // Try Farcaster native notifications first (mobile)
+        try {
+          const pushTitle = `🎯 ${isCorrect ? 'Great Job!' : 'Yikes!'} ETH went ${result.toUpperCase()}`;
+          const pushBody = isCorrect 
+            ? `Your vote was CORRECT! 🎉 Check your updated stats.`
+            : `Your vote was WRONG. 😬 ETH went ${result.toUpperCase()}.`;
+          
+          const farcasterSent = await sendFarcasterNotification(fid, {
+            title: pushTitle,
+            body: pushBody,
+            targetUrl: `${baseUrl}/`
+          });
+
+          if (farcasterSent) {
+            pushCount++;
+          } else if (consent.webpush) {
+            // Fallback to web push for desktop users
             await sendPushNotification(fid, {
               title: pushTitle,
               body: pushBody,
               url: `${baseUrl}/`
             });
             pushCount++;
-          } catch (error) {
-            console.error(`Failed to send result push to FID ${fid}:`, error);
           }
+        } catch (error) {
+          console.error(`Failed to send result push to FID ${fid}:`, error);
         }
 
         // Mark as notified for this result

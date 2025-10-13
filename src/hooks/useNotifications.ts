@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from '@/components/SessionProvider';
 import { usePush } from './usePush';
+import { getFarcasterNotificationStatus } from '@/lib/farcaster-notifications';
 
 interface NotificationConsent {
   mentions: boolean;
@@ -13,6 +14,7 @@ interface NotificationState {
   isLoading: boolean;
   error: string | null;
   isSaving: boolean;
+  farcasterNotificationsEnabled: boolean;
 }
 
 export function useNotifications() {
@@ -22,10 +24,11 @@ export function useNotifications() {
     consent: null,
     isLoading: false,
     error: null,
-    isSaving: false
+    isSaving: false,
+    farcasterNotificationsEnabled: false
   });
 
-  // Fetch current consent settings
+  // Fetch current consent settings and Farcaster notification status
   useEffect(() => {
     if (!sessionReady || !fid) return;
 
@@ -33,16 +36,24 @@ export function useNotifications() {
       setState(prev => ({ ...prev, isLoading: true, error: null }));
 
       try {
-        const response = await fetch('/api/notifications/consent', {
-          credentials: 'include'
-        });
+        const [consentResponse, farcasterEnabled] = await Promise.all([
+          fetch('/api/notifications/consent', {
+            credentials: 'include'
+          }),
+          getFarcasterNotificationStatus(fid)
+        ]);
 
-        if (!response.ok) {
+        if (!consentResponse.ok) {
           throw new Error('Failed to fetch notification settings');
         }
 
-        const data = await response.json();
-        setState(prev => ({ ...prev, consent: data.consent, isLoading: false }));
+        const data = await consentResponse.json();
+        setState(prev => ({ 
+          ...prev, 
+          consent: data.consent, 
+          farcasterNotificationsEnabled: farcasterEnabled,
+          isLoading: false 
+        }));
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         setState(prev => ({ ...prev, error: errorMessage, isLoading: false }));
@@ -107,12 +118,42 @@ export function useNotifications() {
     return updateConsent({ webpush: !state.consent.webpush });
   };
 
+  const enableFarcasterNotifications = async () => {
+    if (!sessionReady || !fid) return false;
+
+    setState(prev => ({ ...prev, isSaving: true, error: null }));
+
+    try {
+      // Import SDK dynamically to avoid SSR issues
+      const { sdk } = await import('frames.js/minis');
+      
+      const result = await sdk.actions.addMiniApp();
+      
+      if (result.added && result.notificationDetails) {
+        console.log('🔔 Farcaster notifications enabled:', result.notificationDetails);
+        setState(prev => ({ 
+          ...prev, 
+          farcasterNotificationsEnabled: true,
+          isSaving: false 
+        }));
+        return true;
+      } else {
+        throw new Error('Failed to enable Farcaster notifications');
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setState(prev => ({ ...prev, error: errorMessage, isSaving: false }));
+      return false;
+    }
+  };
+
   return {
     ...state,
     pushSupported,
     isSubscribed,
     updateConsent,
     toggleMentions,
-    toggleWebPush
+    toggleWebPush,
+    enableFarcasterNotifications
   };
 }

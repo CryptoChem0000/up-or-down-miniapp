@@ -5,7 +5,8 @@ import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Bell, MessageCircle, Smartphone } from 'lucide-react';
+import { Bell, MessageCircle, Smartphone, Zap } from 'lucide-react';
+import { sdk } from 'frames.js/minis';
 
 export function NotificationSettings() {
   const { 
@@ -15,8 +16,10 @@ export function NotificationSettings() {
     isSaving, 
     pushSupported, 
     isSubscribed,
+    farcasterNotificationsEnabled,
     toggleMentions, 
-    toggleWebPush 
+    toggleWebPush,
+    enableFarcasterNotifications
   } = useNotifications();
 
   if (isLoading) {
@@ -56,6 +59,35 @@ export function NotificationSettings() {
         )}
 
         <div className="space-y-3">
+          {/* Farcaster Native Notifications */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Zap className="w-4 h-4 text-yellow-400" />
+              <div>
+                <Label htmlFor="farcaster" className="text-sm text-white">
+                  Mobile notifications
+                </Label>
+                <p className="text-xs text-gray-400">
+                  Get native push notifications in the Farcaster app
+                </p>
+              </div>
+            </div>
+            {farcasterNotificationsEnabled ? (
+              <div className="flex items-center space-x-2">
+                <span className="text-xs text-green-400">✓ Enabled</span>
+              </div>
+            ) : (
+              <Button
+                size="sm"
+                onClick={enableFarcasterNotifications}
+                disabled={isSaving}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white text-xs px-3 py-1"
+              >
+                Enable
+              </Button>
+            )}
+          </div>
+
           {/* Farcaster Mentions */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -77,7 +109,7 @@ export function NotificationSettings() {
             />
           </div>
 
-          {/* Web Push Notifications */}
+          {/* Web Push Notifications (Desktop only) */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Smartphone className="w-4 h-4 text-green-400" />
