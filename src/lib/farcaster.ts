@@ -3,17 +3,23 @@ import { sleep } from "./utils";
 const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY;
 const NEYNAR_SIGNER_UUID = process.env.NEYNAR_SIGNER_UUID;
 
-if (!NEYNAR_API_KEY) {
-  throw new Error("NEYNAR_API_KEY environment variable is required");
+function neynarHeaders(): Headers {
+  if (!NEYNAR_API_KEY) {
+    throw new Error("NEYNAR_API_KEY is not set");
+  }
+  // TS-safe: values are guaranteed strings
+  return new Headers({
+    api_key: NEYNAR_API_KEY,
+    "content-type": "application/json",
+    accept: "application/json",
+  });
 }
 
 export async function getUsernameByFid(fid: string): Promise<string | null> {
   try {
     const response = await fetch(`https://api.neynar.com/v2/farcaster/user/bulk?fids=${fid}`, {
-      headers: {
-        'api_key': NEYNAR_API_KEY,
-        'Content-Type': 'application/json'
-      }
+      headers: neynarHeaders(),
+      cache: "no-store"
     });
 
     if (!response.ok) {
@@ -58,10 +64,7 @@ export async function postMentionCast({ toFid, text, url }: { toFid: string; tex
 
     const response = await fetch('https://api.neynar.com/v2/farcaster/cast', {
       method: 'POST',
-      headers: {
-        'api_key': NEYNAR_API_KEY,
-        'Content-Type': 'application/json'
-      },
+      headers: neynarHeaders(),
       body: JSON.stringify({
         signer_uuid: NEYNAR_SIGNER_UUID,
         text: fullText
@@ -96,10 +99,8 @@ export async function getMultipleUsernames(fids: string[]): Promise<Record<strin
     
     try {
       const response = await fetch(`https://api.neynar.com/v2/farcaster/user/bulk?fids=${batch.join(',')}`, {
-        headers: {
-          'api_key': NEYNAR_API_KEY,
-          'Content-Type': 'application/json'
-        }
+        headers: neynarHeaders(),
+        cache: "no-store"
       });
 
       if (!response.ok) {
