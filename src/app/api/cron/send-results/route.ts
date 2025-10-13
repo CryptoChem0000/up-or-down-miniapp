@@ -29,11 +29,13 @@ export async function POST(req: Request) {
     const yesterdayStr = yesterday.toISOString().slice(0, 10);
 
     const resultKey = `result:${yesterdayStr}`;
-    const result = await redis.get(resultKey);
+    const resultRaw = await redis.get(resultKey);
     
-    if (!result) {
+    if (!resultRaw || typeof resultRaw !== 'string') {
       return NextResponse.json({ error: "no_result_for_yesterday" }, { status: 404 });
     }
+    
+    const result = resultRaw.toLowerCase();
 
     // Get all users who voted yesterday
     const yesterdayVotesKey = k.votes(yesterdayStr);
@@ -85,7 +87,7 @@ export async function POST(req: Request) {
           continue;
         }
 
-        const isCorrect = userVote === result.toLowerCase();
+        const isCorrect = userVote === result;
         const username = usernames[fid];
         
         let resultText = `✅ Results are in! Yesterday's closing: ETH went ${result.toUpperCase()}. `;
