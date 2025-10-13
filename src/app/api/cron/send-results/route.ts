@@ -68,7 +68,7 @@ export async function POST(req: Request) {
         const consentKey = `notif:consent:${fid}`;
         const consentRaw = await redis.get(consentKey);
         
-        if (!consentRaw) continue;
+        if (!consentRaw || typeof consentRaw !== 'string') continue;
 
         let consent;
         try {
