@@ -6,7 +6,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Bell, MessageCircle, Smartphone, Zap } from 'lucide-react';
-import { sdk } from 'frames.js/minis';
+import { sdk } from '@farcaster/miniapp-sdk';
 
 export function NotificationSettings() {
   const { 

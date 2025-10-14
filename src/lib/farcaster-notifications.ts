@@ -15,7 +15,7 @@ export async function sendFarcasterNotification(
     const notificationKey = `farcaster:notification:${fid}`;
     const tokenDataRaw = await redis.get(notificationKey);
     
-    if (!tokenDataRaw) {
+    if (!tokenDataRaw || typeof tokenDataRaw !== 'string') {
       console.log(`🔔 No Farcaster notification token found for FID ${fid}`);
       return false;
     }

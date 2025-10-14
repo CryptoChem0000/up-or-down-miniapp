@@ -40,7 +40,7 @@ export function useNotifications() {
           fetch('/api/notifications/consent', {
             credentials: 'include'
           }),
-          getFarcasterNotificationStatus(fid)
+          getFarcasterNotificationStatus(fid.toString())
         ]);
 
         if (!consentResponse.ok) {
@@ -125,16 +125,16 @@ export function useNotifications() {
 
     try {
       // Import SDK dynamically to avoid SSR issues
-      const { sdk } = await import('frames.js/minis');
+      const { sdk } = await import('@farcaster/miniapp-sdk');
       
       const result = await sdk.actions.addMiniApp();
       
-      if (result.added && result.notificationDetails) {
-        console.log('🔔 Farcaster notifications enabled:', result.notificationDetails);
+      if (result) {
+        console.log('🔔 Farcaster notifications enabled:', result);
         setState(prev => ({ 
-          ...prev, 
+          ...prev,
           farcasterNotificationsEnabled: true,
-          isSaving: false 
+          isSaving: false
         }));
         return true;
       } else {
