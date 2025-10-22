@@ -33,16 +33,16 @@ export async function GET(req: Request) {
     const globalRankRaw = await redis.zrevrank("lb:points", sess.fid);
     const globalRank = typeof globalRankRaw === "number" ? globalRankRaw + 1 : null;
     
-    // For consistency with leaderboard display, we need to check if the user is in the top 50
-    // If they are, use their position in the top 50. If not, show their global rank.
-    const top50Fids = await redis.zrange("lb:points", -50, -1);
-    const isInTop50 = top50Fids.includes(sess.fid);
+    // For consistency with leaderboard display, we need to check if the user is in the top 15
+    // If they are, use their position in the top 15. If not, show their global rank.
+    const top15Fids = await redis.zrange("lb:points", -15, -1);
+    const isInTop15 = top15Fids.includes(sess.fid);
     
     let rank = globalRank;
-    if (isInTop50) {
-      // Find their position in the top 50
-      const positionInTop50 = top50Fids.indexOf(sess.fid);
-      rank = positionInTop50 + 1;
+    if (isInTop15) {
+      // Find their position in the top 15
+      const positionInTop15 = top15Fids.indexOf(sess.fid);
+      rank = positionInTop15 + 1;
     }
 
     // Get today's vote (if any)

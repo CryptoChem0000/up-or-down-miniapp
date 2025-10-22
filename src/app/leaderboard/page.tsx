@@ -246,7 +246,7 @@ export default function LeaderboardPage({
   
   // Use real data hooks
   const { data: myStats, loading: myStatsLoading } = useMyStats();
-  const { rows: leaderboardData, loading: leaderboardLoading } = useLeaderboard(50);
+  const { rows: leaderboardData, loading: leaderboardLoading } = useLeaderboard(15);
 
   // Establish session cookie on page load (fire and forget)
   // Session establishment is now handled by FarcasterReady component
