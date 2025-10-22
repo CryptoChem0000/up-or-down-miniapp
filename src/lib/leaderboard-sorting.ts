@@ -95,6 +95,11 @@ export async function getSortedLeaderboard(limit: number = 15): Promise<Leaderbo
 
 export async function getUserRankInLeaderboard(fid: string, limit: number = 15): Promise<number | null> {
   const sortedUsers = await getSortedLeaderboard(limit);
+  console.log(`🔍 getUserRankInLeaderboard: Looking for FID ${fid} in ${sortedUsers.length} users`);
+  console.log(`🔍 getUserRankInLeaderboard: Available FIDs:`, sortedUsers.map(u => u.fid));
+  
   const userIndex = sortedUsers.findIndex(user => user.fid === fid);
-  return userIndex !== -1 ? userIndex + 1 : null;
+  const rank = userIndex !== -1 ? userIndex + 1 : null;
+  console.log(`🔍 getUserRankInLeaderboard: User index: ${userIndex}, rank: ${rank}`);
+  return rank;
 }

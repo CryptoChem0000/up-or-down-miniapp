@@ -31,7 +31,15 @@ export async function GET(req: Request) {
     const accuracy = stats.totalVotes ? Math.round((stats.correctCount / stats.totalVotes) * 100) : 0;
 
     // Get rank using the same sorting logic as leaderboard
-    const rank = await getUserRankInLeaderboard(sess.fid, 15);
+    let rank = await getUserRankInLeaderboard(sess.fid, 15);
+    console.log(`🔍 Stats API: User rank in top 15:`, rank);
+    
+    // If user is not in top 15, fall back to global rank
+    if (rank === null) {
+      const globalRankRaw = await redis.zrevrank("lb:points", sess.fid);
+      rank = typeof globalRankRaw === "number" ? globalRankRaw + 1 : null;
+      console.log(`🔍 Stats API: Using global rank:`, rank);
+    }
 
     // Get today's vote (if any)
     const today = todayUTC();
