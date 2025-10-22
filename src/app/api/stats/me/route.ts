@@ -33,16 +33,32 @@ export async function GET(req: Request) {
     const globalRankRaw = await redis.zrevrank("lb:points", sess.fid);
     const globalRank = typeof globalRankRaw === "number" ? globalRankRaw + 1 : null;
     
-    // For consistency with leaderboard display, we need to check if the user is in the top 15
-    // If they are, use their position in the top 15. If not, show their global rank.
-    const top15Fids = await redis.zrange("lb:points", -15, -1);
-    const isInTop15 = top15Fids.includes(sess.fid);
-    
+    // For consistency with leaderboard display, we need to get the user's rank
+    // from the same sorting logic used in the leaderboard API
     let rank = globalRank;
-    if (isInTop15) {
-      // Find their position in the top 15
-      const positionInTop15 = top15Fids.indexOf(sess.fid);
-      rank = positionInTop15 + 1;
+    
+    // Get the top 15 leaderboard data to find the user's position
+    try {
+      const leaderboardResponse = await fetch(`${process.env.APP_BASE_URL || 'http://localhost:3000'}/api/leaderboard?limit=15`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (leaderboardResponse.ok) {
+        const leaderboardData = await leaderboardResponse.json();
+        if (leaderboardData.ok && leaderboardData.rows) {
+          // Find the user's position in the sorted leaderboard
+          const userIndex = leaderboardData.rows.findIndex((row: any) => row.fid === sess.fid);
+          if (userIndex !== -1) {
+            rank = userIndex + 1;
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching leaderboard for rank calculation:", error);
+      // Fall back to global rank if leaderboard fetch fails
     }
 
     // Get today's vote (if any)

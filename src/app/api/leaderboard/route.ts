@@ -61,7 +61,7 @@ export async function GET(req: Request) {
       const accuracy = totalVotes ? Math.round((correctCount / totalVotes) * 100) : 0;
 
       const row = {
-        rank: r + 1,
+        rank: r + 1, // Will be recalculated after sorting
         fid,
         points,
         totalVotes,
@@ -99,9 +99,33 @@ export async function GET(req: Request) {
       };
     });
 
-    console.log(`[${requestId}] Leaderboard API: Returning hydrated rows:`, hydratedRows.length);
+    // Sort by points (desc), then accuracy (desc), then alphabetically by displayName/username
+    const sortedRows = hydratedRows.sort((a, b) => {
+      // First: Sort by points (descending)
+      if (a.points !== b.points) {
+        return b.points - a.points;
+      }
+      
+      // Second: Sort by accuracy (descending)
+      if (a.accuracy !== b.accuracy) {
+        return b.accuracy - a.accuracy;
+      }
+      
+      // Third: Sort alphabetically by displayName or username
+      const aName = a.displayName || a.username || a.fid;
+      const bName = b.displayName || b.username || b.fid;
+      return aName.localeCompare(bName);
+    });
+
+    // Recalculate ranks after sorting
+    const finalRows = sortedRows.map((row, index) => ({
+      ...row,
+      rank: index + 1
+    }));
+
+    console.log(`[${requestId}] Leaderboard API: Returning sorted rows:`, finalRows.length);
     console.log(`[${requestId}] Leaderboard API: Response timestamp:`, new Date().toISOString());
-    return NextResponse.json({ ok: true, rows: hydratedRows, debug: { requestId, timestamp: new Date().toISOString() } });
+    return NextResponse.json({ ok: true, rows: finalRows, debug: { requestId, timestamp: new Date().toISOString() } });
   } catch (error) {
     console.error("Leaderboard API error:", error);
     console.error("Leaderboard API error stack:", error instanceof Error ? error.stack : 'No stack trace');
