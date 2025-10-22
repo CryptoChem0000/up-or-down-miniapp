@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { redis, k, todayUTC } from "@/lib/redis";
 import { getSessionFromRequest } from "@/lib/session";
 import { getProfiles } from "@/lib/profile-cache";
+import { getUserRankInLeaderboard } from "@/lib/leaderboard-sorting";
 import type { UserStats } from "@/lib/types";
 
 export const runtime = "edge";
@@ -29,37 +30,8 @@ export async function GET(req: Request) {
     };
     const accuracy = stats.totalVotes ? Math.round((stats.correctCount / stats.totalVotes) * 100) : 0;
 
-    // Get the user's global rank
-    const globalRankRaw = await redis.zrevrank("lb:points", sess.fid);
-    const globalRank = typeof globalRankRaw === "number" ? globalRankRaw + 1 : null;
-    
-    // For consistency with leaderboard display, we need to get the user's rank
-    // from the same sorting logic used in the leaderboard API
-    let rank = globalRank;
-    
-    // Get the top 15 leaderboard data to find the user's position
-    try {
-      const leaderboardResponse = await fetch(`${process.env.APP_BASE_URL || 'http://localhost:3000'}/api/leaderboard?limit=15`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      if (leaderboardResponse.ok) {
-        const leaderboardData = await leaderboardResponse.json();
-        if (leaderboardData.ok && leaderboardData.rows) {
-          // Find the user's position in the sorted leaderboard
-          const userIndex = leaderboardData.rows.findIndex((row: any) => row.fid === sess.fid);
-          if (userIndex !== -1) {
-            rank = userIndex + 1;
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching leaderboard for rank calculation:", error);
-      // Fall back to global rank if leaderboard fetch fails
-    }
+    // Get rank using the same sorting logic as leaderboard
+    const rank = await getUserRankInLeaderboard(sess.fid, 15);
 
     // Get today's vote (if any)
     const today = todayUTC();
